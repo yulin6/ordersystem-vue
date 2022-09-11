@@ -10,7 +10,7 @@
     </div>
 
 
-    <el-card>
+    <el-card style="text-align: center">
       <el-form class="login-form"
                :model="credentials"
                :rules="rules"
@@ -141,6 +141,7 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  margin-top: 60px;
 }
 
 .el-card {
@@ -164,9 +165,7 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
 }
 
 .logo {
