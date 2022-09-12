@@ -1,16 +1,14 @@
 <template>
   <el-menu
-      :default-active="activeIndex"
       class="el-menu-demo"
       mode="horizontal"
       :ellipsis="false"
-      @select="handleSelect"
   >
     <el-menu-item index="0">
       <div class="logo">
         <h1>Foodies</h1>
-<!--        <p v-show="isOwner" style="margin-left: 3px">Owner</p>-->
-        <p  style="margin-left: 3px">Customer</p>
+        <p v-show="isOwner" style="margin-left: 3px">Owner</p>
+        <p v-show="!isOwner" style="margin-left: 3px">Customer</p>
       </div>
     </el-menu-item>
     <div class="flex-grow" />
@@ -25,22 +23,22 @@
 </template>
 
 <script >
-// import { ref } from 'vue'
 export default {
   name: 'HomeMenu',
+  data() {
+    return {
+      isOwner:false,
+    }
+  },
   components: {},
 
 
 }
-
-//
-// const activeIndex = ref('1')
-// const handleSelect = (key,  keyPath) => {
-//   console.log(key, keyPath)
 </script>
 
 <style>
 .flex-grow {
   flex-grow: 1;
 }
+
 </style>

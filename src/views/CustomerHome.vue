@@ -1,33 +1,23 @@
 <template>
-  <homeMenu></homeMenu>
-    <el-button v-on:click="addCard">
-      add
-    </el-button>
-    <el-row >
-      <el-col
-          v-for="o in cardNum"
-          :key="o"
-          :span="3"
-          style="margin: 60px"
-      >
-        <CanteenCard></CanteenCard>
-      </el-col>
-    </el-row>
-
-
+  <el-container>
+    <el-header >
+      <home-menu></home-menu>
+    </el-header>
+    <el-main>
+      <canteen-cards ></canteen-cards>
+    </el-main>
+  </el-container>
 </template>
 
 <script>
 import HomeMenu from "@/components/HomeMenu";
-import CanteenCard from "@/components/CanteenCard";
-import { ref } from 'vue'
+import CanteenCards from "@/components/CanteenCards";
 
 export default {
-  name: 'customerHome',
-  components: {HomeMenu, CanteenCard},
+  name: 'CustomerHome',
+  components: {HomeMenu, CanteenCards: CanteenCards},
   data() {
     return {
-      currentDate : ref(new Date()),
       cardNum: 1
     }
   },
@@ -40,6 +30,34 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+.main-layout {
+  /*position: relative;*/
+}
 
+.menu-layout {
+  /*position: fixed;*/
+  /*background-color: white;*/
+  /*!*height: 12%;*!*/
+  /*top: 0;*/
+  /*left: 0;*/
+  /*right: 0;*/
+}
+
+.el-header {
+  position: relative;
+  width: 100%;
+  height: 60px;
+}
+
+
+
+.el-main {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 110px;
+  bottom: 0;
+  overflow-y: scroll;
+}
 </style>

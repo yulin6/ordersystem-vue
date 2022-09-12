@@ -65,7 +65,8 @@
 <script>
 import router from "@/router";
 export default {
-  name: 'App',
+  // eslint-disable-next-line vue/multi-word-component-names
+  name: 'Login',
   components: {},
   data() {
     return {
@@ -121,9 +122,9 @@ export default {
       ) {
         this.$message.success("Login successful");
         if (this.isOwner) {
-          await router.push('OwnerHome');
+          await router.push('ownerHome');
         } else {
-          await router.push('CustomerHome');
+          await router.push('customerHome');
         }
       } else {
         this.$message.error("Username or password is invalid");

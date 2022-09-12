@@ -1,6 +1,11 @@
 <template>
 
-      <el-card  style="cursor: pointer" shadow="hover" :body-style="{ padding: '0px' }">
+      <el-card
+          style="cursor: pointer"
+          shadow="hover"
+          :body-style="{ padding: '0px' }"
+          v-on:click="enterCanteen"
+      >
         <img
             src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
             class="image"
@@ -27,6 +32,7 @@
 </template>
 
 <script>
+import router from "@/router";
 
 export default {
   name: 'CanteenCard',
@@ -39,6 +45,12 @@ export default {
       ratingPoint: 4.5,
       ratingNum: 14
 
+    }
+  },
+  methods: {
+    enterCanteen(){
+      console.log(this.name)
+      router.push({name:'canteen',params:{id:this.id}})
     }
   }
 
