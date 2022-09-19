@@ -1,5 +1,6 @@
 <template>
   <el-menu
+      :default-active="activeIndex"
       class="el-menu-demo"
       mode="horizontal"
       :ellipsis="false"
@@ -13,7 +14,7 @@
     </el-menu-item>
     <div class="flex-grow" />
 
-    <el-menu-item index="1" style="margin-top: 10px"> <p>Cart</p></el-menu-item>
+    <el-menu-item index="1" style="margin-top: 10px" v-on:click="openCart"> <el-icon><ShoppingCart /></el-icon> <p>Cart</p></el-menu-item>
     <el-sub-menu index="2" style="margin-top: 11px">
       <template #title>username</template>
       <el-menu-item index="2-1">Order History</el-menu-item>
@@ -23,14 +24,23 @@
 </template>
 
 <script >
+import { ref } from 'vue'
+
 export default {
   name: 'HomeMenu',
   data() {
     return {
       isOwner:false,
+      activeIndex: ref('0')
     }
   },
   components: {},
+  methods: {
+    openCart() {
+
+      this.$emit('openCart')
+    }
+  }
 
 
 }

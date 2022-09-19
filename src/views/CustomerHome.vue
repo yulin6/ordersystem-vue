@@ -1,29 +1,39 @@
 <template>
   <el-container>
-    <el-header >
-      <home-menu></home-menu>
+    <el-header>
+      <home-menu @openCart="openCart"></home-menu>
     </el-header>
     <el-main>
-      <canteen-cards ></canteen-cards>
+      <canteen-cards></canteen-cards>
+      <cart v-model="isCartOpen"></cart>
     </el-main>
   </el-container>
+
+
 </template>
 
 <script>
 import HomeMenu from "@/components/HomeMenu";
 import CanteenCards from "@/components/CanteenCards";
+import Cart from "@/components/Cart";
 
 export default {
-  name: 'CustomerHome',
-  components: {HomeMenu, CanteenCards: CanteenCards},
+  components: {HomeMenu, CanteenCards: CanteenCards, Cart},
   data() {
     return {
-      cardNum: 1
+      cardNum: 1,
+      isCartOpen: false,
+
+
     }
   },
   methods: {
     addCard() {
       this.cardNum+=1;
+    },
+    openCart() {
+      console.log("testsetCus")
+      this.isCartOpen = true
     }
   }
 
