@@ -18,7 +18,7 @@ import CanteenCards from "@/components/CanteenCards";
 import Cart from "@/components/Cart";
 
 export default {
-  components: {HomeMenu, CanteenCards: CanteenCards, Cart},
+  components: { HomeMenu, CanteenCards: CanteenCards, Cart },
   data() {
     return {
       cardNum: 1,
@@ -28,7 +28,7 @@ export default {
   },
   methods: {
     addCard() {
-      this.cardNum+=1;
+      this.cardNum += 1;
     },
     openCart() {
       console.log("testsetCus")

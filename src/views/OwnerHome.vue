@@ -4,7 +4,7 @@
       <home-menu @openCart="openCart" :isOwner="isOwner"></home-menu>
     </el-header>
     <el-main>
-      <canteen-cards></canteen-cards>
+      <canteen-cards :isOwner="isOwner"></canteen-cards>
       <Order v-model="isCartOpen"></Order>
     </el-main>
   </el-container>
@@ -18,7 +18,7 @@ import CanteenCards from "@/components/CanteenCards";
 import Order from "@/components/Order";
 
 export default {
-  components: { HomeMenu, CanteenCards: CanteenCards, Order},
+  components: { HomeMenu, CanteenCards: CanteenCards, Order },
   data() {
     return {
       cardNum: 1,
@@ -28,7 +28,7 @@ export default {
   },
   methods: {
     addCard() {
-      this.cardNum+=1;
+      this.cardNum += 1;
     },
     openCart() {
       console.log("testsetOwner")
