@@ -1,10 +1,5 @@
 <template>
-  <el-menu
-      :default-active="activeIndex"
-      class="el-menu-demo"
-      mode="horizontal"
-      :ellipsis="false"
-  >
+  <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" :ellipsis="false">
     <el-menu-item index="0">
       <div class="logo">
         <h1>Foodies</h1>
@@ -14,7 +9,16 @@
     </el-menu-item>
     <div class="flex-grow" />
 
-    <el-menu-item index="1" style="margin-top: 10px" v-on:click="openCart"> <el-icon><ShoppingCart /></el-icon> <p>Cart</p></el-menu-item>
+    <el-menu-item index="1" style="margin-top: 10px" v-on:click="openCart">
+      <el-icon v-show="isOwner">
+        <Bell />
+      </el-icon>
+      <p v-show="isOwner">Customer Order</p>
+      <el-icon v-show="!isOwner">
+        <ShoppingCart />
+      </el-icon>
+      <p v-show="!isOwner">Cart</p>
+    </el-menu-item>
     <el-sub-menu index="2" style="margin-top: 11px">
       <template #title>username</template>
       <el-menu-item index="2-1">Order History</el-menu-item>
@@ -28,7 +32,7 @@ import { ref } from 'vue'
 
 export default {
   name: 'HomeMenu',
-  props:{
+  props: {
     isOwner: {
       type: Boolean,
       default: false
@@ -55,5 +59,4 @@ export default {
 .flex-grow {
   flex-grow: 1;
 }
-
 </style>

@@ -5,7 +5,7 @@
     </el-header>
     <el-main>
       <canteen-cards></canteen-cards>
-      <cart v-model="isCartOpen"></cart>
+      <Order v-model="isCartOpen"></Order>
     </el-main>
   </el-container>
 
@@ -15,10 +15,10 @@
 <script>
 import HomeMenu from "@/components/HomeMenu";
 import CanteenCards from "@/components/CanteenCards";
-import Cart from "@/components/Cart";
+import Order from "@/components/Order";
 
 export default {
-  components: {HomeMenu, CanteenCards: CanteenCards, Cart},
+  components: { HomeMenu, CanteenCards: CanteenCards, Order},
   data() {
     return {
       cardNum: 1,
@@ -31,7 +31,7 @@ export default {
       this.cardNum+=1;
     },
     openCart() {
-      console.log("testsetCus")
+      console.log("testsetOwner")
       this.isCartOpen = true
     }
   }
