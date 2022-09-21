@@ -28,9 +28,14 @@ import { ref } from 'vue'
 
 export default {
   name: 'HomeMenu',
+  props:{
+    isOwner: {
+      type: Boolean,
+      default: false
+    },
+  },
   data() {
     return {
-      isOwner:false,
       activeIndex: ref('0')
     }
   },

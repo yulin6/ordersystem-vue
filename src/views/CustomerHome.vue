@@ -1,7 +1,7 @@
 <template>
   <el-container>
     <el-header>
-      <home-menu @openCart="openCart"></home-menu>
+      <home-menu @openCart="openCart" :isOwner="isOwner"></home-menu>
     </el-header>
     <el-main>
       <canteen-cards></canteen-cards>
@@ -23,8 +23,7 @@ export default {
     return {
       cardNum: 1,
       isCartOpen: false,
-
-
+      isOwner: false
     }
   },
   methods: {
