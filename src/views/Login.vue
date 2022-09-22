@@ -103,7 +103,7 @@ export default {
     switchUserType() {
       this.isOwner = !this.isOwner;
     },
-    simulateLogin() {
+    simulateLoginWait() {
       return new Promise(resolve => {
         setTimeout(resolve, 800);
       });
@@ -114,12 +114,16 @@ export default {
         return;
       }
       this.loading = true;
-      await this.simulateLogin();
+      await this.simulateLoginWait();
       this.loading = false;
-      if (
-          this.credentials.username === this.validCredentials.username &&
-          this.credentials.password === this.validCredentials.password
-      ) {
+      if (this.credentials.username === this.validCredentials.username &&
+          this.credentials.password === this.validCredentials.password)
+      {
+        localStorage.setItem('userName', this.validCredentials.username)
+        localStorage.setItem('userToken', this.validCredentials.password) //TODO change to token sent back by backend
+        this.$store.dispatch("setUser", this.validCredentials.username);
+        this.$store.dispatch("setToken", this.validCredentials.password); //TODO change to token sent back by backend
+        console.log(this.$store.state.isLogin);
         this.$message.success("Login successful");
         if (this.isOwner) {
           await router.push('ownerHome');

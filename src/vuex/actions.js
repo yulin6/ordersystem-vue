@@ -1,5 +1,5 @@
 export const setUser = ({commit}, user) => {
-    commit("userStatus", user)
+    commit("setUser", user)
 }
 
 export const setToken = ({commit}, token) => {

@@ -1,22 +1,21 @@
-export const userStatus = (state, user) => {
+export const setUser = (state, user) => {
     if (user) {
-        state.userName = JSON.parse(user).userName;
-        state.roleName = JSON.parse(user).roleName;
+        state.userName = user
+        // state.roleName = JSON.parse(user).roleName
         state.isLogin = true
     } else if (user == null) {
-        sessionStorage.setItem("userName", null)
-        sessionStorage.setItem("userToken", '')
+        localStorage.setItem("userName", null)
+        localStorage.setItem("userToken", '')
         state.userName = null
         state.isLogin = false
         state.token = ''
     }
 }
 
-//更改token
 export const setToken = (state,token) =>{
     if (token!=null){
-        state.token = token;
+        state.token = token
     }else {
-        state.token = '';
+        state.token = ''
     }
 }

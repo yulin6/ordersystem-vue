@@ -22,7 +22,7 @@
     <el-sub-menu index="2" style="margin-top: 11px">
       <template #title>username</template>
       <el-menu-item index="2-1">Order History</el-menu-item>
-      <el-menu-item index="2-2">Log out</el-menu-item>
+      <el-menu-item index="2-2" v-on:click="logOut">Log out</el-menu-item>
     </el-sub-menu>
   </el-menu>
 </template>
@@ -48,6 +48,29 @@ export default {
     openCart() {
 
       this.$emit('openCart')
+    },
+    logOut(){
+      this.$confirm('Logging out the current account, are you sure?', 'Logging out', {
+        confirmButtonText: 'Log Out',
+        cancelButtonText: 'Cancel',
+        type: 'warning'
+      }).then(() => {
+        localStorage.removeItem('userName');
+        localStorage.removeItem('userToken');
+        this.$router.push("/login");
+        this.$message({
+          type: 'success',
+          message: 'Logged out!'
+        });
+      })
+      //     .catch(() => {
+      //   this.exits = false;
+      //   this.$message({
+      //     type: 'info',
+      //     message: '已取消退出'
+      //   });
+      // });
+
     }
   }
 
