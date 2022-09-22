@@ -8,19 +8,22 @@
       <el-aside style="width: 200px;">
         <el-menu
             default-active="1"
-            class="el-menu-vertical-demo"
-
-        >
+            class="el-menu-vertical-demo">
           <el-menu-item
               v-for="(cat, index) in category"
               :index="cat"
-              :key="index">
+              :key="index"
+              v-on:click="jumpToCategory(cat)">
             <span>{{ cat }}</span>
           </el-menu-item>
         </el-menu>
       </el-aside>
 
       <el-main>
+        <div v-for="cat in category"
+             :key="cat"
+             :id="cat">
+          {{cat}}
         <el-table :data="tableData" style="width: 100%">
           <el-table-column prop="name"  width="200" />
           <el-table-column prop="price"  width="120" />
@@ -30,6 +33,7 @@
             </template>
           </el-table-column>
         </el-table>
+        </div>
       </el-main>
     </el-container>
   </el-container>
@@ -61,7 +65,7 @@ export default {
   },
   created() {
     // console.log(this.props.test)
-    for(let i =0; i < 200; ++i){
+    for(let i =0; i < 10; ++i){
       this.tableData.push({
         name: 'Chicken Sandwich',
         price: '$12',
@@ -69,7 +73,11 @@ export default {
       })
     }
   },
-  methods: {}
+  methods: {
+    jumpToCategory(id) {
+      document.getElementById(id).scrollIntoView();
+    }
+  }
 
 }
 </script>
