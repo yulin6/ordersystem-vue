@@ -9,12 +9,11 @@
         <el-menu
             default-active="1"
             class="el-menu-vertical-demo"
-            @open="handleOpen"
-            @close="handleClose"
+
         >
           <el-menu-item
               v-for="(cat, index) in category"
-              :index="index"
+              :index="cat"
               :key="index">
             <span>{{ cat }}</span>
           </el-menu-item>

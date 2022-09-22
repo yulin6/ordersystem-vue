@@ -15,13 +15,13 @@
           <div class="bottom">
             <span class="category">{{ category }}</span>
             <el-row class="ratingDisplay">
-              <el-col span="2">
+              <el-col :span="7">
                 <el-icon size="large" ><StarFilled /></el-icon>
               </el-col>
-              <el-col span="2" style="margin-top: 4px">
+              <el-col :span="7" style="margin-top: 4px">
                 <span class="ratingPoint">{{ ratingPoint }}</span>
               </el-col>
-              <el-col span="2" style="margin-top: 4px">
+              <el-col :span="7" style="margin-top: 4px">
                 <span class="ratingNum"> ({{ ratingNum }})</span>
               </el-col>
             </el-row>

@@ -2,7 +2,6 @@
 import { createApp } from 'vue'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
-// import Login from './Login.vue'
 import whiteBoard from './views/WhiteBoard.vue'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 
