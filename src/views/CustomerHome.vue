@@ -1,7 +1,7 @@
 <template>
   <el-container>
     <el-header>
-      <home-menu @openCart="openCart"></home-menu>
+      <home-menu @openCart="openCart" :isOwner="isOwner"></home-menu>
     </el-header>
     <el-main>
       <canteen-cards></canteen-cards>
@@ -18,18 +18,17 @@ import CanteenCards from "@/components/CanteenCards";
 import Cart from "@/components/Cart";
 
 export default {
-  components: {HomeMenu, CanteenCards: CanteenCards, Cart},
+  components: { HomeMenu, CanteenCards: CanteenCards, Cart },
   data() {
     return {
       cardNum: 1,
       isCartOpen: false,
-
-
+      isOwner: false
     }
   },
   methods: {
     addCard() {
-      this.cardNum+=1;
+      this.cardNum += 1;
     },
     openCart() {
       console.log("testsetCus")

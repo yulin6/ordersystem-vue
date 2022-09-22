@@ -1,17 +1,13 @@
 <template>
-<!--    <el-button v-on:click="addCard" >-->
-<!--      add-->
-<!--    </el-button>-->
+  <!--    <el-button v-on:click="addCard" >-->
+  <!--      add-->
+  <!--    </el-button>-->
 
-    <el-row>
-      <el-col
-          v-for="i in cardNum"
-          :key="i"
-          :span="3"
-          class="card">
-        <canteen-card></canteen-card>
-      </el-col>
-    </el-row>
+  <el-row>
+    <el-col v-for="i in cardNum" :key="i" :span="3" class="card">
+      <canteen-card :isOwner="isOwner"></canteen-card>
+    </el-col>
+  </el-row>
 
 
 </template>
@@ -21,7 +17,13 @@ import CanteenCard from "@/components/CanteenCard";
 
 export default {
   name: 'CanteenCards',
-  components: {CanteenCard},
+  props: {
+    isOwner: {
+      type: Boolean,
+      default: false
+    },
+  },
+  components: { CanteenCard },
   data() {
     return {
       cardNum: 13
@@ -29,7 +31,7 @@ export default {
   },
   methods: {
     addCard() {
-      this.cardNum+=1;
+      this.cardNum += 1;
     }
   }
 
@@ -37,9 +39,8 @@ export default {
 </script>
 
 <style>
-.card{
+.card {
   margin-top: 60px;
   margin-left: 60px
 }
-
 </style>

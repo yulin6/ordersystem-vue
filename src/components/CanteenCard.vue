@@ -36,6 +36,12 @@ import router from "@/router";
 
 export default {
   name: 'CanteenCard',
+  props: {
+    isOwner: {
+      type: Boolean,
+      default: false
+    },
+  },
   components: {},
   data() {
     return {
@@ -44,13 +50,16 @@ export default {
       category: "Western",
       ratingPoint: 4.5,
       ratingNum: 14
-
     }
   },
   methods: {
-    enterCanteen(){
+    enterCanteen() {
       console.log(this.name)
-      router.push({name:'canteen',params:{id:this.id}})
+      if (this.isOwner) {
+        router.push({ name: 'manage-canteen', params: { id: this.id } })
+      } else {
+        router.push({ name: 'canteen', params: { id: this.id } })
+      }
     }
   }
 
