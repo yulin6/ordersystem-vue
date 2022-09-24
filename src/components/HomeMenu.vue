@@ -1,6 +1,6 @@
 <template>
   <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" :ellipsis="false">
-    <el-menu-item index="0">
+    <el-menu-item index="0" v-on:click="backHome">
       <div class="logo">
         <h1>Foodies</h1>
         <p v-show="isOwner" style="margin-left: 3px">Owner</p>
@@ -71,6 +71,13 @@ export default {
       //   });
       // });
 
+    },
+    backHome(){
+      if (this.isOwner) {
+        this.$router.push('/ownerHome')
+      } else {
+        this.$router.push('/customerHome')
+      }
     }
   }
 
