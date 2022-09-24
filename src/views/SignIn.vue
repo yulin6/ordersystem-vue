@@ -30,7 +30,7 @@
                 type="primary"
                 native-type="submit"
                 block>
-              Get Started
+              Sign In
             </el-button>
         </el-form-item>
         <el-form-item v-show="!isOwner">
@@ -40,7 +40,7 @@
                 type="primary"
                 native-type="submit"
                 block>
-              Get Started
+              Sign In
             </el-button>
         </el-form-item>
       </el-form>
@@ -65,8 +65,7 @@
 <script>
 import router from "@/router";
 export default {
-  // eslint-disable-next-line vue/multi-word-component-names
-  name: 'Login',
+  name: 'LogIn',
   components: {},
   data() {
     return {
