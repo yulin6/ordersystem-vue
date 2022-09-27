@@ -62,12 +62,14 @@
 
 <script>
 import router from "@/router";
+import UserService from "@/services/UserService";
 
 export default {
   name: 'SignIn',
   components: {},
   data() {
     return {
+      UserService: UserService.getInstance(),
       validCredentials: {
         username: "testu",
         password: "testp"
@@ -108,6 +110,7 @@ export default {
     },
     async login() {
       let valid = await this.$refs.form.validate();
+
       if (!valid) {
         return;
       }

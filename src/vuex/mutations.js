@@ -19,3 +19,7 @@ export const setToken = (state,token) =>{
         state.token = ''
     }
 }
+
+export const openCloseCart = (state) =>{
+    state.isCartOpen = !state.isCartOpen
+}

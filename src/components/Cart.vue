@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="Cart">
+  <el-dialog title="Cart" v-model="this.$store.state.isCartOpen">
     <el-table :data="gridData">
       <el-table-column property="name"  width="150" />
       <el-table-column property="price"  width="200" />
@@ -13,12 +13,13 @@
 </template>
 
 <script>
+
 export default {
+
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'Cart',
   data() {
     return {
-      propIsCartOpen: this.isCartOpen,
       gridData: [
         {
           name: 'Chicken Sandwich',

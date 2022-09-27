@@ -46,8 +46,7 @@ export default {
   components: {},
   methods: {
     openCart() {
-
-      this.$emit('openCart')
+      this.$store.dispatch("openCloseCart");
     },
     logOut(){
       this.$confirm('Logging out the current account, are you sure?', 'Logging out', {

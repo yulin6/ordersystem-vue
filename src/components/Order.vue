@@ -18,7 +18,6 @@ export default {
   name: 'Order',
   data() {
     return {
-      propIsCartOpen: this.isCartOpen,
       gridData: [
         {
           name: 'Chicken Sandwich',
