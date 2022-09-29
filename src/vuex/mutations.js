@@ -27,3 +27,11 @@ export const openCloseCart = (state) =>{
 export const openCloseOrder = (state) =>{
     state.isOrderOpen = !state.isOrderOpen
 }
+
+export const openCloseAddCanteen = (state) =>{
+    state.isAddCanteenOpen = !state.isAddCanteenOpen
+}
+
+export const closeOpenAddCanteen = (state) =>{
+    state.isAddCanteenOpen = !state.isAddCanteenOpen
+}

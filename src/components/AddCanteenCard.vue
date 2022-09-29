@@ -7,7 +7,7 @@
         <Plus />
       </el-icon>
       <p style="margin-left: 0;color: #3F9EFF;font-weight: bold">Add a new restaurant!</p>
-      <AddCanteen v-model="isAddCanteenOpen"></AddCanteen>
+      <AddCanteen></AddCanteen>
     </div>
   </el-card>
 
@@ -19,14 +19,9 @@ import AddCanteen from "@/components/AddCanteen";
 export default {
   name: 'AddCanteenCard',
   components: { AddCanteen },
-  data() {
-    return {
-      isAddCanteenOpen: false,
-    }
-  },
   methods: {
     openAddCanteen() {
-      this.isAddCanteenOpen = true
+      this.$store.dispatch("openCloseAddCanteen");
     },
   }
 

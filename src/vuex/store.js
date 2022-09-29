@@ -12,6 +12,7 @@ const store = new Vuex.Store({
         apiURL: 'https://43.134.172.49:30443/Foodies',
         isCartOpen: false,
         isOrderOpen: false,
+        isAddCanteenOpen: false,
         userName: null,
         roleName: null,
         isLogin: false,
