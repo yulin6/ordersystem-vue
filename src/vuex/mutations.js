@@ -23,3 +23,7 @@ export const setToken = (state,token) =>{
 export const openCloseCart = (state) =>{
     state.isCartOpen = !state.isCartOpen
 }
+
+export const openCloseOrder = (state) =>{
+    state.isOrderOpen = !state.isOrderOpen
+}

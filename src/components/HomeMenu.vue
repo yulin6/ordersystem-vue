@@ -9,7 +9,7 @@
     </el-menu-item>
     <div class="flex-grow" />
 
-    <el-menu-item index="1" style="margin-top: 10px" v-on:click="openCart">
+    <el-menu-item index="1" style="margin-top: 10px" v-on:click="openCartOrOrder">
       <el-icon v-show="isOwner">
         <Bell />
       </el-icon>
@@ -45,10 +45,14 @@ export default {
   },
   components: {},
   methods: {
-    openCart() {
-      this.$store.dispatch("openCloseCart");
+    openCartOrOrder() {
+      if (this.isOwner) {
+        this.$store.dispatch("openCloseOrder");
+      } else {
+        this.$store.dispatch("openCloseCart");
+      }
     },
-    logOut(){
+    logOut() {
       this.$confirm('Logging out the current account, are you sure?', 'Logging out', {
         confirmButtonText: 'Log Out',
         cancelButtonText: 'Cancel',
@@ -71,7 +75,7 @@ export default {
       // });
 
     },
-    backHome(){
+    backHome() {
       if (this.isOwner) {
         this.$router.push('/ownerHome')
       } else {

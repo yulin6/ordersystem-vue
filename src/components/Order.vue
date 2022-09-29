@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="Order">
+  <el-dialog title="Order" v-model="this.$store.state.isOrderOpen">
     <el-table :data="gridData">
       <el-table-column property="name"  width="150" />
       <el-table-column property="price"  width="200" />

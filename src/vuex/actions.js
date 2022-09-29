@@ -9,3 +9,7 @@ export const setToken = ({commit}, token) => {
 export const openCloseCart = ({commit}) => {
     commit("openCloseCart")
 }
+
+export const openCloseOrder = ({commit}) => {
+    commit("openCloseOrder")
+}

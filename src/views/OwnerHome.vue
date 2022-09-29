@@ -1,11 +1,11 @@
 <template>
   <el-container>
     <el-header>
-      <home-menu @openCart="openCart" :isOwner="isOwner"></home-menu>
+      <home-menu :isOwner="isOwner"></home-menu>
     </el-header>
     <el-main>
       <canteen-cards :isOwner="isOwner"></canteen-cards>
-      <Order v-model="isCartOpen"></Order>
+      <order></Order>
     </el-main>
   </el-container>
 
@@ -22,17 +22,12 @@ export default {
   data() {
     return {
       cardNum: 1,
-      isCartOpen: false,
       isOwner: true
     }
   },
   methods: {
     addCard() {
       this.cardNum += 1;
-    },
-    openCart() {
-      console.log("testsetOwner")
-      this.isCartOpen = true
     }
   }
 
