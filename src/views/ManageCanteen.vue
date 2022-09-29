@@ -14,24 +14,40 @@
       </el-aside>
 
       <el-main>
-        <div v-for="cat in category"
-             :key="cat"
-             :id="cat"
-             class="dishGroup">
+        <div v-for="cat in category" :key="cat" :id="cat" class="dishGroup">
           {{ cat }}
           <el-table :data="tableData" style="width: 100%">
-            <el-table-column prop="name" width="200"/>
-            <el-table-column prop="price" width="120"/>
-            <el-table-column>
+            <el-table-column label="Dish Name" width="200">
               <template v-slot:default="scope">
-                <el-input-number v-model="scope.row.selected" :min="0" :max="10"></el-input-number>
+                <input type="text" v-model="scope.row.name" v-show="scope.row.isEditor" />
+                <span v-show="!scope.row.isEditor">{{scope.row.name}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="Dish Price ($)" width="200">
+              <template v-slot:default="scope">
+                <el-input-number v-model="scope.row.price" :min="0" :max="100" v-show="scope.row.isEditor">
+                </el-input-number>
+                <span v-show="!scope.row.isEditor">{{scope.row.price}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="Quantity in Stock" width="200">
+              <template v-slot:default="scope">
+                <el-input-number v-model="scope.row.quantity" :min="0" :max="10" v-show="scope.row.isEditor">
+                </el-input-number>
+                <span v-show="!scope.row.isEditor">{{scope.row.quantity}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="Operation" width="200">
+              <template v-slot:default="scope">
+                <el-button type="warning" @click="edit(scope.row)">edit</el-button>
+                <el-button type="danger" @click="save(scope.row)">save</el-button>
               </template>
             </el-table-column>
           </el-table>
         </div>
       </el-main>
     </el-container>
-  </el-container>
+  </el-container>·
 
 </template>
 
@@ -41,21 +57,23 @@ import HomeMenu from "@/components/HomeMenu";
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'ManageCanteen',
-  components: {HomeMenu},
+  components: { HomeMenu },
   props: ['id'],
   data() {
     return {
       category: ['Rice', 'Noodle', 'Dessert', 'Drink'],
       tableData: [{
         name: 'Chicken Sandwich',
-        price: '$12',
-        selected: 0
+        price: 12,
+        quantity: 0,
+        isEditor: false
       },
-        {
-          name: 'Cheese Burger',
-          price: '$12',
-          selected: 0
-        }],
+      {
+        name: 'Cheese Burger',
+        price: 12,
+        quantity: 0,
+        isEditor: false
+      }],
       isOwner: true
     }
   },
@@ -64,15 +82,23 @@ export default {
     for (let i = 0; i < 10; ++i) {
       this.tableData.push({
         name: 'Chicken Sandwich',
-        price: '$12',
-        selected: 0
+        price: 12,
+        quantity: 0,
+        isEditor: false
       })
     }
   },
   methods: {
     jumpToCategory(id) {
       document.getElementById(id).scrollIntoView();
+    },
+    edit(row) {
+      row.isEditor = true;
+    },
+    save(row) {
+      row.isEditor = false;
     }
+
   }
 
 }
