@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="AddCanteen" @close='closeAddCanteen'>
+  <el-dialog title="AddCanteen" v-model="this.$store.state.isAddCanteenOpen">
     <el-col>
       <p>Restaurant Name:</p>
       <el-input v-model="input" placeholder="text" clearable class="input"></el-input>
@@ -10,7 +10,7 @@
       </el-select>
     </el-col>
     <el-button type="primary" class="button" v-on:click="confirmed">Confirm</el-button>
-    <!-- <el-button plain class="button" v-on:click="closeDialog">Cancel</el-button> -->
+    <el-button plain class="button" v-on:click="cancel">Cancel</el-button>
   </el-dialog>
 </template>
 
@@ -20,7 +20,6 @@ export default {
   name: 'AddCanteen',
   data() {
     return {
-      propIsAddCanteenOpen: this.isAddCanteenOpen,
       options: [{
         value: 'option1',
         label: 'Western'
@@ -37,10 +36,11 @@ export default {
         message: 'A new restaurant has created successfully!',
         type: 'success'
       });
+      this.$store.dispatch("closeOpenAddCanteen");
     },
-    // closeDialog: function () {
-    //   this.isAddCanteenOpen = false
-    // }
+    cancel() {
+      this.$store.dispatch("closeOpenAddCanteen");
+    },
   }
 
 

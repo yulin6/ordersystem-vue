@@ -11,6 +11,8 @@ const store = new Vuex.Store({
     state: {
         apiURL: '/api',
         isCartOpen: false,
+        isOrderOpen: false,
+        isAddCanteenOpen: false,
         user: null,
         isLogin: false,
         token: ''
