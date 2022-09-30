@@ -20,7 +20,7 @@
       <p v-show="!isOwner">Cart</p>
     </el-menu-item>
     <el-sub-menu index="2" style="margin-top: 11px">
-      <template #title>username</template>
+      <template #title>{{ this.user.name }}</template>
       <el-menu-item index="2-1">Order History</el-menu-item>
       <el-menu-item index="2-2" v-on:click="logOut">Log out</el-menu-item>
     </el-sub-menu>
@@ -40,9 +40,13 @@ export default {
   },
   data() {
     return {
-      activeIndex: ref('0')
+      activeIndex: ref('0'),
+      user: JSON.parse(localStorage.getItem('user')),
     }
   },
+  // created() {
+  //   console.log(JSON.parse(localStorage.getItem('user')))
+  // },
   components: {},
   methods: {
     openCartOrOrder() {
@@ -58,12 +62,12 @@ export default {
         cancelButtonText: 'Cancel',
         type: 'warning'
       }).then(() => {
-        localStorage.removeItem('userName');
-        localStorage.removeItem('userToken');
+        this.$store.dispatch("setUser", null)
+        this.$store.dispatch("setToken", null)
         this.$router.push("/login");
         this.$message({
           type: 'success',
-          message: 'Logged out!'
+          message: "See you next time, " + this.user.name
         });
       })
       //     .catch(() => {

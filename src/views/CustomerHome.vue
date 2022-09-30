@@ -23,8 +23,12 @@ export default {
   data() {
     return {
       cardNum: 1,
+      user: this.$store.state.user,
       isOwner: false
     }
+  },
+  created() {
+    // console.log(this.user.json())
   },
   methods: {
     addCard() {

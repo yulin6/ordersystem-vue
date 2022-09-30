@@ -18,7 +18,7 @@
                @submit.prevent="login"
       >
         <el-form-item prop="username">
-          <el-input v-model="credentials.username" placeholder="Username" prefix-icon="User"></el-input>
+          <el-input v-model="credentials.userName" placeholder="Username" prefix-icon="User"></el-input>
         </el-form-item>
         <el-form-item prop="password">
           <el-input v-model="credentials.password" placeholder="Password" type="password" prefix-icon="Lock"></el-input>
@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import router from "@/router";
+// import router from "@/router";
 import UserService from "@/services/UserService";
 
 export default {
@@ -69,19 +69,20 @@ export default {
   components: {},
   data() {
     return {
-      UserService: UserService.getInstance(),
+      userService: UserService.getInstance(),
       validCredentials: {
         username: "testu",
         password: "testp"
       },
       credentials: {
-        username: "",
-        password: ""
+        userName: "",
+        password: "",
+        type: 1,
       },
       isOwner: false,
       loading: false,
       rules: {
-        username: [
+        userName: [
           {
             required: true,
             message: "Username is required",
@@ -102,11 +103,14 @@ export default {
   methods: {
     switchUserType() {
       this.isOwner = !this.isOwner;
-    },
-    simulateLoginWait() {
-      return new Promise(resolve => {
-        setTimeout(resolve, 800);
-      });
+      if(this.credentials.type === 1){
+        this.credentials.type = 2
+
+      } else if (this.credentials.type === 2){
+        this.credentials.type = 1
+      } else {
+        console.log("admin login should not be here")
+      }
     },
     async login() {
       let valid = await this.$refs.form.validate();
@@ -115,24 +119,25 @@ export default {
         return;
       }
       this.loading = true;
-      await this.simulateLoginWait();
+      await this.userService.signIn(this.credentials)
+          .then(async res => {
+            if (res.resultCode === 1) {
+              console.log(res.content)
+              localStorage.setItem('user', JSON.stringify(res.content))
+              localStorage.setItem('userToken', res.token)
+              this.$store.dispatch("setUser", res.content)
+              this.$store.dispatch("setToken", res.token)
+              this.$message.success("Welcome back, " + res.content.name)
+              if (this.isOwner) {
+                await this.$router.push('ownerHome')
+              } else {
+                await this.$router.push('customerHome')
+              }
+            } else {
+              this.$message.error("Username or password is invalid");
+            }
+          })
       this.loading = false;
-      if (this.credentials.username === this.validCredentials.username &&
-          this.credentials.password === this.validCredentials.password) {
-        localStorage.setItem('userName', this.validCredentials.username)
-        localStorage.setItem('userToken', this.validCredentials.password) //TODO change to token sent back by backend
-        this.$store.dispatch("setUser", this.validCredentials.username);
-        this.$store.dispatch("setToken", this.validCredentials.password); //TODO change to token sent back by backend
-        console.log(this.$store.state.isLogin);
-        this.$message.success("Login successful");
-        if (this.isOwner) {
-          await router.push('ownerHome');
-        } else {
-          await router.push('customerHome');
-        }
-      } else {
-        this.$message.error("Username or password is invalid");
-      }
     },
     goSignUp() {
       this.$router.push('signup')
