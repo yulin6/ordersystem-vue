@@ -21,11 +21,13 @@ const routes = [
         path: "/customerHome",
         name: "customerHome",
         component: CustomerHome,
+        props: true
     },
     {
         path: "/ownerHome",
         name: "ownerHome",
         component: OwnerHome,
+        props: true
     },
     {
         path: "/canteen/:id",

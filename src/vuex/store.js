@@ -9,10 +9,9 @@ import * as actions from './actions'
 const store = new Vuex.Store({
 
     state: {
-        apiURL: 'https://43.134.172.49:30443/Foodies',
+        apiURL: '/api',
         isCartOpen: false,
-        userName: null,
-        roleName: null,
+        user: null,
         isLogin: false,
         token: ''
     },

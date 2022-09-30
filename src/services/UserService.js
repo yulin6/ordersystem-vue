@@ -1,5 +1,5 @@
 import axios from "axios";
-import {apiURL} from "@/vuex/getters";
+import store from "@/vuex/store";
 
 export default class UserService {
     static myInstance = null;
@@ -12,10 +12,23 @@ export default class UserService {
         return this.myInstance;
     }
 
-    signIn = credential =>{
-        axios.post(apiURL + '/user', credential)
-            .then(response => {
-                return response
+    signIn = async credential => {
+        try{
+            let res = await axios({
+                url: store.state.apiURL + '/user/login',
+                method: "POST",
+                data: JSON.stringify(credential),
+                headers: {
+                    'content-type': 'application/json',
+                },
             })
+            return res.data;
+        }
+        catch(error){
+            console.log(error)
+        }
     }
+
+
+
 }

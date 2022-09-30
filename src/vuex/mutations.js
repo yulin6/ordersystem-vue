@@ -1,14 +1,12 @@
 export const setUser = (state, user) => {
     if (user) {
-        state.userName = user
+        state.user = user
         // state.roleName = JSON.parse(user).roleName
         state.isLogin = true
     } else if (user == null) {
-        localStorage.setItem("userName", null)
-        localStorage.setItem("userToken", '')
-        state.userName = null
+        localStorage.setItem("user", null)
+        state.user = null
         state.isLogin = false
-        state.token = ''
     }
 }
 
@@ -17,6 +15,7 @@ export const setToken = (state,token) =>{
         state.token = token
     }else {
         state.token = ''
+        localStorage.setItem("userToken", '')
     }
 }
 
