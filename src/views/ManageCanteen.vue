@@ -37,13 +37,17 @@
                 <span v-show="!scope.row.isEditor">{{scope.row.quantity}}</span>
               </template>
             </el-table-column>
-            <el-table-column label="Operation" width="200">
+            <el-table-column label="Operation" width="260">
               <template v-slot:default="scope">
-                <el-button type="warning" @click="edit(scope.row)">edit</el-button>
-                <el-button type="danger" @click="save(scope.row)">save</el-button>
+                <el-button @click="edit(scope.row)">edit</el-button>
+                <el-button type="warning" @click="save(scope.row)">save</el-button>
+                <el-button type="danger" @click="deleteRow(scope.$index, tableData)"> delete
+                </el-button>
               </template>
             </el-table-column>
           </el-table>
+          <el-button style="margin-top: 6px" type="primary" @click="addRow(tableData, false)">Add a new dish!
+          </el-button>
         </div>
       </el-main>
     </el-container>
@@ -97,8 +101,15 @@ export default {
     },
     save(row) {
       row.isEditor = false;
+    },
+    deleteRow(index, rows) {
+      rows.splice(index, 1);
+    },
+    addRow(tableData, isEditor) {
+      tableData.push({
+        name: 'A new dish added. Please edit it!', price: 0, quantity: 0, isEditor: isEditor
+      })
     }
-
   }
 
 }
