@@ -12,7 +12,7 @@ const store = new Vuex.Store({
         apiURL: '/api',
         isCartOpen: false,
         isOrderOpen: false,
-        isAddCanteenOpen: false,
+        isEditCanteenOpen: false,
         user: null,
         isLogin: false,
         token: ''

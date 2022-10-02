@@ -14,10 +14,10 @@ export const openCloseOrder = ({commit}) => {
     commit("openCloseOrder")
 }
 
-export const openCloseAddCanteen = ({commit}) => {
-    commit("openCloseAddCanteen")
+export const openCloseEditCanteen = ({commit}) => {
+    commit("openCloseEditCanteen")
 }
 
-export const closeOpenAddCanteen = ({commit}) => {
-    commit("openCloseAddCanteen")
+export const closeOpenEditCanteen = ({commit}) => {
+    commit("openCloseEditCanteen")
 }

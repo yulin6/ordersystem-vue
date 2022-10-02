@@ -1,27 +1,27 @@
 <template>
 
   <el-card style="cursor: pointer" shadow="hover" :body-style="{ padding: '0px' }" align="middle"
-    v-on:click="openAddCanteen" class="box-card">
+    v-on:click="openEditCanteen" class="box-card">
     <div class="mid">
       <el-icon color="#3F9EFF" size="large" border-radius="20px">
         <Plus />
       </el-icon>
       <p style="margin-left: 0;color: #3F9EFF;font-weight: bold">Add a new restaurant!</p>
-      <AddCanteen></AddCanteen>
+      <EditCanteen></EditCanteen>
     </div>
   </el-card>
 
 </template>
 
 <script>
-import AddCanteen from "@/components/AddCanteen";
+import EditCanteen from "@/components/EditCanteen";
 
 export default {
-  name: 'AddCanteenCard',
-  components: { AddCanteen },
+  name: 'EditCanteenCard',
+  components: { EditCanteen },
   methods: {
-    openAddCanteen() {
-      this.$store.dispatch("openCloseAddCanteen");
+    openEditCanteen() {
+      this.$store.dispatch("openCloseEditCanteen");
     },
   }
 
