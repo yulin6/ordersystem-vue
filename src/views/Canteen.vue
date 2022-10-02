@@ -3,12 +3,13 @@
   <el-container>
     <el-header>
       <home-menu></home-menu>
+      <cart></cart>
     </el-header>
     <el-container>
       <el-aside style="width: 200px;">
         <el-menu
             default-active="1"
-            class="el-menu-vertical-demo">
+            class="categoryMenu">
           <el-menu-item
               v-for="(cat, index) in category"
               :index="cat"
@@ -36,6 +37,7 @@
           </el-table>
         </div>
       </el-main>
+
     </el-container>
   </el-container>
 
@@ -43,11 +45,12 @@
 
 <script>
 import HomeMenu from "@/components/HomeMenu";
+import Cart from "@/components/Cart";
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'Canteen',
-  components: {HomeMenu},
+  components: {HomeMenu, Cart},
   props: ['id'],
   data() {
     return {
