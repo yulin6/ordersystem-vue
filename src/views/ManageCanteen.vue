@@ -8,16 +8,24 @@
       <el-aside style="width: 200px;">
         <el-menu default-active="1" class="el-menu-vertical-demo">
           <el-menu-item v-for="(cat, index) in category" :index="cat" :key="index" v-on:click="jumpToCategory(cat)">
-            <span>{{ cat }}</span>
+            <input style="width: 100px" type="text" v-model="category[index]" v-show="isCatEditor" />
+            <span v-show="!isCatEditor">{{ cat }}</span>
+            <el-button style="margin-left: 6px" type="danger" @click="deleteRow(index, category)" v-show="isCatEditor"
+              size="small"> delete
+            </el-button>
           </el-menu-item>
         </el-menu>
+        <el-button style="margin-top: 10px" @click="editCategory()" v-show="!isCatEditor">Edit category
+        </el-button>
+        <el-button style="margin-top: 10px" type="warning" @click="saveCategory(category)" v-show="isCatEditor">save
+        </el-button>
       </el-aside>
 
       <el-main>
         <div v-for="cat in category" :key="cat" :id="cat" class="dishGroup">
           {{ cat }}
-          <el-table :data="tableData" style="width: 100%">
-            <el-table-column label="Dish Name" width="200">
+          <el-table :data="tableData" style="width: 100%; margin-top: 6px;">
+            <el-table-column label="Dish Name" width="260">
               <template v-slot:default="scope">
                 <input type="text" v-model="scope.row.name" v-show="scope.row.isEditor" />
                 <span v-show="!scope.row.isEditor">{{scope.row.name}}</span>
@@ -66,6 +74,7 @@ export default {
   data() {
     return {
       category: ['Rice', 'Noodle', 'Dessert', 'Drink'],
+      isCatEditor: false,
       tableData: [{
         name: 'Chicken Sandwich',
         price: 12,
@@ -109,6 +118,12 @@ export default {
       tableData.push({
         name: 'A new dish added. Please edit it!', price: 0, quantity: 0, isEditor: isEditor
       })
+    },
+    editCategory() {
+      this.isCatEditor = true;
+    },
+    saveCategory() {
+      this.isCatEditor = false;
     }
   }
 
