@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="AddCanteen" v-model="this.$store.state.isAddCanteenOpen">
+  <el-dialog title="EditCanteen" v-model="this.$store.state.isEditCanteenOpen">
     <el-col>
       <p>Restaurant Name:</p>
       <el-input v-model="input" placeholder="text" clearable class="input"></el-input>
@@ -17,7 +17,7 @@
 <script>
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
-  name: 'AddCanteen',
+  name: 'EditCanteen',
   data() {
     return {
       options: [{
@@ -30,20 +30,34 @@ export default {
       value: ''
     }
   },
+  props: {
+    isAddCanteen: {
+      type: Boolean,
+      default: true
+    },
+  },
   methods: {
+    handleAddOrEdit() {
+      if (this.isAddCanteen) {
+        this.name = 'AddCanteen'
+      } else {
+        this.name = 'EditCanteen'
+      }
+    },
     confirmed() {
       this.$message({
         message: 'A new restaurant has created successfully!',
         type: 'success'
       });
-      this.$store.dispatch("closeOpenAddCanteen");
+      this.$store.dispatch("closeOpenEditCanteen");
     },
     cancel() {
-      this.$store.dispatch("closeOpenAddCanteen");
+      this.$store.dispatch("closeOpenEditCanteen");
     },
+  },
+  beforeMount() {
+    this.handleAddOrEdit()
   }
-
-
 }
 </script>
 
