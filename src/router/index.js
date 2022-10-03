@@ -5,6 +5,7 @@ import OwnerHome from "@/views/OwnerHome.vue";
 import Canteen from "@/views/Canteen.vue";
 import ManageCanteen from "@/views/ManageCanteen.vue";
 import SignUp from "@/views/SignUp";
+import OrderHistory from "@/views/OrderHistory";
 
 const routes = [
     {
@@ -27,6 +28,12 @@ const routes = [
         path: "/ownerHome",
         name: "ownerHome",
         component: OwnerHome,
+        props: true
+    },
+    {
+        path: "/orderHistory",
+        name: "orderHistory",
+        component: OrderHistory,
         props: true
     },
     {

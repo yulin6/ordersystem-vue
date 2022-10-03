@@ -21,7 +21,7 @@
     </el-menu-item>
     <el-sub-menu index="2" style="margin-top: 11px">
       <template #title>{{ this.user.name }}</template>
-      <el-menu-item index="2-1">Order History</el-menu-item>
+      <el-menu-item index="2-1" v-on:click="showOrderHistory">Order History</el-menu-item>
       <el-menu-item index="2-2" v-on:click="logOut">Log out</el-menu-item>
     </el-sub-menu>
   </el-menu>
@@ -44,9 +44,6 @@ export default {
       user: JSON.parse(localStorage.getItem('user')),
     }
   },
-  // created() {
-  //   console.log(JSON.parse(localStorage.getItem('user')))
-  // },
   components: {},
   methods: {
     openCartOrOrder() {
@@ -85,6 +82,9 @@ export default {
       } else {
         this.$router.push('/customerHome')
       }
+    },
+    showOrderHistory() {
+      this.$router.push('/orderHistory')
     }
   }
 

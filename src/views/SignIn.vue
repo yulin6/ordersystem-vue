@@ -122,7 +122,7 @@ export default {
       await this.userService.signIn(this.credentials)
           .then(async res => {
             if (res.resultCode === 1) {
-              console.log(res.content)
+              // console.log(res.content)
               localStorage.setItem('user', JSON.stringify(res.content))
               localStorage.setItem('userToken', res.token)
               this.$store.dispatch("setUser", res.content)
