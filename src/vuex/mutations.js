@@ -5,6 +5,8 @@ export const setUser = (state, user) => {
         state.isLogin = true
     } else if (user == null) {
         localStorage.setItem("user", null)
+        localStorage.removeItem("cart")
+        localStorage.removeItem("cartCanteen")
         state.user = null
         state.isLogin = false
     }
@@ -33,4 +35,12 @@ export const openCloseAddCanteen = (state) =>{
 
 export const closeOpenAddCanteen = (state) =>{
     state.isAddCanteenOpen = !state.isAddCanteenOpen
+}
+
+export const setCart = (state, cart) => {
+    state.cart = cart
+}
+
+export const setCartCanteen = (state, cartCanteen) => {
+    state.cartCanteen = cartCanteen
 }
