@@ -4,6 +4,7 @@
       <home-menu :isOwner="isOwner"></home-menu>
     </el-header>
     <el-main>
+      <h3 style="margin-left: 38px">Order History</h3>
       <cart></cart>
       <el-timeline>
         <el-timeline-item
@@ -14,9 +15,9 @@
           <el-card>
             <h4>{{ order.canteen_id }}</h4>
             <el-table :data="order.orderItems" show-summary>
-              <el-table-column label="Dish Name" property="dish_id"  width="200" />
-              <el-table-column label="Quantity" property="number"  width="150" />
-              <el-table-column label="Price" property="fee"  width="150" />
+              <el-table-column label="Dish Name" property="dish_id"   />
+              <el-table-column label="Quantity" property="number"  />
+              <el-table-column label="Price" property="fee"   />
             </el-table>
             <p>Order Time: {{ order.order_time }}</p>
             <p>Status: {{ order.status }}</p>

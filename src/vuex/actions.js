@@ -6,6 +6,14 @@ export const setToken = ({commit}, token) => {
     commit("setToken", token)
 }
 
+export const setCart = ({commit}, cart) => {
+    commit("setCart", cart)
+}
+
+export const setCartCanteen = ({commit}, cartCanteen) => {
+    commit("setCartCanteen", cartCanteen)
+}
+
 export const openCloseCart = ({commit}) => {
     commit("openCloseCart")
 }

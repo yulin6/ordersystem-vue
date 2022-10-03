@@ -61,7 +61,7 @@ export default {
       }).then(() => {
         this.$store.dispatch("setUser", null)
         this.$store.dispatch("setToken", null)
-        this.$router.push("/login");
+        this.$router.push("/signin");
         this.$message({
           type: 'success',
           message: "See you next time, " + this.user.name

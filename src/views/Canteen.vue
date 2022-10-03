@@ -26,12 +26,12 @@
              :id="cat"
              class="dishGroup">
           {{ cat }}
-          <el-table :data="tableData" style="width: 100%">
+          <el-table :data="dishList" style="width: 100%">
             <el-table-column prop="name" width="200"/>
             <el-table-column prop="price" width="120"/>
             <el-table-column>
               <template v-slot:default="scope">
-                <el-input-number v-model="scope.row.selected" :min="0" :max="10"></el-input-number>
+                <el-input-number v-model="scope.row.selected" :min="0" :max="10" @change="changeDishNum"></el-input-number>
               </template>
             </el-table-column>
           </el-table>
@@ -55,31 +55,43 @@ export default {
   data() {
     return {
       category: ['Rice', 'Noodle', 'Dessert', 'Drink'],
-      tableData: [{
+      dishList: [{
+        id: 1,
         name: 'Chicken Sandwich',
         price: '$12',
         selected: 0
       },
         {
+          id: 2,
           name: 'Cheese Burger',
           price: '$12',
           selected: 0
-        }]
+        }],
+
     }
   },
   created() {
     // console.log(this.props.test)
-    for (let i = 0; i < 10; ++i) {
-      this.tableData.push({
-        name: 'Chicken Sandwich',
-        price: '$12',
-        selected: 0
-      })
-    }
+    // for (let i = 0; i < 5; ++i) {
+    //   this.dishList.push({
+    //     name: 'Chicken Sandwich',
+    //     price: '$12',
+    //     selected: 0
+    //   })
+    // }
   },
   methods: {
     jumpToCategory(id) {
       document.getElementById(id).scrollIntoView();
+    },
+    changeDishNum(){
+      //TODO ask to clear cart when selecting a new canteen
+
+      localStorage.setItem('cartCanteen', 'Test Canteen')
+      this.$store.dispatch('setCartCanteen', 'Test Canteen')
+      let cart = this.dishList.filter(d => d.selected > 0)
+      localStorage.setItem('cart', JSON.stringify(cart))
+      this.$store.dispatch('setCart', cart)
     }
   }
 

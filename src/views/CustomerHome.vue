@@ -19,7 +19,7 @@ import Cart from "@/components/Cart";
 
 
 export default {
-  components: { HomeMenu, CanteenCards: CanteenCards, Cart },
+  components: { HomeMenu, CanteenCards, Cart },
   data() {
     return {
       cardNum: 1,

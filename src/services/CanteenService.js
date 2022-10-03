@@ -13,6 +13,7 @@ export default class CanteenService {
     }
 
     getCanteen = async credential => {
+        //TODO UPDATE THIS TEMPLATE
         try{
             let res = await axios({
                 url: store.state.apiURL + '/canteen',
