@@ -26,6 +26,24 @@ export default class UserService {
         }
         catch(error){
             console.log(error)
+            this.$message.error(error)
+        }
+    }
+
+    signUp = async signUpInfo => {
+        try{
+            let res = await axios({
+                url: store.state.apiURL + '/user',
+                method: "POST",
+                data: JSON.stringify(signUpInfo),
+                headers: {
+                    'content-type': 'application/json',
+                },
+            })
+            return res.data;
+        }
+        catch(error){
+            console.log(error)
         }
     }
 

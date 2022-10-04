@@ -102,22 +102,20 @@ export default {
   },
   methods: {
     switchUserType() {
-      this.isOwner = !this.isOwner;
+      this.isOwner = !this.isOwner
       if(this.credentials.type === 1){
         this.credentials.type = 2
 
       } else if (this.credentials.type === 2){
         this.credentials.type = 1
       } else {
-        console.log("admin login should not be here")
+        this.$message.error("admin pages have not been built yet")
       }
     },
     async login() {
-      let valid = await this.$refs.form.validate();
+      let valid = await this.$refs.form.validate()
+      if (!valid) return
 
-      if (!valid) {
-        return;
-      }
       this.loading = true;
       await this.userService.signIn(this.credentials)
           .then(async res => {
@@ -134,7 +132,7 @@ export default {
                 await this.$router.push('customerHome')
               }
             } else {
-              this.$message.error("Username or password is invalid");
+              this.$message.error(res.content);
             }
           })
       this.loading = false;
