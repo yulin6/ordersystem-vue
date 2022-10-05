@@ -5,12 +5,10 @@
     </el-header>
     <el-main>
       <canteen-cards></canteen-cards>
-      <cart v-show="!isOwner"></cart>
-      <order v-show="isOwner"></order>
+      <cart></cart>
+      <order></order>
     </el-main>
   </el-container>
-
-
 </template>
 
 <script>
@@ -19,7 +17,6 @@ import CanteenCards from "@/components/CanteenCards";
 import Cart from "@/components/Cart";
 import Order from "@/components/Order";
 
-
 export default {
   components: { HomeMenu, CanteenCards, Cart, Order },
   computed: {
@@ -27,15 +24,13 @@ export default {
       return this.$store.state.isOwner
     }
   },
-  data() {
-    return {
-      cardNum: 1
-    }
+  created() {
+    this.$store.dispatch('setUserType', JSON.parse(localStorage.getItem('userType')))
   },
-  methods: {
-
-  }
-
+  data() {
+    return {}
+  },
+  methods: {}
 }
 </script>
 

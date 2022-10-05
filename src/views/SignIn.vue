@@ -120,22 +120,25 @@ export default {
       await this.userService.signIn(this.credentials)
           .then(async res => {
             if (res.resultCode === 1) {
-              // console.log(res.content)
-              localStorage.setItem('user', JSON.stringify(res.content))
-              localStorage.setItem('userToken', res.token)
-              this.$store.dispatch("setUser", res.content)
-              this.$store.dispatch("setToken", res.token)
-              this.$store.dispatch("setUserType", this.isOwner)
+              this.storeData(res)
               this.$message.success("Welcome back, " + res.content.name)
-                await this.$router.push('home')
+                await this.$router.push('/home')
             } else {
               this.$message.error(res.content);
             }
           })
       this.loading = false;
     },
+    storeData(res) {
+      localStorage.setItem('user', JSON.stringify(res.content))
+      localStorage.setItem('userToken', res.token)
+      localStorage.setItem('userType', this.isOwner)
+      this.$store.dispatch("setUser", res.content)
+      this.$store.dispatch("setToken", res.token)
+      this.$store.dispatch("setUserType", this.isOwner)
+    },
     goSignUp() {
-      this.$router.push('signup')
+      this.$router.push('/signup')
     }
   }
 }
