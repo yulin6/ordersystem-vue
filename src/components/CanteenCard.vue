@@ -32,11 +32,10 @@ import router from "@/router";
 
 export default {
   name: 'CanteenCard',
-  props: {
-    isOwner: {
-      type: Boolean,
-      default: false
-    },
+  computed: {
+    isOwner() {
+      return this.$store.state.isOwner
+    }
   },
   components: {},
   data() {

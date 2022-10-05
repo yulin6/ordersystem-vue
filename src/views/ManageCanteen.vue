@@ -2,7 +2,7 @@
 
   <el-container>
     <el-header>
-      <home-menu :isOwner="isOwner"></home-menu>
+      <home-menu></home-menu>
     </el-header>
     <el-container>
       <el-aside style="width: 200px;">
@@ -86,8 +86,7 @@ export default {
         price: 12,
         quantity: 0,
         isEditor: false
-      }],
-      isOwner: true
+      }]
     }
   },
   created() {

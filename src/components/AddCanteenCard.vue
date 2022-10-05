@@ -1,7 +1,7 @@
 <template>
 
   <el-card style="cursor: pointer" shadow="hover" :body-style="{ padding: '0px' }" align="middle"
-    v-on:click="openEditCanteen" class="box-card">
+    v-on:click="addCanteen" class="box-card">
     <div class="mid">
       <el-icon color="#3F9EFF" size="large" border-radius="20px">
         <Plus />
@@ -20,9 +20,9 @@ export default {
   name: 'EditCanteenCard',
   components: { EditCanteen },
   methods: {
-    openEditCanteen() {
-      this.$store.dispatch("openCloseEditCanteen");
-    },
+    addCanteen() {
+      this.$store.dispatch("openCloseEditCanteen", true);
+    }
   }
 
 }

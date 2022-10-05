@@ -1,11 +1,12 @@
 <template>
   <el-container>
     <el-header>
-      <home-menu :isOwner="isOwner"></home-menu>
+      <home-menu></home-menu>
     </el-header>
     <el-main>
-      <canteen-cards :isOwner="isOwner"></canteen-cards>
-      <order></Order>
+      <canteen-cards></canteen-cards>
+      <cart v-show="!isOwner"></cart>
+      <order v-show="isOwner"></order>
     </el-main>
   </el-container>
 
@@ -15,20 +16,24 @@
 <script>
 import HomeMenu from "@/components/HomeMenu";
 import CanteenCards from "@/components/CanteenCards";
+import Cart from "@/components/Cart";
 import Order from "@/components/Order";
 
+
 export default {
-  components: { HomeMenu, CanteenCards: CanteenCards, Order },
+  components: { HomeMenu, CanteenCards, Cart, Order },
+  computed: {
+    isOwner() {
+      return this.$store.state.isOwner
+    }
+  },
   data() {
     return {
-      cardNum: 1,
-      isOwner: true
+      cardNum: 1
     }
   },
   methods: {
-    addCard() {
-      this.cardNum += 1;
-    }
+
   }
 
 }

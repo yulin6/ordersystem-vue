@@ -21,6 +21,10 @@ export const setToken = (state,token) =>{
     }
 }
 
+export const setUserType = (state,isOwner) =>{
+    state.isOwner = isOwner
+}
+
 export const openCloseCart = (state) =>{
     state.isCartOpen = !state.isCartOpen
 }
@@ -29,8 +33,9 @@ export const openCloseOrder = (state) =>{
     state.isOrderOpen = !state.isOrderOpen
 }
 
-export const openCloseEditCanteen = (state) =>{
+export const openCloseEditCanteen = (state, isAddCanteen) =>{
     state.isEditCanteenOpen = !state.isEditCanteenOpen
+    state.isAddCanteen = isAddCanteen
 }
 
 export const closeOpenEditCanteen = (state) => {

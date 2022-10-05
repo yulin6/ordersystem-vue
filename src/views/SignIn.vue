@@ -125,12 +125,9 @@ export default {
               localStorage.setItem('userToken', res.token)
               this.$store.dispatch("setUser", res.content)
               this.$store.dispatch("setToken", res.token)
+              this.$store.dispatch("setUserType", this.isOwner)
               this.$message.success("Welcome back, " + res.content.name)
-              if (this.isOwner) {
-                await this.$router.push('ownerHome')
-              } else {
-                await this.$router.push('customerHome')
-              }
+                await this.$router.push('home')
             } else {
               this.$message.error(res.content);
             }

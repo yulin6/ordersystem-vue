@@ -10,6 +10,10 @@ export const setCart = ({commit}, cart) => {
     commit("setCart", cart)
 }
 
+export const setUserType = ({commit}, isOwner) => {
+    commit("setUserType", isOwner)
+}
+
 export const setCartCanteen = ({commit}, cartCanteen) => {
     commit("setCartCanteen", cartCanteen)
 }
@@ -22,8 +26,8 @@ export const openCloseOrder = ({commit}) => {
     commit("openCloseOrder")
 }
 
-export const openCloseEditCanteen = ({commit}) => {
-    commit("openCloseEditCanteen")
+export const openCloseEditCanteen = ({commit}, isAddCanteen) => {
+    commit("openCloseEditCanteen", isAddCanteen)
 }
 
 export const closeOpenEditCanteen = ({commit}) => {
