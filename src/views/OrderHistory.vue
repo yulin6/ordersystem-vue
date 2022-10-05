@@ -1,7 +1,7 @@
 <template>
   <el-container>
     <el-header>
-      <home-menu :isOwner="isOwner"></home-menu>
+      <home-menu></home-menu>
     </el-header>
     <el-main>
       <h3 style="margin-left: 38px">Order History</h3>
@@ -39,7 +39,6 @@ export default {
   components: { HomeMenu, Cart },
   data() {
     return {
-      isOwner: false,
       orders: [
         {
           create_time: "2022-09-21 10:03:43",

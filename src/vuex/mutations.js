@@ -21,6 +21,10 @@ export const setToken = (state,token) =>{
     }
 }
 
+export const setUserType = (state,isOwner) =>{
+    state.isOwner = isOwner
+}
+
 export const openCloseCart = (state) =>{
     state.isCartOpen = !state.isCartOpen
 }

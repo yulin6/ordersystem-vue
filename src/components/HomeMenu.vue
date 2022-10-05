@@ -32,11 +32,10 @@ import { ref } from 'vue'
 
 export default {
   name: 'HomeMenu',
-  props: {
-    isOwner: {
-      type: Boolean,
-      default: false
-    },
+  computed: {
+    isOwner() {
+      return this.$store.state.isOwner
+    }
   },
   data() {
     return {

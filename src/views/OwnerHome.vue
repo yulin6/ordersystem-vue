@@ -1,10 +1,10 @@
 <template>
   <el-container>
     <el-header>
-      <home-menu :isOwner="isOwner"></home-menu>
+      <home-menu></home-menu>
     </el-header>
     <el-main>
-      <canteen-cards :isOwner="isOwner"></canteen-cards>
+      <canteen-cards></canteen-cards>
       <order></Order>
     </el-main>
   </el-container>
@@ -21,8 +21,7 @@ export default {
   components: { HomeMenu, CanteenCards: CanteenCards, Order },
   data() {
     return {
-      cardNum: 1,
-      isOwner: true
+      cardNum: 1
     }
   },
   methods: {

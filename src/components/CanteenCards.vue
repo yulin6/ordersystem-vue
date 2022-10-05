@@ -5,7 +5,7 @@
 
   <el-row>
     <el-col v-for="i in cardNum" :key="i" :span="3" class="card">
-      <canteen-card :isOwner="isOwner"></canteen-card>
+      <canteen-card></canteen-card>
     </el-col>
     <el-col :span="3" class="add-card" v-show="isOwner">
       <add-canteen-card></add-canteen-card>
@@ -21,11 +21,10 @@ import AddCanteenCard from "@/components/AddCanteenCard";
 
 export default {
   name: 'CanteenCards',
-  props: {
-    isOwner: {
-      type: Boolean,
-      default: false
-    },
+  computed: {
+    isOwner() {
+      return this.$store.state.isOwner
+    }
   },
   components: { CanteenCard, AddCanteenCard },
   data() {

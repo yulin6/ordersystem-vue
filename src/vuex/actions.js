@@ -10,6 +10,10 @@ export const setCart = ({commit}, cart) => {
     commit("setCart", cart)
 }
 
+export const setUserType = ({commit}, isOwner) => {
+    commit("setUserType", isOwner)
+}
+
 export const setCartCanteen = ({commit}, cartCanteen) => {
     commit("setCartCanteen", cartCanteen)
 }
