@@ -1,7 +1,6 @@
 import { createWebHistory, createRouter } from "vue-router";
 import SignIn from "@/views/SignIn.vue";
-import CustomerHome from "@/views/CustomerHome.vue";
-import OwnerHome from "@/views/OwnerHome.vue";
+import HomePage from "@/views/HomePage.vue";
 import Canteen from "@/views/Canteen.vue";
 import ManageCanteen from "@/views/ManageCanteen.vue";
 import SignUp from "@/views/SignUp";
@@ -19,34 +18,24 @@ const routes = [
         component: SignUp,
     },
     {
-        path: "/customerHome",
-        name: "customerHome",
-        component: CustomerHome,
-        props: true
-    },
-    {
-        path: "/ownerHome",
-        name: "ownerHome",
-        component: OwnerHome,
-        props: true
+        path: "/home",
+        name: "home",
+        component: HomePage,
     },
     {
         path: "/orderHistory",
         name: "orderHistory",
         component: OrderHistory,
-        props: true
     },
     {
         path: "/canteen/:id",
         name: "canteen",
         component: Canteen,
-        props: true
     },
     {
         path: "/manage-canteen/:id",
         name: "manage-canteen",
         component: ManageCanteen,
-        props: true
     },
 ];
 

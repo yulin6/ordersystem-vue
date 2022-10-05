@@ -76,11 +76,7 @@ export default {
 
     },
     backHome() {
-      if (this.isOwner) {
-        this.$router.push('/ownerHome')
-      } else {
-        this.$router.push('/customerHome')
-      }
+      this.$router.push('/home')
     },
     showOrderHistory() {
       this.$router.push('/orderHistory')
