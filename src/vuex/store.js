@@ -13,6 +13,7 @@ const store = new Vuex.Store({
         isCartOpen: false,
         isOrderOpen: false,
         isEditCanteenOpen: false,
+        isAddCanteen: false,
         isOwner: false,
         user: null,
         isLogin: false,

@@ -26,8 +26,8 @@ export const openCloseOrder = ({commit}) => {
     commit("openCloseOrder")
 }
 
-export const openCloseEditCanteen = ({commit}) => {
-    commit("openCloseEditCanteen")
+export const openCloseEditCanteen = ({commit}, isAddCanteen) => {
+    commit("openCloseEditCanteen", isAddCanteen)
 }
 
 export const closeOpenEditCanteen = ({commit}) => {

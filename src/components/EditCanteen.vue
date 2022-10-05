@@ -1,5 +1,7 @@
 <template>
-  <el-dialog title="EditCanteen" v-model="this.$store.state.isEditCanteenOpen">
+  <el-dialog v-model="this.$store.state.isEditCanteenOpen">
+    <p v-show="!isAddCanteen">EditCanteen</p>
+    <p v-show="isAddCanteen">AddCanteen</p>
     <el-col>
       <p>Restaurant Name:</p>
       <el-input v-model="input" placeholder="text" clearable class="input"></el-input>
@@ -30,20 +32,12 @@ export default {
       value: ''
     }
   },
-  props: {
-    isAddCanteen: {
-      type: Boolean,
-      default: true
-    },
+  computed: {
+    isAddCanteen() {
+      return this.$store.state.isAddCanteen
+    }
   },
   methods: {
-    handleAddOrEdit() {
-      if (this.isAddCanteen) {
-        this.name = 'AddCanteen'
-      } else {
-        this.name = 'EditCanteen'
-      }
-    },
     confirmed() {
       this.$message({
         message: 'A new restaurant has created successfully!',
@@ -53,10 +47,7 @@ export default {
     },
     cancel() {
       this.$store.dispatch("closeOpenEditCanteen");
-    },
-  },
-  beforeMount() {
-    this.handleAddOrEdit()
+    }
   }
 }
 </script>

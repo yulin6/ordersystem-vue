@@ -33,8 +33,9 @@ export const openCloseOrder = (state) =>{
     state.isOrderOpen = !state.isOrderOpen
 }
 
-export const openCloseEditCanteen = (state) =>{
+export const openCloseEditCanteen = (state, isAddCanteen) =>{
     state.isEditCanteenOpen = !state.isEditCanteenOpen
+    state.isAddCanteen = isAddCanteen
 }
 
 export const closeOpenEditCanteen = (state) => {
