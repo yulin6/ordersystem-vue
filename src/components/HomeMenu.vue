@@ -21,8 +21,9 @@
     </el-menu-item>
     <el-sub-menu index="2" style="margin-top: 11px">
       <template #title>{{ this.user.name }}</template>
-      <el-menu-item index="2-1" v-on:click="showOrderHistory">Order History</el-menu-item>
-      <el-menu-item index="2-2" v-on:click="logOut">Log out</el-menu-item>
+      <el-menu-item index="2-1" v-on:click="showOrderHistory" v-show="!isOwner">Order History</el-menu-item>
+      <el-menu-item index="2-2" v-on:click="logOut" v-show="!isOwner">Log out</el-menu-item>
+      <el-menu-item index="2-1" v-on:click="logOut" v-show="isOwner">Log out</el-menu-item>
     </el-sub-menu>
   </el-menu>
 </template>
@@ -47,7 +48,7 @@ export default {
   methods: {
     openCartOrOrder() {
       if (this.isOwner) {
-        this.$store.dispatch("openCloseOrder");
+        this.$router.push('/orderHistory');
       } else {
         this.$store.dispatch("openCloseCart");
       }

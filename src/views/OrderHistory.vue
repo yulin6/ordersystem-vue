@@ -4,7 +4,8 @@
       <home-menu></home-menu>
     </el-header>
     <el-main>
-      <h3 style="margin-left: 38px">Order History</h3>
+      <h3 style="margin-left: 38px" v-show="!isOwner">Order History</h3>
+      <h3 style="margin-left: 38px" v-show="isOwner">Customer Order</h3>
       <cart></cart>
       <el-timeline>
         <el-timeline-item
@@ -37,6 +38,11 @@ import Cart from "@/components/Cart";
 
 export default {
   components: { HomeMenu, Cart },
+  computed: {
+    isOwner() {
+      return this.$store.state.isOwner
+    }
+  },
   data() {
     return {
       orders: [
