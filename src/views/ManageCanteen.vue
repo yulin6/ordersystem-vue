@@ -15,7 +15,9 @@
             </el-button>
           </el-menu-item>
         </el-menu>
-        <el-button style="margin-top: 10px" @click="editCategory()" v-show="!isCatEditor">Edit category
+        <el-button style="margin-top: 10px" @click="editCategory()" v-show="!isCatEditor">edit category
+        </el-button>
+        <el-button style="margin-top: 10px" @click="addCategory(category)" v-show="isCatEditor">add category
         </el-button>
         <el-button style="margin-top: 10px" type="warning" @click="saveCategory(category)" v-show="isCatEditor">save
         </el-button>
@@ -123,6 +125,11 @@ export default {
     },
     saveCategory() {
       this.isCatEditor = false;
+    },
+    addCategory(tableData) {
+      tableData.push(
+        'New category'
+      )
     }
   }
 
