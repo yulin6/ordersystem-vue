@@ -13,13 +13,14 @@ export default class CanteenService {
     }
 
     getAllCanteens = async () => {
-        //TODO UPDATE THIS TEMPLATE
         try{
+            console.log(localStorage.getItem('userToken'))
             let res = await axios({
                 url: store.state.apiURL + '/canteen',
                 method: "GET",
                 headers: {
                     'content-type': 'application/json',
+                    'token': localStorage.getItem('userToken')
                 },
             })
             return res.data;

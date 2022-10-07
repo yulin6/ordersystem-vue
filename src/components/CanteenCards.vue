@@ -36,7 +36,6 @@ export default {
   },
   created() {
     this.canteenService.getAllCanteens().then(res => {
-      console.log(res.data)
       this.canteens = res.data
     })
   },

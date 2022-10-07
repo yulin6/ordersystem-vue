@@ -7,17 +7,14 @@
       <div class="bottom">
         <span v-for="(canteenType, index) in canteen.canteenTypes" :key="index" class="category">{{ canteenType.type }}</span>
         <el-row class="ratingDisplay">
-          <el-col :span="7">
+          <el-col :span="3">
             <el-icon size="large">
               <StarFilled />
             </el-icon>
           </el-col>
-          <el-col :span="7" style="margin-top: 4px">
-            <span class="ratingPoint">{{ ratingPoint }}</span>
-          </el-col>
-          <el-col :span="7" style="margin-top: 4px">
-            <span class="ratingNum"> ({{ ratingNum }})
-            </span>
+          <el-col :span="10" style="margin-top: 4px">
+            <span class="ratingPoint">{{ ratingPoint}}</span>
+            <span class="ratingNum"> {{ orderNums }} </span>
           </el-col>
         </el-row>
       </div>
@@ -35,14 +32,12 @@ export default {
   components: {},
   data() {
     return {
-      id: "testID",
-      ratingPoint: 4.5,
-      ratingNum: 14
+      id: "testID"
     }
   },
   methods: {
     enterCanteen() {
-      console.log(this.name)
+      // console.log(this.name)
       if (this.isOwner) {
         router.push({ name: 'manage-canteen', params: { id: this.id } })
       } else {
@@ -56,6 +51,14 @@ export default {
   computed: {
     isOwner() {
       return this.$store.state.isOwner
+    },
+    ratingPoint() {
+      if (this.canteen.star === 0.0) return 'No Rating'
+      else return this.canteen.star
+    },
+    orderNums() {
+      if (this.canteen.orderNums === 0) return ''
+      else return '(' + this.canteen.orderNums + ')'
     }
   },
 }
@@ -71,6 +74,7 @@ export default {
 .ratingDisplay {
   margin-top: 8px;
   font-size: 14px;
+  width: 100%
 }
 
 .ratingPoint {
@@ -78,7 +82,7 @@ export default {
 }
 
 .ratingNum {
-  margin-left: 4px;
+  margin-left: 2px;
 }
 
 .bottom {

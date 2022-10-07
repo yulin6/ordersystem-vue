@@ -28,7 +28,6 @@ export default {
     }
   },
   created() {
-    console.log('created')
     this.$store.dispatch('setCart', JSON.parse(localStorage.getItem('cart')))
     this.$store.dispatch('setCartCanteen', localStorage.getItem('cartCanteen'))
   },

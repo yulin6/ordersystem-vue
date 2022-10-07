@@ -33,18 +33,16 @@ import { ref } from 'vue'
 
 export default {
   name: 'HomeMenu',
-  computed: {
-    isOwner() {
-      return this.$store.state.isOwner
-    }
-  },
+  components: {},
   data() {
     return {
       activeIndex: ref('0'),
-      user: JSON.parse(localStorage.getItem('user')),
     }
   },
-  components: {},
+  computed: {
+    user() { return this.$store.getters.user },
+    isOwner() { return this.$store.getters.isOwner }
+  },
   methods: {
     openCartOrOrder() {
       if (this.isOwner) {
@@ -67,14 +65,6 @@ export default {
           message: "See you next time, " + this.user.username
         });
       })
-      //     .catch(() => {
-      //   this.exits = false;
-      //   this.$message({
-      //     type: 'info',
-      //     message: '已取消退出'
-      //   });
-      // });
-
     },
     backHome() {
       this.$router.push('/home')
@@ -82,8 +72,7 @@ export default {
     showOrderHistory() {
       this.$router.push('/orderHistory')
     }
-  }
-
+  },
 
 }
 </script>

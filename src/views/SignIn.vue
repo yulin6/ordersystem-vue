@@ -119,7 +119,6 @@ export default {
       this.loading = true;
       await this.userService.signIn(this.credentials)
           .then(async res => {
-            console.log(res.data)
             if (res.code === 200) {
               this.storeData(res.data)
               this.$message.success("Welcome back, " + res.data.content.username)
