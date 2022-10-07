@@ -1,12 +1,11 @@
 <template>
-
   <el-card style="cursor: pointer" shadow="hover" :body-style="{ padding: '0px' }" v-on:click="enterCanteen">
     <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
       class="image" />
     <div style="padding: 14px">
-      <span style="font-weight: bold;">{{ name }}</span>
+      <span style="font-weight: bold;">{{ canteen.name }}</span>
       <div class="bottom">
-        <span class="category">{{ category }}</span>
+        <span v-for="(canteenType, index) in canteen.canteenTypes" :key="index" class="category">{{ canteenType.type }}</span>
         <el-row class="ratingDisplay">
           <el-col :span="7">
             <el-icon size="large">
@@ -32,17 +31,11 @@ import router from "@/router";
 
 export default {
   name: 'CanteenCard',
-  computed: {
-    isOwner() {
-      return this.$store.state.isOwner
-    }
-  },
+  props: ['canteen'],
   components: {},
   data() {
     return {
       id: "testID",
-      name: "Yummy hamburger",
-      category: "Western",
       ratingPoint: 4.5,
       ratingNum: 14
     }
@@ -59,8 +52,12 @@ export default {
     editCanteen() {
       this.$store.dispatch("openCloseEditCanteen");
     }
-  }
-
+  },
+  computed: {
+    isOwner() {
+      return this.$store.state.isOwner
+    }
+  },
 }
 </script>
 

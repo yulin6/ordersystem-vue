@@ -23,17 +23,11 @@
         <el-form-item prop="password">
           <el-input v-model="signUpInfo.password" placeholder="Password (required)" type="password" prefix-icon="Lock"></el-input>
         </el-form-item>
-        <el-form-item prop="name">
-          <el-input v-model="signUpInfo.name" placeholder="Nickname (required)" prefix-icon="User"></el-input>
-        </el-form-item>
         <el-form-item prop="phone">
           <el-input v-model="signUpInfo.phone" placeholder="Phone Number" type="number" prefix-icon="Iphone"></el-input>
         </el-form-item>
         <el-form-item prop="email">
           <el-input v-model="signUpInfo.email" placeholder="Email" type="email" prefix-icon="Message"></el-input>
-        </el-form-item>
-        <el-form-item prop="NRIC">
-          <el-input v-model="signUpInfo.NRIC" placeholder="NRIC (required)" prefix-icon="Postcard"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button :loading="loading" class="signup-button" type="primary" native-type="submit" block>
@@ -100,21 +94,7 @@ export default {
             message: "Password length should be at least 5 characters",
             trigger: "blur"
           }
-        ],
-        name: [
-          {
-            required: true,
-            message: "Nickname is required",
-            trigger: "blur"
-          }
-        ],
-        NRIC: [
-          {
-            required: true,
-            message: "NRIC is required",
-            trigger: "blur"
-          }
-        ],
+        ]
       }
     }
   },
@@ -136,12 +116,12 @@ export default {
       this.loading = true;
       await this.userService.signUp(this.signUpInfo)
           .then(async res => {
-            if (res.resultCode === 1) {
+            if (res.code === 200) {
               // console.log(res.content)
               this.$message.success("Sign up successful!")
               await this.$router.push('/signin')
             } else {
-              this.$message.error(res.content);
+              this.$message.error(res.msg);
             }
           })
       this.loading = false;

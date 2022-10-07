@@ -12,13 +12,12 @@ export default class CanteenService {
         return this.myInstance;
     }
 
-    getCanteen = async credential => {
+    getAllCanteens = async () => {
         //TODO UPDATE THIS TEMPLATE
         try{
             let res = await axios({
                 url: store.state.apiURL + '/canteen',
-                method: "POST",
-                data: JSON.stringify(credential),
+                method: "GET",
                 headers: {
                     'content-type': 'application/json',
                 },

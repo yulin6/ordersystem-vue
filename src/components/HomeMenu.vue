@@ -20,7 +20,7 @@
       <p v-show="!isOwner">Cart</p>
     </el-menu-item>
     <el-sub-menu index="2" style="margin-top: 11px">
-      <template #title>{{ this.user.name }}</template>
+      <template #title>{{ this.user.username }}</template>
       <el-menu-item index="2-1" v-on:click="showOrderHistory" v-show="!isOwner">Order History</el-menu-item>
       <el-menu-item index="2-2" v-on:click="logOut" v-show="!isOwner">Log out</el-menu-item>
       <el-menu-item index="2-1" v-on:click="logOut" v-show="isOwner">Log out</el-menu-item>
@@ -64,7 +64,7 @@ export default {
         this.$router.push("/signin");
         this.$message({
           type: 'success',
-          message: "See you next time, " + this.user.name
+          message: "See you next time, " + this.user.username
         });
       })
       //     .catch(() => {

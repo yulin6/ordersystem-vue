@@ -119,12 +119,13 @@ export default {
       this.loading = true;
       await this.userService.signIn(this.credentials)
           .then(async res => {
-            if (res.resultCode === 1) {
-              this.storeData(res)
-              this.$message.success("Welcome back, " + res.content.name)
+            console.log(res.data)
+            if (res.code === 200) {
+              this.storeData(res.data)
+              this.$message.success("Welcome back, " + res.data.content.username)
                 await this.$router.push('/home')
             } else {
-              this.$message.error(res.content);
+              this.$message.error(res.msg);
             }
           })
       this.loading = false;

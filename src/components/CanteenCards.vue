@@ -1,8 +1,8 @@
 <template>
 
   <el-row>
-    <el-col v-for="i in cardNum" :key="i" :span="3" class="card">
-      <canteen-card></canteen-card>
+    <el-col v-for="(canteen, index) in canteens" :key="index" :span="3" class="card">
+      <canteen-card :canteen="canteen"></canteen-card>
       <el-row>
         <el-button v-show="isOwner" style="margin-top: 8px; margin-left: 16px;" v-on:click="editCanteen" size="small">
           edit info</el-button>
@@ -22,29 +22,38 @@
 <script>
 import CanteenCard from "@/components/CanteenCard";
 import AddCanteenCard from "@/components/AddCanteenCard";
+import CanteenService from "@/services/CanteenService";
 
 export default {
   name: 'CanteenCards',
-  computed: {
-    isOwner() {
-      return this.$store.state.isOwner
-    }
-  },
   components: { CanteenCard, AddCanteenCard },
   data() {
     return {
-      cardNum: 13
+      canteenService: CanteenService.getInstance(),
+      cardNum: 13,
+      canteens: [],
     }
+  },
+  created() {
+    this.canteenService.getAllCanteens().then(res => {
+      console.log(res.data)
+      this.canteens = res.data
+    })
   },
   methods: {
     editCanteen() {
       this.$store.dispatch("openCloseEditCanteen", false);
     },
     deleteCanteen() {
-      // Since there is no actual data, use cardNum to mock the deletion here.
+      // TODO Since there is no actual data, use cardNum to mock the deletion here.
       this.cardNum -= 1;
     }
-  }
+  },
+  computed: {
+    isOwner() {
+      return this.$store.state.isOwner
+    }
+  },
 
 }
 </script>
