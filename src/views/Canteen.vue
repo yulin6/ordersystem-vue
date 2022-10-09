@@ -3,7 +3,7 @@
   <el-container>
     <el-header>
       <home-menu></home-menu>
-      <cart></cart>
+      <cart @refreshDishes="refreshDishes"></cart>
     </el-header>
     <el-container>
       <el-aside style="width: 200px;">
@@ -54,25 +54,10 @@ export default {
   components: {HomeMenu, Cart},
   data() {
     return {
-      category: ['Rice', 'Noodle', 'Dessert', 'Drink'],
       id: this.$route.params.id,
       canteenName: history.state.canteenName,
       dishes: [],
-
       dishService: DishService.getInstance(),
-      dishList: [{
-        id: 1,
-        name: 'Chicken Sandwich',
-        price: '$12',
-        selected: 0
-      },
-        {
-          id: 2,
-          name: 'Cheese Burger',
-          price: '$12',
-          selected: 0
-        }],
-
     }
   },
   created() {
@@ -93,11 +78,32 @@ export default {
     jumpToCategory(id) {
       document.getElementById(id).scrollIntoView();
     },
+    refreshDishes() {
+      let localCart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : []
+      let previousSelected = {}
+      localCart.forEach(item => {
+        if(item.selected !== 0) previousSelected[item.id] = item.selected
+      })
+      Object.entries(this.dishes).forEach(item => {
+        item[1].forEach(dish => {
+          if(dish.id in previousSelected) dish.selected = previousSelected[dish.id]
+          else dish.selected = 0
+        })
+      })
+    },
     changeDishNum(row){
       //TODO ask to clear cart when selecting a new canteen
-
-      localStorage.setItem('cartCanteen', this.canteenName)
-      this.$store.dispatch('setCartCanteen', this.canteenName)
+      this.setCartItems(row)
+      this.setCartCanteenName()
+    },
+    setCartCanteenName() {
+      let localCart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : []
+      let name = this.canteenName
+      if (localCart.length === 0) name = ''
+      localStorage.setItem('cartCanteen', name)
+      this.$store.dispatch('setCartCanteen', name)
+    },
+    setCartItems(row) {
       let localCart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : []
       if (localCart.length === 0) {
         localCart.push(row)
@@ -117,7 +123,6 @@ export default {
       }
       this.$store.dispatch('setCart', localCart)
       console.log(localCart)
-
     }
   }
 
