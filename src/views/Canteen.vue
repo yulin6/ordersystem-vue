@@ -85,19 +85,9 @@ export default {
         this.$message.error('Invalid login credential')
         this.$router.push('/signin')
       } else {
-        // console.log(res.data)
         this.dishes = res.data
-        // for(dish in this.dishes) {
-
-        // }
-        // this.dishes.forEach(dish => this.$set(dish, 'selected', 0))
-        // console.log(this.dishes)
       }
     })
-
-    // console.log(this.dishes)
-    // this.dishes.forEach(dish => this.$set(dish, 'selected', 0))
-
   },
   methods: {
     jumpToCategory(id) {
@@ -108,12 +98,26 @@ export default {
 
       localStorage.setItem('cartCanteen', this.canteenName)
       this.$store.dispatch('setCartCanteen', this.canteenName)
-      console.log(row)
-      console.log(localStorage.getItem('cart'))
-      // if (localStorage.getItem('cart')) console.log('test')
-      // let cart = this.dishList.filter(d => d.selected > 0)
-      // localStorage.setItem('cart', JSON.stringify(cart))
-      // this.$store.dispatch('setCart', cart)
+      let localCart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : []
+      if (localCart.length === 0) {
+        localCart.push(row)
+        localStorage.setItem('cart', JSON.stringify(localCart))
+      } else {
+        let foundInCart = false
+        let id = row.id
+        localCart.forEach(item => {
+          if (item.id === id) {
+            item.selected = row.selected
+            foundInCart = true
+          }
+        })
+        localCart = localCart.filter(item => item.selected !== 0)
+        if(!foundInCart) localCart.push(row)
+        localStorage.setItem('cart', JSON.stringify(localCart))
+      }
+      this.$store.dispatch('setCart', localCart)
+      console.log(localCart)
+
     }
   }
 
