@@ -3,10 +3,6 @@ export const setUser = (state, user) => {
         state.user = user
         state.isLogin = true
     } else if (user == null) {
-        localStorage.removeItem("user")
-        localStorage.removeItem("cart")
-        localStorage.removeItem("cartCanteen")
-        localStorage.removeItem("userType")
         state.user = null
         state.isLogin = false
     }
@@ -17,7 +13,6 @@ export const setToken = (state,token) =>{
         state.token = token
     } else {
         state.token = ''
-        localStorage.setItem("userToken", '')
     }
 }
 

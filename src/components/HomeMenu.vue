@@ -39,13 +39,13 @@ export default {
       activeIndex: ref('0'),
     }
   },
+  created() {
+    this.$store.dispatch('setUser', JSON.parse(localStorage.getItem('user')))
+    this.$store.dispatch('setUserType', JSON.parse(localStorage.getItem('userType')))
+  },
   computed: {
     user() { return this.$store.getters.user },
     isOwner() { return this.$store.getters.isOwner }
-  },
-  beforeUnmount() {
-    this.$store.dispatch("setUser", null)
-    this.$store.dispatch("setToken", null)
   },
   methods: {
     openCartOrOrder() {
@@ -66,7 +66,7 @@ export default {
           message: "See you next time, " + this.user.username
         })
         this.$router.push("/signin");
-        // console.log(this.user.userName)
+        this.removeData()
       })
     },
     backHome() {
@@ -74,6 +74,15 @@ export default {
     },
     showOrderHistory() {
       this.$router.push('/orderHistory')
+    },
+    removeData() {
+      localStorage.removeItem("user")
+      localStorage.removeItem("userToken")
+      localStorage.removeItem("cart")
+      localStorage.removeItem("cartCanteen")
+      localStorage.removeItem("userType")
+      this.$store.dispatch("setToken", null)
+      // console.log(this.user.userName)
     }
   },
 
