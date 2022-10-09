@@ -11,22 +11,22 @@
             default-active="1"
             class="categoryMenu">
           <el-menu-item
-              v-for="(cat, index) in category"
-              :index="cat"
+              v-for="(dishType, index) in Object.keys(dishes)"
+              :index="dishType"
               :key="index"
-              v-on:click="jumpToCategory(cat)">
-            <span>{{ cat }}</span>
+              v-on:click="jumpToCategory(dishType)">
+            <span>{{ dishType }}</span>
           </el-menu-item>
         </el-menu>
       </el-aside>
 
       <el-main>
-        <div v-for="cat in category"
-             :key="cat"
-             :id="cat"
+        <div v-for="(value, name, index) in dishes"
+             :key="index"
+             :id="name"
              class="dishGroup">
-          {{ cat }}
-          <el-table :data="dishList" style="width: 100%">
+          {{ name }}
+          <el-table :data="value" style="width: 100%">
             <el-table-column prop="name" width="200"/>
             <el-table-column prop="price" width="120"/>
             <el-table-column>
@@ -46,15 +46,19 @@
 <script>
 import HomeMenu from "@/components/HomeMenu";
 import Cart from "@/components/Cart";
+import DishService from "@/services/DishService";
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'Canteen',
   components: {HomeMenu, Cart},
-  props: ['id'],
   data() {
     return {
       category: ['Rice', 'Noodle', 'Dessert', 'Drink'],
+      id: this.$route.params.id,
+      dishes: [],
+
+      dishService: DishService.getInstance(),
       dishList: [{
         id: 1,
         name: 'Chicken Sandwich',
@@ -71,14 +75,28 @@ export default {
     }
   },
   created() {
-    // console.log(this.props.test)
-    // for (let i = 0; i < 5; ++i) {
-    //   this.dishList.push({
-    //     name: 'Chicken Sandwich',
-    //     price: '$12',
-    //     selected: 0
-    //   })
-    // }
+    this.$store.dispatch('setUser', JSON.parse(localStorage.getItem('user')))
+    this.$store.dispatch('setUserType', JSON.parse(localStorage.getItem('userType')))
+
+    // console.log(this.id)
+    this.dishService.getDishes(this.id).then(res => {
+      if(res.code === 401) {
+        this.$message.error('Invalid login credential')
+        this.$router.push('/signin')
+      } else {
+        // console.log(res.data)
+        this.dishes = res.data
+        // for(dish in this.dishes) {
+
+        // }
+        // this.dishes.forEach(dish => this.$set(dish, 'selected', 0))
+        // console.log(this.dishes)
+      }
+    })
+
+    // console.log(this.dishes)
+    // this.dishes.forEach(dish => this.$set(dish, 'selected', 0))
+
   },
   methods: {
     jumpToCategory(id) {

@@ -36,7 +36,12 @@ export default {
   },
   created() {
     this.canteenService.getAllCanteens().then(res => {
-      this.canteens = res.data
+      if(res.code === 401) {
+        this.$message.error('Login credential expired')
+        this.$router.push('/signin')
+      } else {
+        this.canteens = res.data
+      }
     })
   },
   methods: {

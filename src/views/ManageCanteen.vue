@@ -93,6 +93,8 @@ export default {
   },
   created() {
     // console.log(this.props.test)
+    this.$store.dispatch('setUser', JSON.parse(localStorage.getItem('user')))
+    this.$store.dispatch('setUserType', JSON.parse(localStorage.getItem('userType')))
     for (let i = 0; i < 10; ++i) {
       this.tableData.push({
         name: 'Chicken Sandwich',

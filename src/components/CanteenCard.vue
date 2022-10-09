@@ -39,9 +39,9 @@ export default {
     enterCanteen() {
       // console.log(this.name)
       if (this.isOwner) {
-        router.push({ name: 'manage-canteen', params: { id: this.id } })
+        router.push({ name: 'manage-canteen', params: { id: this.canteen.id } })
       } else {
-        router.push({ name: 'canteen', params: { id: this.id } })
+        router.push({ name: 'canteen', params: { id: this.canteen.id } })
       }
     },
     editCanteen() {
