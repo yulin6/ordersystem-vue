@@ -41,7 +41,7 @@ export default {
       if (this.isOwner) {
         router.push({ name: 'manage-canteen', params: { id: this.canteen.id } })
       } else {
-        router.push({ name: 'canteen', params: { id: this.canteen.id } })
+        router.push({ name: 'canteen', params: { id: this.canteen.id }, state: { canteenName: this.canteen.name } })
       }
     },
     editCanteen() {

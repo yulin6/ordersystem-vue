@@ -43,6 +43,10 @@ export default {
     user() { return this.$store.getters.user },
     isOwner() { return this.$store.getters.isOwner }
   },
+  beforeUnmount() {
+    this.$store.dispatch("setUser", null)
+    this.$store.dispatch("setToken", null)
+  },
   methods: {
     openCartOrOrder() {
       if (this.isOwner) {
@@ -57,13 +61,12 @@ export default {
         cancelButtonText: 'Cancel',
         type: 'warning'
       }).then(() => {
-        this.$store.dispatch("setUser", null)
-        this.$store.dispatch("setToken", null)
-        this.$router.push("/signin");
         this.$message({
           type: 'success',
           message: "See you next time, " + this.user.username
-        });
+        })
+        this.$router.push("/signin");
+        // console.log(this.user.userName)
       })
     },
     backHome() {

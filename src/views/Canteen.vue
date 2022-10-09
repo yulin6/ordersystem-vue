@@ -31,7 +31,7 @@
             <el-table-column prop="price" width="120"/>
             <el-table-column>
               <template v-slot:default="scope">
-                <el-input-number v-model="scope.row.selected" :min="0" :max="10" @change="changeDishNum"></el-input-number>
+                <el-input-number v-model="scope.row.selected" :min="0" :max="10" @change="changeDishNum(scope.row)"></el-input-number>
               </template>
             </el-table-column>
           </el-table>
@@ -56,6 +56,7 @@ export default {
     return {
       category: ['Rice', 'Noodle', 'Dessert', 'Drink'],
       id: this.$route.params.id,
+      canteenName: history.state.canteenName,
       dishes: [],
 
       dishService: DishService.getInstance(),
@@ -102,14 +103,17 @@ export default {
     jumpToCategory(id) {
       document.getElementById(id).scrollIntoView();
     },
-    changeDishNum(){
+    changeDishNum(row){
       //TODO ask to clear cart when selecting a new canteen
 
-      localStorage.setItem('cartCanteen', 'Test Canteen')
-      this.$store.dispatch('setCartCanteen', 'Test Canteen')
-      let cart = this.dishList.filter(d => d.selected > 0)
-      localStorage.setItem('cart', JSON.stringify(cart))
-      this.$store.dispatch('setCart', cart)
+      localStorage.setItem('cartCanteen', this.canteenName)
+      this.$store.dispatch('setCartCanteen', this.canteenName)
+      console.log(row)
+      console.log(localStorage.getItem('cart'))
+      // if (localStorage.getItem('cart')) console.log('test')
+      // let cart = this.dishList.filter(d => d.selected > 0)
+      // localStorage.setItem('cart', JSON.stringify(cart))
+      // this.$store.dispatch('setCart', cart)
     }
   }
 
