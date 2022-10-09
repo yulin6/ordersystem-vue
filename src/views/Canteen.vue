@@ -64,7 +64,6 @@ export default {
     this.$store.dispatch('setUser', JSON.parse(localStorage.getItem('user')))
     this.$store.dispatch('setUserType', JSON.parse(localStorage.getItem('userType')))
 
-    // console.log(this.id)
     this.dishService.getDishes(this.id).then(res => {
       if(res.code === 401) {
         this.$message.error('Invalid login credential')
@@ -122,7 +121,6 @@ export default {
         localStorage.setItem('cart', JSON.stringify(localCart))
       }
       this.$store.dispatch('setCart', localCart)
-      console.log(localCart)
     }
   }
 
