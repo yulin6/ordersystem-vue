@@ -5,40 +5,45 @@
       <home-menu></home-menu>
       <cart @refreshDishes="refreshDishes"></cart>
     </el-header>
-    <el-container>
-      <el-aside style="width: 200px;">
-        <el-menu
-            default-active="1"
-            class="categoryMenu">
-          <el-menu-item
-              v-for="(dishType, index) in Object.keys(dishes)"
-              :index="dishType"
-              :key="index"
-              v-on:click="jumpToCategory(dishType)">
-            <span>{{ dishType }}</span>
-          </el-menu-item>
-        </el-menu>
-      </el-aside>
+    <el-skeleton :rows="15" style="width: 1000px; margin: 80px" :loading="loading" animated>
+      <template #default>
+        <el-container>
+          <el-aside style="width: 200px;">
+            <el-menu
+                default-active="1"
+                class="categoryMenu">
+              <el-menu-item
+                  v-for="(dishType, index) in Object.keys(dishes)"
+                  :index="dishType"
+                  :key="index"
+                  v-on:click="jumpToCategory(dishType)">
+                <span>{{ dishType }}</span>
+              </el-menu-item>
+            </el-menu>
+          </el-aside>
 
-      <el-main>
-        <div v-for="(value, name, index) in dishes"
-             :key="index"
-             :id="name"
-             class="dishGroup">
-          {{ name }}
-          <el-table :data="value" style="width: 100%">
-            <el-table-column prop="name" width="200"/>
-            <el-table-column prop="price" width="120"/>
-            <el-table-column>
-              <template v-slot:default="scope">
-                <el-input-number v-model="scope.row.selected" :min="0" :max="10" @change="changeDishNum(scope.row)"></el-input-number>
-              </template>
-            </el-table-column>
-          </el-table>
-        </div>
-      </el-main>
+          <el-main>
+            <div v-for="(value, name, index) in dishes"
+                 :key="index"
+                 :id="name"
+                 class="dishGroup">
+              {{ name }}
+              <el-table :data="value" style="width: 100%">
+                <el-table-column prop="name" width="200"/>
+                <el-table-column prop="price" width="120"/>
+                <el-table-column>
+                  <template v-slot:default="scope">
+                    <el-input-number v-model="scope.row.selected" :min="0" :max="10"
+                                     @change="changeDishNum(scope.row)"></el-input-number>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+          </el-main>
 
-    </el-container>
+        </el-container>
+      </template>
+    </el-skeleton>
   </el-container>
 
 </template>
@@ -55,6 +60,7 @@ export default {
   components: {HomeMenu, Cart},
   data() {
     return {
+      loading: true,
       id: this.$route.params.id,
       canteenName: history.state.canteenName,
       dishes: [],
@@ -63,19 +69,24 @@ export default {
   },
   created() {
     Utils.storeUserFromLocal()
-    this.dishService.getDishes(this.id).then(res => {
-      if(res.code === 401) {
-        this.$message.error('Invalid login credential')
-        this.$router.push('/signin')
-        Utils.removeLocalData()
-      } else if(res.code === 200)  {
-        this.dishes = res.data
-      } else {
-        this.$message.error(res.msg)
-      }
-    })
+    this.getDishes()
   },
   methods: {
+    async getDishes() {
+      await new Promise(r => setTimeout(r, 200)); //TODO DELETE, just for demonstration
+      await this.dishService.getDishes(this.id).then(res => {
+        if (res.code === 401) {
+          this.$message.error('Invalid login credential')
+          this.$router.push('/signin')
+          Utils.removeLocalData()
+        } else if (res.code === 200) {
+          this.dishes = res.data
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
+      this.loading = false
+    },
     jumpToCategory(id) {
       document.getElementById(id).scrollIntoView();
     },
@@ -83,16 +94,16 @@ export default {
       let localCart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : []
       let previousSelected = {}
       localCart.forEach(item => {
-        if(item.selected !== 0) previousSelected[item.id] = item.selected
+        if (item.selected !== 0) previousSelected[item.id] = item.selected
       })
       Object.entries(this.dishes).forEach(item => {
         item[1].forEach(dish => {
-          if(dish.id in previousSelected) dish.selected = previousSelected[dish.id]
+          if (dish.id in previousSelected) dish.selected = previousSelected[dish.id]
           else dish.selected = 0
         })
       })
     },
-    changeDishNum(row){
+    changeDishNum(row) {
       //TODO ask to clear cart when selecting a new canteen
       this.setCartItems(row)
       this.setCartCanteenName()
@@ -119,7 +130,7 @@ export default {
           }
         })
         localCart = localCart.filter(item => item.selected !== 0)
-        if(!foundInCart) localCart.push(row)
+        if (!foundInCart) localCart.push(row)
         localStorage.setItem('cart', JSON.stringify(localCart))
       }
       this.$store.dispatch('setCart', localCart)

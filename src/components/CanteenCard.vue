@@ -12,15 +12,14 @@
               <StarFilled />
             </el-icon>
           </el-col>
-          <el-col :span="10" style="margin-top: 4px">
-            <span class="ratingPoint">{{ ratingPoint}}</span>
+          <el-col :span="15" style="margin-top: 4px">
+            <span class="ratingPoint">{{ ratingPoint }}</span>
             <span class="ratingNum"> {{ orderNums }} </span>
           </el-col>
         </el-row>
       </div>
     </div>
   </el-card>
-
 </template>
 
 <script>
