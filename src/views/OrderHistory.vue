@@ -18,7 +18,7 @@
             <el-table :data="order.orderItems">
               <el-table-column label="Dish Name" property="name"/>
               <el-table-column label="Quantity" property="number"/>
-              <el-table-column label="Price" property="fee"/>
+              <el-table-column label="Price ($)" property="fee"/>
             </el-table>
             <div style="margin-left: 12px">
               <h4>Total Price: ${{ order.total_fee }}</h4>
@@ -48,13 +48,12 @@
 import HomeMenu from "@/components/HomeMenu";
 import Cart from "@/components/Cart";
 import OrderService from "@/services/OrderService";
-import removeLocalData from "@/utils/utils";
+import Utils from "@/utils/utils";
 
 export default {
   components: {HomeMenu, Cart},
   created() {
-    this.$store.dispatch('setUser', JSON.parse(localStorage.getItem('user')))
-    this.$store.dispatch('setUserType', JSON.parse(localStorage.getItem('userType')))
+    Utils.storeUserFromLocal()
     this.setupOrderHistory()
   },
   data() {
@@ -69,7 +68,7 @@ export default {
         if (res.code === 401) {
           this.$message.error('Invalid login credential')
           this.$router.push('/signin')
-          removeLocalData()
+          Utils.removeLocalData()
         } else if (res.code === 200) {
           this.orderHistory = res.data
         } else {

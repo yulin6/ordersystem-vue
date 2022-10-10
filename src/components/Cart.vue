@@ -3,7 +3,7 @@
     <h3>{{ canteen }}</h3>
     <el-table :data="cart">
       <el-table-column label="Dish Name" property="name" width="200"/>
-      <el-table-column label="Dish Price ($)" property="price" width="200"/>
+      <el-table-column label="Price ($)" property="price" width="200"/>
       <el-table-column>
         <template v-slot:default="scope">
           <el-input-number v-model="scope.row.selected" :min="1" :max="10"
@@ -53,7 +53,7 @@ const action = () => emit('refreshDishes');
 
 // import {mapGetters} from "vuex";
 import OrderService from "@/services/OrderService";
-import removeLocalData from "@/utils/utils";
+import Utils from "@/utils/utils";
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
@@ -127,7 +127,7 @@ export default {
         if (res.code === 401) {
           this.$message.error('Invalid login credential')
           this.$router.push('/signin')
-          removeLocalData()
+          Utils.removeLocalData()
         } else if (res.code === 200) {
           this.$message.success('Order placed!')
           this.$store.dispatch('openCloseCart')

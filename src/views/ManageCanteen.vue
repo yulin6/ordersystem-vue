@@ -67,6 +67,7 @@
 
 <script>
 import HomeMenu from "@/components/HomeMenu";
+import Utils from "@/utils/utils";
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
@@ -92,9 +93,7 @@ export default {
     }
   },
   created() {
-    // console.log(this.props.test)
-    this.$store.dispatch('setUser', JSON.parse(localStorage.getItem('user')))
-    this.$store.dispatch('setUserType', JSON.parse(localStorage.getItem('userType')))
+    Utils.storeUserFromLocal()
     for (let i = 0; i < 10; ++i) {
       this.tableData.push({
         name: 'Chicken Sandwich',

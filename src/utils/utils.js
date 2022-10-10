@@ -1,13 +1,18 @@
 import store from "@/vuex/store";
 
-const removeLocalData = () => {
-    localStorage.removeItem("user")
-    localStorage.removeItem("userToken")
-    localStorage.removeItem("cart")
-    localStorage.removeItem("cartCanteen")
-    localStorage.removeItem("userType")
-    store.dispatch("setToken", null)
-    // console.log(this.user.userName)
+
+export default class Utils {
+    static storeUserFromLocal() {
+        store.dispatch('setUser', JSON.parse(localStorage.getItem('user')))
+        store.dispatch('setUserType', JSON.parse(localStorage.getItem('userType')))
+    }
+    static removeLocalData() {
+        localStorage.removeItem("user")
+        localStorage.removeItem("userToken")
+        localStorage.removeItem("cart")
+        localStorage.removeItem("cartCanteen")
+        localStorage.removeItem("userType")
+        store.dispatch("setToken", null)
+    }
 }
 
-export default removeLocalData;

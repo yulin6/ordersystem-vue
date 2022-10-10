@@ -23,7 +23,7 @@
 import CanteenCard from "@/components/CanteenCard";
 import AddCanteenCard from "@/components/AddCanteenCard";
 import CanteenService from "@/services/CanteenService";
-import removeLocalData from "@/utils/utils";
+import Utils from "@/utils/utils";
 
 export default {
   name: 'CanteenCards',
@@ -40,7 +40,7 @@ export default {
       if(res.code === 401) {
         this.$message.error('Login credential expired')
         this.$router.push('/signin')
-        removeLocalData()
+        Utils.removeLocalData()
       } else if(res.code === 200) {
         this.canteens = res.data
       } else {

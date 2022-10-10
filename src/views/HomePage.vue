@@ -14,6 +14,7 @@
 import HomeMenu from "@/components/HomeMenu";
 import CanteenCards from "@/components/CanteenCards";
 import Cart from "@/components/Cart";
+import Utils from "@/utils/utils";
 
 export default {
   components: { HomeMenu, CanteenCards, Cart },
@@ -23,8 +24,7 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch('setUser', JSON.parse(localStorage.getItem('user')))
-    this.$store.dispatch('setUserType', JSON.parse(localStorage.getItem('userType')))
+    Utils.storeUserFromLocal()
   },
   data() {
     return {}

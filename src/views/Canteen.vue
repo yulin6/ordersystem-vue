@@ -47,7 +47,7 @@
 import HomeMenu from "@/components/HomeMenu";
 import Cart from "@/components/Cart";
 import DishService from "@/services/DishService";
-import removeLocalData from "@/utils/utils";
+import Utils from "@/utils/utils";
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
@@ -62,14 +62,12 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch('setUser', JSON.parse(localStorage.getItem('user')))
-    this.$store.dispatch('setUserType', JSON.parse(localStorage.getItem('userType')))
-
+    Utils.storeUserFromLocal()
     this.dishService.getDishes(this.id).then(res => {
       if(res.code === 401) {
         this.$message.error('Invalid login credential')
         this.$router.push('/signin')
-        removeLocalData()
+        Utils.removeLocalData()
       } else if(res.code === 200)  {
         this.dishes = res.data
       } else {
