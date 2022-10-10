@@ -2,6 +2,7 @@
   <el-container>
     <el-header>
       <home-menu></home-menu>
+      <cart></cart>
     </el-header>
     <el-main>
       <h3 style="margin-left: 38px" v-show="!isOwner">Order History</h3>

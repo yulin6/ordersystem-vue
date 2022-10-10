@@ -30,6 +30,7 @@
 
 <script >
 import { ref } from 'vue'
+import removeData from "@/utils/utils";
 
 export default {
   name: 'HomeMenu',
@@ -66,7 +67,7 @@ export default {
           message: "See you next time, " + this.user.username
         })
         this.$router.push("/signin");
-        this.removeData()
+        removeData()
       })
     },
     backHome() {
@@ -75,15 +76,6 @@ export default {
     showOrderHistory() {
       this.$router.push('/orderHistory')
     },
-    removeData() {
-      localStorage.removeItem("user")
-      localStorage.removeItem("userToken")
-      localStorage.removeItem("cart")
-      localStorage.removeItem("cartCanteen")
-      localStorage.removeItem("userType")
-      this.$store.dispatch("setToken", null)
-      // console.log(this.user.userName)
-    }
   },
 
 }

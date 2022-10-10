@@ -47,6 +47,7 @@
 import HomeMenu from "@/components/HomeMenu";
 import Cart from "@/components/Cart";
 import DishService from "@/services/DishService";
+import removeData from "@/utils/utils";
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
@@ -68,8 +69,11 @@ export default {
       if(res.code === 401) {
         this.$message.error('Invalid login credential')
         this.$router.push('/signin')
-      } else {
+        removeData()
+      } else if(res.code === 200)  {
         this.dishes = res.data
+      } else {
+        this.$message.error(res.msg)
       }
     })
   },

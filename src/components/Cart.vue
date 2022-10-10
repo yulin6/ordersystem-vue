@@ -1,16 +1,42 @@
 <template>
   <el-dialog title="Cart" v-model="this.$store.state.isCartOpen" @close="action">
-    <h4>{{ canteen }}</h4>
+    <h3>{{ canteen }}</h3>
     <el-table :data="cart">
-      <el-table-column property="name"  width="200" />
-      <el-table-column property="price"  width="200" />
-      <el-table-column >
+      <el-table-column label="Dish Name" property="name" width="200"/>
+      <el-table-column label="Dish Price ($)" property="price" width="200"/>
+      <el-table-column>
         <template v-slot:default="scope">
-          <el-input-number v-model="scope.row.selected" :min="1" :max="10" @change="changeDishNum(scope.row)"></el-input-number>
-          <el-button v-on:click="removeDish(scope.row.id)" type="warning" style="margin-left: 40px"> Remove </el-button>
+          <el-input-number v-model="scope.row.selected" :min="1" :max="10"
+                           @change="changeDishNum(scope.row)"></el-input-number>
+          <el-button v-on:click="removeDish(scope.row.id)" type="warning" style="margin-left: 50px">
+            <el-icon class="el-icon--left"><Delete /></el-icon>
+            Remove
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
+    <h4 style="margin-left: 12px">{{ totalPrice() }}</h4>
+      <h4 style="margin-left: 12px"
+          v-if="!isCartEmpty">
+        Dinning Data & Time:
+        <el-date-picker
+          v-model="dinningTime"
+          type="datetime"
+          placeholder="Select"
+          format="YYYY/MM/DD hh:mm:ss"
+          value-format="YYYY-MM-DD h:m:s a"
+          style="margin-left: 15px"
+        />
+      </h4>
+    <el-button
+        v-if="!isCartEmpty && dinningTime"
+        v-on:click="placeOrder"
+        type="primary"
+        style="margin-left: 10px"
+        :loading="loading">
+      <el-icon class="el-icon--left"><DishDot /></el-icon>
+      Place Order
+    </el-button>
   </el-dialog>
 </template>
 
@@ -19,37 +45,48 @@ const emit = defineEmits(['refreshDishes'])
 const action = () => emit('refreshDishes');
 </script>
 
-<script >
+<script>
 
 // import {mapGetters} from "vuex";
+import OrderService from "@/services/OrderService";
+import removeData from "@/utils/utils";
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'Cart',
   data() {
     return {
+      orderService: OrderService.getInstance(),
+      dinningTime: '',
+      totalFee: 0,
+      isCartEmpty: true,
+      loading: false
     }
   },
   created() {
-    this.$store.dispatch('setCart', JSON.parse(localStorage.getItem('cart')))
-    this.$store.dispatch('setCartCanteen', localStorage.getItem('cartCanteen'))
+    this.syncStoreAndLocalCart()
   },
   methods: {
-    changeDishNum(row){
-      // console.log(row)
+    syncStoreAndLocalCart() {
+      this.$store.dispatch('setCart', JSON.parse(localStorage.getItem('cart')))
+      this.$store.dispatch('setCartCanteen', localStorage.getItem('cartCanteen'))
+    },
+    changeDishNum(row) {
       this.setCartItems(row)
       this.setCartCanteenName()
     },
+    getLocalCart() {
+      return localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : []
+    },
     setCartCanteenName() {
-      let localCart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : []
+      let localCart = this.getLocalCart()
       let name = this.canteen
       if (localCart.length === 0) name = ''
       localStorage.setItem('cartCanteen', name)
       this.$store.dispatch('setCartCanteen', name)
     },
     setCartItems(row) {
-      console.log(row)
-      let localCart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : []
+      let localCart = this.getLocalCart()
       localCart.forEach(item => {
         if (item.id === row.id) {
           item.selected = row.selected
@@ -59,22 +96,86 @@ export default {
       this.$store.dispatch('setCart', localCart)
     },
     removeDish(id) {
-      let localCart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : []
+      let localCart = this.getLocalCart()
       localCart = localCart.filter(item => item.id !== id)
       localStorage.setItem('cart', JSON.stringify(localCart))
       this.$store.dispatch('setCart', localCart)
       this.setCartCanteenName()
+    },
+    totalPrice() {
+      let localCart = this.getLocalCart()
+      let sum = 0
+      localCart.forEach(item => sum += item.price * item.selected)
+      if (sum === 0) {
+        this.totalFee = 0
+        this.isCartEmpty = true
+        return ''
+      }
+      else {
+        this.totalFee = sum
+        this.isCartEmpty = false
+        return `Total Price: $${sum}`
+      }
+    },
+    async placeOrder() {
+      let orderDetail = this.formattedOrderDetail()
+      this.loading = true
+      await this.orderService.placeOrder(orderDetail).then(res => {
+        if(res.code === 401) {
+          this.$message.error('Invalid login credential')
+          this.$router.push('/signin')
+          removeData()
+        } else if(res.code === 200) {
+          this.$message.success('Order placed!')
+          this.$store.dispatch('openCloseCart')
+          localStorage.setItem('cartCanteen', '')
+          localStorage.setItem('cart', JSON.stringify([]))
+          this.syncStoreAndLocalCart()
+          this.dishes = res.data
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
+      this.loading = false
+    },
+    formattedOrderDetail() {
+      let localCart = this.getLocalCart()
+      let orderDetail = {}
+      orderDetail.orderTime = this.dinningTime.slice(0, -3);
+      orderDetail.totalFee = this.totalFee
+      orderDetail.canteenID = localCart[0].canteen_id
+      orderDetail.userID = JSON.parse(localStorage.getItem('user')).id
+      orderDetail.orderItems = []
+      orderDetail.status = 0
+      localCart.forEach(item => {
+        let orderItem = {}
+        orderItem.name = item.name
+        orderItem.number = item.selected
+        orderItem.fee = item.price
+        orderItem.dish_id = item.id
+        orderDetail.orderItems.push(orderItem)
+      })
+      // console.log(JSON.stringify(orderDetail))
+      return orderDetail
     }
   },
   computed: {
     // ...mapGetters(['cart'])
     canteen: {
-      get() { return this.$store.getters.cartCanteen },
-      set(value) { return this.$store.dispatch('setCartCanteen', value) }
+      get() {
+        return this.$store.getters.cartCanteen
+      },
+      set(value) {
+        return this.$store.dispatch('setCartCanteen', value)
+      }
     },
-    cart:{
-      get() { return this.$store.getters.cart },
-      set(value) { return this.$store.dispatch('setCart', value) }
+    cart: {
+      get() {
+        return this.$store.getters.cart
+      },
+      set(value) {
+        return this.$store.dispatch('setCart', value)
+      }
     }
   },
 
@@ -82,5 +183,9 @@ export default {
 </script>
 
 <style>
-
+.datePicker {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
 </style>
