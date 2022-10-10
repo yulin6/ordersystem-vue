@@ -2,7 +2,6 @@
   <el-container>
     <el-header>
       <home-menu></home-menu>
-      <cart></cart>
     </el-header>
     <el-main>
       <h3 style="margin-left: 38px" v-show="!isOwner">Order History</h3>
@@ -15,14 +14,27 @@
             :timestamp="order.create_time"
             placement="top">
           <el-card>
-            <h4>{{ order.canteen.name }}</h4>
-            <el-table :data="order.orderItems" >
-                <el-table-column label="Dish Name" property="name" />
-              <el-table-column label="Quantity" property="number"  />
-              <el-table-column label="Price" property="fee"   />
+            <h3>{{ order.canteen.name }}</h3>
+            <el-table :data="order.orderItems">
+              <el-table-column label="Dish Name" property="name"/>
+              <el-table-column label="Quantity" property="number"/>
+              <el-table-column label="Price" property="fee"/>
             </el-table>
-            <p>Order Time: {{ order.order_time }}</p>
-            <p>Status: {{ order.status }}</p>
+            <div style="margin-left: 12px">
+              <h4>Total Price: ${{ order.total_fee }}</h4>
+              <h4>Dinning Time: {{ order.order_time }}</h4>
+              <h4>Status:
+                <el-tag v-if="order.status === 0" size="large" type="warning">To be seated</el-tag>
+                <el-tag v-if="order.status === 1" size="large" type="success">Completed</el-tag>
+                <el-tag v-if="order.status === -1" size="large" type="info">Canceled</el-tag>
+                <el-button v-if="order.status === 0"
+                           v-on:click="cancelOrder(order.id)"
+                           type="danger"
+                           style="margin-left: 10px" link>
+                  Cancel
+                </el-button>
+              </h4>
+            </div>
           </el-card>
         </el-timeline-item>
       </el-timeline>
@@ -39,23 +51,11 @@ import OrderService from "@/services/OrderService";
 import removeLocalData from "@/utils/utils";
 
 export default {
-  components: { HomeMenu, Cart },
+  components: {HomeMenu, Cart},
   created() {
     this.$store.dispatch('setUser', JSON.parse(localStorage.getItem('user')))
     this.$store.dispatch('setUserType', JSON.parse(localStorage.getItem('userType')))
-
-    this.orderService.getOrdersByUserId(this.$store.state.user.id).then(res => {
-      if(res.code === 401) {
-        this.$message.error('Invalid login credential')
-        this.$router.push('/signin')
-        removeLocalData()
-      } else if(res.code === 200)  {
-        this.orderHistory = res.data
-        console.log(this.orderHistory)
-      } else {
-        this.$message.error(res.msg)
-      }
-    })
+    this.setupOrderHistory()
   },
   data() {
     return {
@@ -64,6 +64,43 @@ export default {
     }
   },
   methods: {
+    setupOrderHistory() {
+      this.orderService.getOrdersByUserId(this.$store.state.user.id).then(res => {
+        if (res.code === 401) {
+          this.$message.error('Invalid login credential')
+          this.$router.push('/signin')
+          removeLocalData()
+        } else if (res.code === 200) {
+          this.orderHistory = res.data
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
+    },
+    cancelOrder(id) {
+      this.$confirm('Canceling the order, are you sure?', 'Order Cancellation', {
+        confirmButtonText: 'Yes, Cancel',
+        cancelButtonText: 'Maybe Later',
+        type: 'warning'
+      }).then(() => {
+        let status = {orderID: id, status: -1}
+        this.orderService.updateOrderStatus(status).then(res => {
+          if(res.code === 401) {
+            this.$message.error('Invalid login credential')
+            this.$router.push('/signin')
+            removeLocalData()
+          } else if(res.code === 200)  {
+            this.$message({
+              type: 'success',
+              message: "Order Canceled"
+            })
+            this.setupOrderHistory()
+          } else {
+            this.$message.error(res.msg)
+          }
+        })
+      })
+    }
   },
   computed: {
     isOwner() {
@@ -80,7 +117,6 @@ export default {
   width: 100%;
   height: 60px;
 }
-
 
 
 .el-main {

@@ -9,34 +9,38 @@
           <el-input-number v-model="scope.row.selected" :min="1" :max="10"
                            @change="changeDishNum(scope.row)"></el-input-number>
           <el-button v-on:click="removeDish(scope.row.id)" type="warning" style="margin-left: 50px">
-            <el-icon class="el-icon--left"><Delete /></el-icon>
+            <el-icon class="el-icon--left">
+              <Delete/>
+            </el-icon>
             Remove
           </el-button>
         </template>
       </el-table-column>
     </el-table>
-    <h4 style="margin-left: 12px">{{ totalPrice() }}</h4>
-      <h4 style="margin-left: 12px"
-          v-if="!isCartEmpty">
-        Dinning Data & Time:
+    <div style="margin-left: 12px">
+      <h4>{{ totalPrice() }}</h4>
+      <h4 v-if="!isCartEmpty">
+        Dinning Time:
         <el-date-picker
-          v-model="dinningTime"
-          type="datetime"
-          placeholder="Select"
-          format="YYYY/MM/DD hh:mm:ss"
-          value-format="YYYY-MM-DD h:m:s a"
-          style="margin-left: 15px"
+            v-model="dinningTime"
+            type="datetime"
+            placeholder="Select"
+            format="YYYY/MM/DD hh:mm:ss"
+            value-format="YYYY-MM-DD h:m:s a"
+            style="margin-left: 15px"
         />
       </h4>
-    <el-button
-        v-if="!isCartEmpty && dinningTime"
-        v-on:click="placeOrder"
-        type="primary"
-        style="margin-left: 10px"
-        :loading="loading">
-      <el-icon class="el-icon--left"><DishDot /></el-icon>
-      Place Order
-    </el-button>
+      <el-button
+          v-if="!isCartEmpty && dinningTime"
+          v-on:click="placeOrder"
+          type="primary"
+          :loading="loading">
+        <el-icon class="el-icon--left">
+          <DishDot/>
+        </el-icon>
+        Place Order
+      </el-button>
+    </div>
   </el-dialog>
 </template>
 
@@ -110,8 +114,7 @@ export default {
         this.totalFee = 0
         this.isCartEmpty = true
         return ''
-      }
-      else {
+      } else {
         this.totalFee = sum
         this.isCartEmpty = false
         return `Total Price: $${sum}`
@@ -121,11 +124,11 @@ export default {
       let orderDetail = this.formattedOrderDetail()
       this.loading = true
       await this.orderService.placeOrder(orderDetail).then(res => {
-        if(res.code === 401) {
+        if (res.code === 401) {
           this.$message.error('Invalid login credential')
           this.$router.push('/signin')
           removeLocalData()
-        } else if(res.code === 200) {
+        } else if (res.code === 200) {
           this.$message.success('Order placed!')
           this.$store.dispatch('openCloseCart')
           localStorage.setItem('cartCanteen', '')

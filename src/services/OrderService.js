@@ -26,18 +26,11 @@ export default class OrderService {
                 },
             })
             if(res.data.code === 200) {
-                console.log(res.data.data)
                 res.data.data.forEach(order => {
                     order.orderItems.forEach(item => {
                         item.name = item.dish.name
                     })
                 })
-                // Object.entries(res.data.data).forEach(item => {
-                //     item[1].forEach(dish => {
-                //         if(dish.id in previousSelected) dish.selected = previousSelected[dish.id]
-                //         else dish.selected = 0
-                //     })
-                // })
             }
             return res.data;
         }
@@ -52,6 +45,24 @@ export default class OrderService {
                 url: store.state.apiURL + '/order',
                 method: "POST",
                 data: JSON.stringify(orderDetail),
+                headers: {
+                    'content-type': 'application/json',
+                    'token': localStorage.getItem('userToken')
+                },
+            })
+            return res.data;
+        }
+        catch(error){
+            console.log(error)
+        }
+    }
+
+    updateOrderStatus = async orderStatus => {
+        try{
+            let res = await axios({
+                url: store.state.apiURL + '/order/status',
+                method: "PUT",
+                data: JSON.stringify(orderStatus),
                 headers: {
                     'content-type': 'application/json',
                     'token': localStorage.getItem('userToken')
