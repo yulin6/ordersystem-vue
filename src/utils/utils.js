@@ -1,6 +1,6 @@
 import store from "@/vuex/store";
 
-const removeData = () => {
+const removeLocalData = () => {
     localStorage.removeItem("user")
     localStorage.removeItem("userToken")
     localStorage.removeItem("cart")
@@ -10,4 +10,4 @@ const removeData = () => {
     // console.log(this.user.userName)
 }
 
-export default removeData;
+export default removeLocalData;

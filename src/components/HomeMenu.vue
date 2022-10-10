@@ -30,7 +30,7 @@
 
 <script >
 import { ref } from 'vue'
-import removeData from "@/utils/utils";
+import removeLocalData from "@/utils/utils";
 
 export default {
   name: 'HomeMenu',
@@ -67,7 +67,7 @@ export default {
           message: "See you next time, " + this.user.username
         })
         this.$router.push("/signin");
-        removeData()
+        removeLocalData()
       })
     },
     backHome() {

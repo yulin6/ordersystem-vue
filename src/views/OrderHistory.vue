@@ -10,14 +10,14 @@
       <cart></cart>
       <el-timeline>
         <el-timeline-item
-            v-for="(order, index) in orders"
+            v-for="(order, index) in orderHistory"
             :key="index"
             :timestamp="order.create_time"
             placement="top">
           <el-card>
-            <h4>{{ order.canteen_id }}</h4>
-            <el-table :data="order.orderItems" show-summary>
-              <el-table-column label="Dish Name" property="dish_id"   />
+            <h4>{{ order.canteen.name }}</h4>
+            <el-table :data="order.orderItems" >
+                <el-table-column label="Dish Name" property="name" />
               <el-table-column label="Quantity" property="number"  />
               <el-table-column label="Price" property="fee"   />
             </el-table>
@@ -35,51 +35,41 @@
 <script>
 import HomeMenu from "@/components/HomeMenu";
 import Cart from "@/components/Cart";
-
+import OrderService from "@/services/OrderService";
+import removeLocalData from "@/utils/utils";
 
 export default {
   components: { HomeMenu, Cart },
+  created() {
+    this.$store.dispatch('setUser', JSON.parse(localStorage.getItem('user')))
+    this.$store.dispatch('setUserType', JSON.parse(localStorage.getItem('userType')))
+
+    this.orderService.getOrdersByUserId(this.$store.state.user.id).then(res => {
+      if(res.code === 401) {
+        this.$message.error('Invalid login credential')
+        this.$router.push('/signin')
+        removeLocalData()
+      } else if(res.code === 200)  {
+        this.orderHistory = res.data
+        console.log(this.orderHistory)
+      } else {
+        this.$message.error(res.msg)
+      }
+    })
+  },
+  data() {
+    return {
+      orderService: OrderService.getInstance(),
+      orderHistory: [],
+    }
+  },
+  methods: {
+  },
   computed: {
     isOwner() {
       return this.$store.state.isOwner
     }
   },
-  data() {
-    return {
-      orders: [
-        {
-          create_time: "2022-09-21 10:03:43",
-          canteen_id: 3,
-          user_id: 7,
-          total_fee: 16.16,
-          id: 4,
-          order_time: "2015-11-05 14:29:36",
-          orderItems: [
-            {
-              number: 10,
-              dish_id: 7,
-              id: 1,
-              order_id: 4,
-              fee: 20.2
-            },
-            {
-              number: 3,
-              dish_id: 8,
-              id: 2,
-              order_id: 4,
-              fee: 60.0
-            }
-          ],
-          status: 0
-        }
-
-      ]
-    }
-  },
-  methods: {
-
-  }
-
 }
 </script>
 

@@ -49,7 +49,7 @@ const action = () => emit('refreshDishes');
 
 // import {mapGetters} from "vuex";
 import OrderService from "@/services/OrderService";
-import removeData from "@/utils/utils";
+import removeLocalData from "@/utils/utils";
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
@@ -124,7 +124,7 @@ export default {
         if(res.code === 401) {
           this.$message.error('Invalid login credential')
           this.$router.push('/signin')
-          removeData()
+          removeLocalData()
         } else if(res.code === 200) {
           this.$message.success('Order placed!')
           this.$store.dispatch('openCloseCart')
