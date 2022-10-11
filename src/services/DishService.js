@@ -13,7 +13,7 @@ export default class DishService {
     }
 
     getDishes = async canteenId => {
-        try{
+        try {
             let res = await axios({
                 url: store.state.apiURL + '/dish/type_group',
                 method: "GET",
@@ -25,23 +25,42 @@ export default class DishService {
                     'token': localStorage.getItem('userToken')
                 },
             })
-            if(res.data.code === 200) {
+            if (res.data.code === 200) {
                 let localCart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : []
                 let previousSelected = {}
                 localCart.forEach(item => {
-                    if(item.selected !== 0) previousSelected[item.id] = item.selected//.push({id: item.id, selected: item.selected})
+                    if (item.selected !== 0) previousSelected[item.id] = item.selected//.push({id: item.id, selected: item.selected})
                 })
                 Object.entries(res.data.data).forEach(item => {
                     item[1].forEach(dish => {
-                        if(dish.id in previousSelected) dish.selected = previousSelected[dish.id]
+                        if (dish.id in previousSelected) dish.selected = previousSelected[dish.id]
                         else dish.selected = 0
                     })
                 })
             }
             return res.data;
         }
-        catch(error){
+        catch (error) {
             console.log(error)
         }
     }
+
+    updateDishes = async dishDetail => {
+        try {
+            let res = await axios({
+                url: store.state.apiURL + '/dish',
+                method: "PUT",
+                data: JSON.stringify(dishDetail),
+                headers: {
+                    'content-type': 'application/json',
+                    'token': localStorage.getItem('userToken')
+                },
+            })
+            return res.data;
+        }
+        catch (error) {
+            console.log(error)
+        }
+    }
+
 }

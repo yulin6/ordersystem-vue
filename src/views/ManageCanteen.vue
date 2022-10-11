@@ -51,7 +51,7 @@
             <el-table-column label="Operation" width="260">
               <template v-slot:default="scope">
                 <el-button @click="edit(scope.row)">edit</el-button>
-                <el-button type="warning" @click="save(scope.row)">save</el-button>
+                <el-button type="warning" @click="updateDish(scope.row, index)">save</el-button>
                 <el-button type="danger" @click="deleteRow(scope.$index, value)"> delete
                 </el-button>
               </template>
@@ -77,7 +77,6 @@ export default {
   components: { HomeMenu },
   data() {
     return {
-      loading: true,
       id: this.$route.params.id,
       canteenName: history.state.canteenName,
       dishes: [],
@@ -103,13 +102,31 @@ export default {
           this.$message.error(res.msg)
         }
       })
-      this.loading = false
     },
     jumpToCategory(id) {
       document.getElementById(id).scrollIntoView();
     },
     edit(row) {
       row.isEditor = true;
+    },
+    async updateDishes(row, index) {
+      let dishDetail = this.formattedDishDetail(index)
+      await this.dishService.updateDish(dishDetail).then(res => {
+        if (res.code === 1) {
+          this.save(row);
+          this.$message.success('Dish detail updated!')
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
+    },
+    formattedDishDetail(index) {
+      let dishDetail = {}
+      dishDetail.name = this.dishes[index].name;
+      dishDetail.price = this.dishes[index].price;
+      dishDetail.stock = this.dishes[index].stock;
+      dishDetail.type = this.dishes[index].dishType;
+      return dishDetail
     },
     save(row) {
       row.isEditor = false;
