@@ -57,12 +57,13 @@
               </template>
             </el-table-column>
           </el-table>
-          <el-button style="margin-top: 6px" type="primary" @click="addRow(value, false)">Add a new dish!
+          <el-button style="margin-top: 6px" type="primary" @click="addDish()">Add a new dish!
           </el-button>
+          <AddDish></AddDish>
         </div>
       </el-main>
     </el-container>
-  </el-container>·
+  </el-container>
 
 </template>
 
@@ -70,11 +71,12 @@
 import HomeMenu from "@/components/HomeMenu";
 import DishService from "@/services/DishService";
 import Utils from "@/utils/utils";
+import AddDish from "@/components/AddDish";
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'ManageCanteen',
-  components: { HomeMenu },
+  components: { HomeMenu, AddDish },
   data() {
     return {
       id: this.$route.params.id,
@@ -109,7 +111,7 @@ export default {
     edit(row) {
       row.isEditor = true;
     },
-    async updateDishes(row, index) {
+    async updateDish(row, index) {
       let dishDetail = this.formattedDishDetail(index)
       await this.dishService.updateDish(dishDetail).then(res => {
         if (res.code === 1) {
@@ -144,9 +146,12 @@ export default {
     deleteRow(index, rows) {
       rows.splice(index, 1);
     },
-    addRow(tableData, isEditor) {
+    addDish() {
+      this.$store.dispatch("openCloseAddDish");
+    },
+    addRow(tableData) {
       tableData.push({
-        name: 'A new dish added. Please edit it!', price: 0, quantity: 0, isEditor: isEditor
+        name: 'A new dish added. Please edit it!', price: 0, quantity: 0, isEditor: false
       })
     },
     editCategory() {

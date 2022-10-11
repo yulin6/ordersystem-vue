@@ -31,5 +31,13 @@ export const openCloseEditCanteen = ({commit}, isAddCanteen) => {
 }
 
 export const closeOpenEditCanteen = ({commit}) => {
-    commit("openCloseEditCanteen")
+    commit("closeOpenEditCanteen")
+}
+
+export const openCloseAddDish = ({commit}) => {
+    commit("openCloseAddDish")
+}
+
+export const closeOpenAddDish = ({commit}) => {
+    commit("openCloseAddDish")
 }

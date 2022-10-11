@@ -8,3 +8,4 @@ export const isEditCanteenOpen = state => state.isEditCanteenOpen
 export const cart = state => state.cart
 export const cartCanteen = state => state.cartCanteen
 export const isAddCanteen = state => state.isAddCanteen
+export const isAddDishOpen = state => state.isAddDishOpen

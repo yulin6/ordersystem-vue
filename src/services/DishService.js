@@ -45,7 +45,25 @@ export default class DishService {
         }
     }
 
-    updateDishes = async dishDetail => {
+    addDish = async newDishDetail => {
+        try {
+            let res = await axios({
+                url: store.state.apiURL + '/dish',
+                method: "POST",
+                data: JSON.stringify(newDishDetail),
+                headers: {
+                    'content-type': 'application/json',
+                    'token': localStorage.getItem('userToken')
+                },
+            })
+            return res.data;
+        }
+        catch (error) {
+            console.log(error)
+        }
+    }
+
+    updateDish = async dishDetail => {
         try {
             let res = await axios({
                 url: store.state.apiURL + '/dish',
@@ -63,10 +81,10 @@ export default class DishService {
         }
     }
 
-    deleteOrder = async orderIndex => {
+    deleteDish = async dishIndex => {
         try {
             let res = await axios({
-                url: store.state.apiURL + '/dish/' + orderIndex,
+                url: store.state.apiURL + '/dish/' + dishIndex,
                 method: "DELETE",
                 headers: {
                     'content-type': 'application/json',
