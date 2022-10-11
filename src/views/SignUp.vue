@@ -63,10 +63,8 @@ export default {
       signUpInfo: {
         userName: '',
         password: '',
-        nickname: '',
         phone: null,
-        email: '',
-        NRIC: '',
+        email: null,
         type: 1,
       },
       isOwner: false,
@@ -91,7 +89,7 @@ export default {
           {
             min: 8,
             max: 8,
-            message: "Password length should be at least 5 characters",
+            message: "Phone length should be 8 digits",
             trigger: "blur"
           }
         ]

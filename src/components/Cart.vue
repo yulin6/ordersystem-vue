@@ -143,22 +143,23 @@ export default {
     },
     formattedOrderDetail() {
       let localCart = this.getLocalCart()
-      let orderDetail = {}
-      orderDetail.orderTime = this.dinningTime.slice(0, -3);
-      orderDetail.totalFee = this.totalFee
-      orderDetail.canteenID = localCart[0].canteen_id
-      orderDetail.userID = JSON.parse(localStorage.getItem('user')).id
-      orderDetail.orderItems = []
-      orderDetail.status = 0
+      let orderDetail = {
+        orderTime: this.dinningTime.slice(0, -3),
+        totalFee: this.totalFee,
+        canteenID: localCart[0].canteen_id,
+        userID: JSON.parse(localStorage.getItem('user')).id,
+        orderItems: [],
+        status: 0
+      }
       localCart.forEach(item => {
-        let orderItem = {}
-        orderItem.name = item.name
-        orderItem.number = item.selected
-        orderItem.fee = item.price
-        orderItem.dish_id = item.id
+        let orderItem = {
+          name: item.name,
+          number: item.selected,
+          fee: item.price,
+          dish_id: item.id
+        }
         orderDetail.orderItems.push(orderItem)
       })
-      // console.log(JSON.stringify(orderDetail))
       return orderDetail
     }
   },

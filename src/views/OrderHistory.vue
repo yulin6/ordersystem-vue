@@ -36,6 +36,25 @@
                       Cancel
                     </el-button>
                   </h4>
+                  <h4 v-if="!order.rated && order.status === 1">
+                    Rate your experience:
+                    <div>
+                      <el-rate v-model="order.stars" :colors="colors"/>
+                      <el-input
+                          v-model="order.comment"
+                          maxlength="1000"
+                          placeholder="Leave comment"
+                          show-word-limit
+                          type="textarea"/>
+                      <el-button v-on:click="rateOrder(order)" type="primary" style="margin-top: 15px">
+                        Rate
+                      </el-button>
+                    </div>
+                  </h4>
+                  <div v-if="order.rated">
+                        <el-rate v-model="order.stars" :colors="colors" size="large" style="margin-top: 5px" disabled/>
+                        <p style="font-style: italic;">"{{ order.comment }}"</p>
+                  </div>
                 </div>
               </el-card>
             </el-timeline-item>
@@ -48,10 +67,16 @@
 
 </template>
 
+<script setup>
+import {ref} from 'vue'
+const colors = ref(['#99A9BF', '#F7BA2A', '#FF9900'])
+</script>
+
 <script>
 import HomeMenu from "@/components/HomeMenu";
 import Cart from "@/components/Cart";
 import OrderService from "@/services/OrderService";
+import CommentService from "@/services/CommentService";
 import Utils from "@/utils/utils";
 
 export default {
@@ -64,12 +89,12 @@ export default {
     return {
       loading: true,
       orderService: OrderService.getInstance(),
+      commentService: CommentService.getInstance(),
       orderHistory: [],
     }
   },
   methods: {
     async getOrderHistory() {
-      await new Promise(r => setTimeout(r, 200)); //TODO DELETE, just for demonstration
       await this.orderService.getOrdersByUserId(this.$store.state.user.id).then(res => {
         if (res.code === 401) {
           this.$message.error('Invalid login credential')
@@ -81,7 +106,46 @@ export default {
           this.$message.error(res.msg)
         }
       })
+      this.orderHistory.forEach(order => {
+        this.getOrderRatings(order)
+      })
+    },
+    async getOrderRatings(order) {
+      await new Promise(r => setTimeout(r, 100));//TODO DELETE, just for demonstration
+      await this.commentService.getRatingByOrderId(order.id).then(res => {
+            if (res.code === 401) {
+              this.$message.error('Invalid login credential')
+              this.$router.push('/signin')
+              Utils.removeLocalData()
+            } else if (res.code === 200) {
+              if(res.data.length === 1){
+                order.rated = true
+                order.stars = res.data[0].star
+                order.comment = res.data[0].comment
+              } else if(res.data.length === 0) {
+                order.rated = false
+              } else {
+                this.$message.error('Internal Error: more than one comment found under on order')
+              }
+            } else {
+              this.$message.error(res.msg)
+            }
+          }
+      )
       this.loading = false
+    },
+    rateOrder(order) {
+      console.log(order)
+      let rating = {
+        orderID: order.id,
+        canteenID: order.canteen.id,
+        userID: order.user_id,
+        star: order.stars,
+        comment: order.comment
+      }
+      order.rated = true
+      console.log(rating)
+      //TODO integrate api
     },
     cancelOrder(id) {
       this.$confirm('Canceling the order, are you sure?', 'Order Cancellation', {
@@ -106,7 +170,7 @@ export default {
           }
         })
       })
-    }
+    },
   },
   computed: {
     isOwner() {

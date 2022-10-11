@@ -57,7 +57,7 @@ export default {
   },
   methods: {
     async getAllCanteens() {
-      await new Promise(r => setTimeout(r, 200)); //TODO DELETE, just for demonstration
+      await new Promise(r => setTimeout(r, 100)); //TODO DELETE, just for demonstration
       await this.canteenService.getAllCanteens().then(res => {
         if (res.code === 401) {
           this.$message.error('Login credential expired')
