@@ -63,4 +63,21 @@ export default class DishService {
         }
     }
 
+    deleteOrder = async orderIndex => {
+        try {
+            let res = await axios({
+                url: store.state.apiURL + '/dish/' + orderIndex,
+                method: "DELETE",
+                headers: {
+                    'content-type': 'application/json',
+                    'token': localStorage.getItem('userToken')
+                },
+            })
+            return res.data;
+        }
+        catch (error) {
+            console.log(error)
+        }
+    }
+
 }

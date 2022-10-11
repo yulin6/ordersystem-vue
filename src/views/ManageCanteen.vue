@@ -52,7 +52,7 @@
               <template v-slot:default="scope">
                 <el-button @click="edit(scope.row)">edit</el-button>
                 <el-button type="warning" @click="updateDish(scope.row, index)">save</el-button>
-                <el-button type="danger" @click="deleteRow(scope.$index, value)"> delete
+                <el-button type="danger" @click="deleteDish(scope.$index, value, index)"> delete
                 </el-button>
               </template>
             </el-table-column>
@@ -130,6 +130,16 @@ export default {
     },
     save(row) {
       row.isEditor = false;
+    },
+    async deleteDish(index, rows, dishIndex) {
+      await this.dishService.deleteDish(dishIndex).then(res => {
+        if (res.code === 1) {
+          this.deleteRow(index, rows);
+          this.$message.success(res.msg)
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
     },
     deleteRow(index, rows) {
       rows.splice(index, 1);
