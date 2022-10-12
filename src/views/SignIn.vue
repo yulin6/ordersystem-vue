@@ -130,6 +130,11 @@ export default {
       this.loading = false;
     },
     storeData(res) {
+      if(res.content.type === '1'){
+        res.content.isMember = res.customerInfo.is_member
+        res.content.rewardPoints = res.customerInfo.reward_points
+        console.log(res.content)
+      }
       localStorage.setItem('user', JSON.stringify(res.content))
       localStorage.setItem('userToken', res.token)
       localStorage.setItem('userType', this.isOwner)

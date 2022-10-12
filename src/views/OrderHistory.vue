@@ -2,13 +2,15 @@
   <el-container>
     <el-header>
       <home-menu></home-menu>
+      <cart></cart>
+      <profile></profile>
     </el-header>
     <el-skeleton :rows="15" style="width: 1000px; margin: 80px" :loading="loading" animated>
       <template #default>
         <el-main>
           <h3 style="margin-left: 38px" v-show="!isOwner">Order History</h3>
           <h3 style="margin-left: 38px" v-show="isOwner">Customer Order</h3>
-          <cart></cart>
+
           <el-timeline>
             <el-timeline-item
                 v-for="(order, index) in orderHistory"
@@ -69,6 +71,7 @@
 
 <script setup>
 import {ref} from 'vue'
+import Profile from "@/components/Profile";
 const colors = ref(['#99A9BF', '#F7BA2A', '#FF9900'])
 </script>
 
@@ -106,9 +109,11 @@ export default {
           this.$message.error(res.msg)
         }
       })
+      if(this.orderHistory.length === 0) this.loading = false
       this.orderHistory.forEach(order => {
         this.getOrderRatings(order)
       })
+
     },
     async getOrderRatings(order) {
       await new Promise(r => setTimeout(r, 100));//TODO DELETE, just for demonstration
@@ -143,9 +148,20 @@ export default {
         star: order.stars,
         comment: order.comment
       }
-      order.rated = true
-      console.log(rating)
-      //TODO integrate api
+
+      this.commentService.rateOrder(rating).then(res => {
+        if (res.code === 401) {
+          this.$message.error('Invalid login credential')
+          this.$router.push('/signin')
+          Utils.removeLocalData()
+        } else if (res.code === 200) {
+          this.$message.success('Thank you for your rating!')
+          order.rated = true
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
+
     },
     cancelOrder(id) {
       this.$confirm('Canceling the order, are you sure?', 'Order Cancellation', {

@@ -18,6 +18,10 @@ export const setCartCanteen = ({commit}, cartCanteen) => {
     commit("setCartCanteen", cartCanteen)
 }
 
+export const openCloseProfile = ({commit}) => {
+    commit("openCloseProfile")
+}
+
 export const openCloseCart = ({commit}) => {
     commit("openCloseCart")
 }

@@ -6,6 +6,7 @@
     <el-main>
       <canteen-cards></canteen-cards>
       <cart></cart>
+      <profile></profile>
     </el-main>
   </el-container>
 </template>
@@ -15,9 +16,10 @@ import HomeMenu from "@/components/HomeMenu";
 import CanteenCards from "@/components/CanteenCards";
 import Cart from "@/components/Cart";
 import Utils from "@/utils/utils";
+import Profile from "@/components/Profile";
 
 export default {
-  components: { HomeMenu, CanteenCards, Cart },
+  components: { HomeMenu, CanteenCards, Cart, Profile },
   computed: {
     isOwner() {
       return this.$store.state.isOwner

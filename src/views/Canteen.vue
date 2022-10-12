@@ -4,6 +4,7 @@
     <el-header>
       <home-menu></home-menu>
       <cart @refreshDishes="refreshDishes"></cart>
+      <profile></profile>
     </el-header>
     <el-skeleton :rows="15" style="width: 1000px; margin: 80px" :loading="loading" animated>
       <template #default>
@@ -31,10 +32,15 @@
               <el-table :data="value" style="width: 100%">
                 <el-table-column prop="name" width="200"/>
                 <el-table-column prop="price" width="120"/>
-                <el-table-column>
+                <el-table-column >
                   <template v-slot:default="scope">
-                    <el-input-number v-model="scope.row.selected" :min="0" :max="10"
-                                     @change="changeDishNum(scope.row)"></el-input-number>
+                    <el-input-number v-model="scope.row.selected"
+                                     :min="0"
+                                     :max="scope.row.stock"
+                                     @change="changeDishNum(scope.row)"
+                                     :disabled="scope.row.availability === 0">
+                    </el-input-number>
+                    <span v-if="scope.row.availability === 0" style="margin-left: 20px">Out of Stock</span>
                   </template>
                 </el-table-column>
               </el-table>
@@ -51,13 +57,14 @@
 <script>
 import HomeMenu from "@/components/HomeMenu";
 import Cart from "@/components/Cart";
+import Profile from "@/components/Profile";
 import DishService from "@/services/DishService";
 import Utils from "@/utils/utils";
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'Canteen',
-  components: {HomeMenu, Cart},
+  components: {HomeMenu, Cart, Profile},
   data() {
     return {
       loading: true,
