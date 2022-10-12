@@ -48,12 +48,14 @@
                 <span v-show="!scope.row.isEditor">{{scope.row.stock}}</span>
               </template>
             </el-table-column>
-            <el-table-column label="Operation" width="260">
+            <el-table-column label="Operation" width="300">
               <template v-slot:default="scope">
-                <el-button @click="edit(scope.row)">edit</el-button>
-                <el-button type="warning" @click="updateDish(scope.row, index)">save</el-button>
-                <el-button type="danger" @click="deleteDish(scope.$index, value, index)"> delete
+                <el-button @click="edit(scope.row)" size="small">edit</el-button>
+                <el-button type="warning" @click="updateDish(scope.row, index)" size="small">save</el-button>
+                <el-button type="danger" @click="deleteDish(scope.$index, value, index)" size="small"> delete
                 </el-button>
+                <el-checkbox style="margin-left: 10px" v-model="scope.row.availability" :checked="scope.row.availability">available
+                </el-checkbox>
               </template>
             </el-table-column>
           </el-table>
