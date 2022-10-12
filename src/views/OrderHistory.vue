@@ -148,9 +148,20 @@ export default {
         star: order.stars,
         comment: order.comment
       }
-      order.rated = true
-      console.log(rating)
-      //TODO integrate api
+
+      this.commentService.rateOrder(rating).then(res => {
+        if (res.code === 401) {
+          this.$message.error('Invalid login credential')
+          this.$router.push('/signin')
+          Utils.removeLocalData()
+        } else if (res.code === 200) {
+          this.$message.success('Thank you for your rating!')
+          order.rated = true
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
+
     },
     cancelOrder(id) {
       this.$confirm('Canceling the order, are you sure?', 'Order Cancellation', {
