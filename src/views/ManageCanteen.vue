@@ -54,7 +54,8 @@
                 <el-button type="warning" @click="updateDish(scope.row, index)" size="small">save</el-button>
                 <el-button type="danger" @click="deleteDish(scope.$index, value, index)" size="small"> delete
                 </el-button>
-                <el-checkbox style="margin-left: 10px" v-model="scope.row.availability" :checked="scope.row.availability">available
+                <el-checkbox style="margin-left: 10px" v-model="scope.row.availability"
+                  :checked="scope.row.availability">available
                 </el-checkbox>
               </template>
             </el-table-column>
@@ -113,23 +114,26 @@ export default {
     edit(row) {
       row.isEditor = true;
     },
-    async updateDish(row, index) {
-      let dishDetail = this.formattedDishDetail(index)
+    async updateDish(row, dishIndex) {
+      let dishDetail = this.formattedDishDetail(dishIndex)
       await this.dishService.updateDish(dishDetail).then(res => {
         if (res.code === 1) {
           this.save(row);
-          this.$message.success('Dish detail updated!')
+          this.$message.success(res.msg)
         } else {
           this.$message.error(res.msg)
         }
       })
     },
     formattedDishDetail(index) {
-      let dishDetail = {}
-      dishDetail.name = this.dishes[index].name;
-      dishDetail.price = this.dishes[index].price;
-      dishDetail.stock = this.dishes[index].stock;
-      dishDetail.type = this.dishes[index].dishType;
+      let dishDetail = {
+        name: this.dishes[index].name,
+        price: this.dishes[index].price,
+        description: this.dishes[index].description,
+        dishType: this.dishes[index].dishType,
+        stock: this.dishes[index].stock,
+        availability: this.dishes[index].availability
+      }
       return dishDetail
     },
     save(row) {
