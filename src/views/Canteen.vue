@@ -4,6 +4,7 @@
     <el-header>
       <home-menu></home-menu>
       <cart @refreshDishes="refreshDishes"></cart>
+      <profile></profile>
     </el-header>
     <el-skeleton :rows="15" style="width: 1000px; margin: 80px" :loading="loading" animated>
       <template #default>
@@ -56,13 +57,14 @@
 <script>
 import HomeMenu from "@/components/HomeMenu";
 import Cart from "@/components/Cart";
+import Profile from "@/components/Profile";
 import DishService from "@/services/DishService";
 import Utils from "@/utils/utils";
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'Canteen',
-  components: {HomeMenu, Cart},
+  components: {HomeMenu, Cart, Profile},
   data() {
     return {
       loading: true,

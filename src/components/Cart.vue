@@ -6,7 +6,7 @@
       <el-table-column label="Price ($)" property="price" width="200"/>
       <el-table-column>
         <template v-slot:default="scope">
-          <el-input-number v-model="scope.row.selected" :min="1" :max="10"
+          <el-input-number v-model="scope.row.selected" :min="1" :max="scope.row.stock"
                            @change="changeDishNum(scope.row)"></el-input-number>
           <el-button v-on:click="removeDish(scope.row.id)" type="warning" style="margin-left: 50px">
             <el-icon class="el-icon--left">
