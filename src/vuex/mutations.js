@@ -20,8 +20,8 @@ export const setUserType = (state,isOwner) =>{
     state.isOwner = isOwner
 }
 
-export const openCloseCart = (state) =>{
-    state.isCartOpen = !state.isCartOpen
+export const setCartOpenStatus = (state, isOpenOrClose) =>{
+    state.isCartOpen = isOpenOrClose
 }
 
 export const openCloseOrder = (state) =>{

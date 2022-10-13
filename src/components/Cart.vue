@@ -130,7 +130,7 @@ export default {
           Utils.removeLocalData()
         } else if (res.code === 200) {
           this.$message.success('Order placed!')
-          this.$store.dispatch('openCloseCart')
+          this.$store.dispatch('setCartOpenStatus', false)
           localStorage.setItem('cartCanteen', '')
           localStorage.setItem('cart', JSON.stringify([]))
           this.syncStoreAndLocalCart()
@@ -169,9 +169,8 @@ export default {
       get() {
         return this.$store.getters.isCartOpen
       },
-      set() {
-        // console.log(value)
-        return this.$store.dispatch('openCloseCart')
+      set(value) {
+        return this.$store.dispatch('setCartOpenStatus', value)
       }
     },
     canteen: {

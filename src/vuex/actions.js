@@ -22,8 +22,8 @@ export const openCloseProfile = ({commit}) => {
     commit("openCloseProfile")
 }
 
-export const openCloseCart = ({commit}) => {
-    commit("openCloseCart")
+export const setCartOpenStatus = ({commit}, isOpenOrClose) => {
+    commit("setCartOpenStatus", isOpenOrClose)
 }
 
 export const openCloseOrder = ({commit}) => {

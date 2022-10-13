@@ -48,6 +48,7 @@ export default {
   },
   created() {
     Utils.storeUserFromLocal()
+    this.$store.dispatch('setCartOpenStatus', false)
   },
   computed: {
     user() { return this.$store.getters.user },
@@ -58,7 +59,7 @@ export default {
       if (this.isOwner) {
         this.$router.push('/orderHistory');
       } else {
-        this.$store.dispatch("openCloseCart");
+        this.$store.dispatch('setCartOpenStatus', true)
       }
     },
     showProfile() {
