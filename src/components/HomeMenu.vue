@@ -48,7 +48,7 @@ export default {
   },
   created() {
     Utils.storeUserFromLocal()
-    // this.$store.dispatch('setCartOpenStatus', false)
+    this.$store.dispatch('setCartOpenStatus', false)
   },
   computed: {
     user() { return this.$store.getters.user },

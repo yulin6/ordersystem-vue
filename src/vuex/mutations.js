@@ -20,7 +20,7 @@ export const setUserType = (state,isOwner) =>{
     state.isOwner = isOwner
 }
 
-export const setCartOpenStatus = function(state, isOpenOrClose){
+export const setCartOpenStatus = (state, isOpenOrClose) =>{
     state.isCartOpen = isOpenOrClose
 }
 

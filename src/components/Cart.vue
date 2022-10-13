@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="Cart" v-model="isCartOpen" @close="action">
+  <el-dialog title="Cart" v-model="this.isCartOpen" @close="action">
     <h3>{{ canteen }}</h3>
     <el-table :data="cart">
       <el-table-column label="Dish Name" property="name" width="200"/>
@@ -175,10 +175,10 @@ export default {
         console.log(this.$store.state.isCartOpen)
         return this.$store.state.isCartOpen
       },
-      set(value) {
+      async set(value) {
         console.log("set")
         console.log(value)
-        return this.$store.commit('setCartOpenStatus', value)
+        await this.$store.commit('setCartOpenStatus', value)
       },
     },
     canteen: {
