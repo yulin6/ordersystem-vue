@@ -49,7 +49,10 @@ import { ref } from 'vue'
 
 const emit = defineEmits(['refreshDishes'])
 const action = () => emit('refreshDishes');
-const dinningTime= ref('')
+const dinningTime = ref('')
+defineExpose({
+  dinningTime
+})
 </script>
 
 <script>
