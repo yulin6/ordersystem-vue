@@ -43,7 +43,7 @@ jobs:
       - name: Biuld
         run: |
           npm install
-          npm run serve
+          npm run build
         
       # Runs a single command using the runners shell
       - name: Packing platform
