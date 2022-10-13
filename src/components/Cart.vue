@@ -152,6 +152,7 @@ export default {
     },
     formattedOrderDetail() {
       let localCart = this.getLocalCart()
+      console.log(this.dinningTime)
       let orderDetail = {
         orderTime: this.dinningTime.slice(0, -3),
         totalFee: this.totalFee,
