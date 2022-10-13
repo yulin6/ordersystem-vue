@@ -47,8 +47,7 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch('setUser', JSON.parse(localStorage.getItem('user')))
-    this.$store.dispatch('setUserType', JSON.parse(localStorage.getItem('userType')))
+    Utils.storeUserFromLocal()
   },
   computed: {
     user() { return this.$store.getters.user },

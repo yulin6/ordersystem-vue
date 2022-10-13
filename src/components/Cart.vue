@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="Cart" v-model="this.$store.state.isCartOpen" @close="action">
+  <el-dialog title="Cart" v-model="isCartOpen" @close="action">
     <h3>{{ canteen }}</h3>
     <el-table :data="cart">
       <el-table-column label="Dish Name" property="name" width="200"/>
@@ -165,6 +165,15 @@ export default {
   },
   computed: {
     // ...mapGetters(['cart'])
+    isCartOpen: {
+      get() {
+        return this.$store.getters.isCartOpen
+      },
+      set() {
+        // console.log(value)
+        return this.$store.dispatch('openCloseCart')
+      }
+    },
     canteen: {
       get() {
         return this.$store.getters.cartCanteen
