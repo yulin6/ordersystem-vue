@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="Cart" v-model="this.$store.state.isCartOpen" @close="action">
+  <el-dialog title="Cart" v-model="isCartOpen" @close="action">
     <h3>{{ canteen }}</h3>
     <el-table :data="cart">
       <el-table-column label="Dish Name" property="name" width="200"/>
@@ -71,9 +71,9 @@ export default {
     this.syncStoreAndLocalCart()
 
   },
-  mounted() {
-    this.$store.dispatch('setCartOpenStatus', false)
-  },
+  // mounted() {
+  //   this.$store.dispatch('setCartOpenStatus', false)
+  // },
   methods: {
     syncStoreAndLocalCart() {
       this.$store.dispatch('setCart', JSON.parse(localStorage.getItem('cart')))
@@ -169,18 +169,18 @@ export default {
   },
   computed: {
     // ...mapGetters(['cart'])
-    // isCartOpen: {
-    //   get() {
-    //     console.log("get")
-    //     console.log(this.$store.state.isCartOpen)
-    //     return this.$store.state.isCartOpen
-    //   },
-    //   set(value) {
-    //     console.log("set")
-    //     console.log(value)
-    //     return this.$store.commit('setCartOpenStatus', value)
-    //   }
-    // },
+    isCartOpen: {
+      get() {
+        console.log("get")
+        console.log(this.$store.state.isCartOpen)
+        return this.$store.state.isCartOpen
+      },
+      set(value) {
+        console.log("set")
+        console.log(value)
+        return this.$store.commit('setCartOpenStatus', value)
+      },
+    },
     canteen: {
       get() {
         return this.$store.getters.cartCanteen
