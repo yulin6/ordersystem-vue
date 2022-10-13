@@ -54,8 +54,8 @@ jobs:
         uses: easingthemes/ssh-deploy@main
         env:
           SSH_PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
-#           ARGS: "-rltgoDzvO"
-          SOURCE: "dist/"
+          ARGS: "-rltgoDzvO"
+          SOURCE: "dist"
           REMOTE_HOST: ${{ secrets.HOST }}
           REMOTE_USER: ${{ secrets.REMOTE_USER }}
           TARGET: /root/ordersystem-vue/  #注意这里
