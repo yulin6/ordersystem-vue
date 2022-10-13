@@ -10,7 +10,7 @@ module.exports = {
       // 比如我vue请求的是 '/api/user/getUser'，那么会帮我代理请求到后端地址
       '/api': {
         // 后端地址
-        target: "http://43.134.172.49:30180/Foodies",
+        target: "http://web/Foodies",
         /**
          官方文档的意思：将主机头的来源更改为目标 URL
          简单理解就是需不需要代理
