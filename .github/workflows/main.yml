@@ -55,11 +55,10 @@ jobs:
         env:
           SSH_PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
 #           ARGS: "-rltgoDzvO"
-          SOURCE: "target/project1-0.0.1-SNAPSHOT.jar"
+          SOURCE: "dist/"
           REMOTE_HOST: ${{ secrets.HOST }}
           REMOTE_USER: ${{ secrets.REMOTE_USER }}
-          TARGET: /root/project-1/dockerfiles/platform/project1-0.0.1-SNAPSHOT.jar  #注意这里
-#           EXCLUDE: "/dist/, /node_modules/"
+          TARGET: /root/ordersystem-vue/  #注意这里
 
       - name: deploy platform
         uses: garygrossgarten/github-action-ssh@release
