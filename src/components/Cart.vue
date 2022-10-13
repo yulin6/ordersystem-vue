@@ -71,6 +71,9 @@ export default {
     this.syncStoreAndLocalCart()
 
   },
+  mounted() {
+    this.$store.dispatch('setCartOpenStatus', false)
+  },
   methods: {
     syncStoreAndLocalCart() {
       this.$store.dispatch('setCart', JSON.parse(localStorage.getItem('cart')))
