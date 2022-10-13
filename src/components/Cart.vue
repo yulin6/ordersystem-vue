@@ -69,9 +69,11 @@ export default {
   },
   created() {
     this.syncStoreAndLocalCart()
+
+  },
+  mounted() {
     this.$store.dispatch('setCartOpenStatus', false)
   },
-
   methods: {
     syncStoreAndLocalCart() {
       this.$store.dispatch('setCart', JSON.parse(localStorage.getItem('cart')))
@@ -169,12 +171,14 @@ export default {
     // ...mapGetters(['cart'])
     isCartOpen: {
       get() {
-        // console.log(this.$store.getters.isCartOpen)
+        console.log("get")
+        console.log(this.$store.state.isCartOpen)
         return this.$store.state.isCartOpen
       },
       set(value) {
-        // console.log(value)
-        return this.$store.dispatch('setCartOpenStatus', value)
+        console.log("set")
+        console.log(value)
+        return this.$store.commit('setCartOpenStatus', value)
       }
     },
     canteen: {
