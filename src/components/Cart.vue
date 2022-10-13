@@ -45,8 +45,11 @@
 </template>
 
 <script setup>
+import { ref } from 'vue'
+
 const emit = defineEmits(['refreshDishes'])
 const action = () => emit('refreshDishes');
+const dinningTime= ref('')
 </script>
 
 <script>
@@ -61,7 +64,6 @@ export default {
   data() {
     return {
       orderService: OrderService.getInstance(),
-      dinningTime: '',
       totalFee: 0,
       isCartEmpty: true,
       loading: false
