@@ -142,6 +142,7 @@ export default {
       // this.$store.dispatch("openCloseCart")
       // this.$store.dispatch("openCloseCart")
       // this.$store.dispatch("setCart", [])
+      this.$store.dispatch('setCartOpenStatus', false)
       this.$store.dispatch("setUser", res.content)
       this.$store.dispatch("setToken", res.token)
       this.$store.dispatch("setUserType", this.isOwner)
