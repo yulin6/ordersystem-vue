@@ -167,7 +167,7 @@ export default {
     // ...mapGetters(['cart'])
     isCartOpen: {
       get() {
-        return this.$store.getters.isCartOpen
+        return this.$store.state.isCartOpen
       },
       set(value) {
         return this.$store.dispatch('setCartOpenStatus', value)
