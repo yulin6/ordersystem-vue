@@ -71,6 +71,7 @@ export default {
     this.syncStoreAndLocalCart()
     this.$store.dispatch('setCartOpenStatus', false)
   },
+
   methods: {
     syncStoreAndLocalCart() {
       this.$store.dispatch('setCart', JSON.parse(localStorage.getItem('cart')))
@@ -168,8 +169,8 @@ export default {
     // ...mapGetters(['cart'])
     isCartOpen: {
       get() {
-        console.log(this.$store.getters.isCartOpen)
-        return this.$store.getters.isCartOpen
+        // console.log(this.$store.getters.isCartOpen)
+        return this.$store.state.isCartOpen
       },
       set(value) {
         // console.log(value)
