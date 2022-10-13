@@ -45,12 +45,12 @@ jobs:
           npm install
           npm run build
         
-      # Runs a single command using the runners shell
-      - name: Packing platform
-        run: |
-          ls
+#       # Runs a single command using the runners shell
+#       - name: Packing platform
+#         run: |
+#           ls
         
-      - name: transit jar file to server
+      - name: transit vue dist file to server
         uses: easingthemes/ssh-deploy@main
         env:
           SSH_PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
@@ -60,13 +60,13 @@ jobs:
           REMOTE_USER: ${{ secrets.REMOTE_USER }}
           TARGET: /root/ordersystem-vue/  #注意这里
 
-      - name: deploy platform
+      - name: deploy vue-web
         uses: garygrossgarten/github-action-ssh@release
         with:
           command: |
-            cd /root/project-1/dockerfiles/platform
-            docker build -t project1:1.0.1 .
-            kubectl delete pod $(kubectl get pod -n project1 | grep platform | awk '{print $1}') -n project1
+            cd /root/ordersystem-vue
+            docker build -t web-vue:v1.1.0 .
+            kubectl delete pod $(kubectl get pod -n project1 | grep web-vue | awk '{print $1}') -n project1
           host: ${{ secrets.HOST }}
           username: root
           port: 22
