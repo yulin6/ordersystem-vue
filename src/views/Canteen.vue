@@ -3,7 +3,7 @@
   <el-container>
     <el-header>
       <home-menu></home-menu>
-      <cart ></cart>
+      <cart @refreshDishes="refreshDishes"></cart>
       <profile></profile>
     </el-header>
     <el-skeleton :rows="15" style="width: 1000px; margin: 80px" :loading="loading" animated>
@@ -88,6 +88,10 @@ export default {
           Utils.removeLocalData()
         } else if (res.code === 200) {
           this.dishes = res.data
+          //
+          // localStorage.setItem('cart', JSON.stringify(res.data))
+          // console.log(JSON.parse(localStorage.getItem('cart')))
+          // this.$store.dispatch('setCart', JSON.parse(localStorage.getItem('cart')))
         } else {
           this.$message.error(res.msg)
         }
@@ -97,19 +101,19 @@ export default {
     jumpToCategory(id) {
       document.getElementById(id).scrollIntoView();
     },
-    // refreshDishes() {
-    //   let localCart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : []
-    //   let previousSelected = {}
-    //   localCart.forEach(item => {
-    //     if (item.selected !== 0) previousSelected[item.id] = item.selected
-    //   })
-    //   Object.entries(this.dishes).forEach(item => {
-    //     item[1].forEach(dish => {
-    //       if (dish.id in previousSelected) dish.selected = previousSelected[dish.id]
-    //       else dish.selected = 0
-    //     })
-    //   })
-    // },
+    refreshDishes() {
+      let localCart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : []
+      let previousSelected = {}
+      localCart.forEach(item => {
+        if (item.selected !== 0) previousSelected[item.id] = item.selected
+      })
+      Object.entries(this.dishes).forEach(item => {
+        item[1].forEach(dish => {
+          if (dish.id in previousSelected) dish.selected = previousSelected[dish.id]
+          else dish.selected = 0
+        })
+      })
+    },
     changeDishNum(row) {
       //TODO ask to clear cart when selecting a new canteen
       this.setCartItems(row)
@@ -142,6 +146,14 @@ export default {
       }
       this.$store.dispatch('setCart', localCart)
     }
+  },
+  computed: {
+    // dishes: {
+    //   get() {
+    //     console.log(this.$store.getters.cart)
+    //     return this.$store.getters.cart
+    //   }
+    // }
   }
 
 }

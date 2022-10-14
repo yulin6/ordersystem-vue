@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="Cart"  v-model="isCartOpen" >
+  <el-dialog title="Cart"  v-model="isCartOpen" @close="refreshDishes">
     <h3>{{ canteen }}</h3>
     <el-table :data="cart">
       <el-table-column label="Dish Name" property="name" width="200"/>
@@ -59,6 +59,15 @@
 // import {mapGetters} from "vuex";
 import OrderService from "@/services/OrderService";
 import Utils from "@/utils/utils";
+// import { defineComponent } from 'vue'
+// export default defineComponent({
+//   setup (props, ctx) {
+//     const clickBtn = () => {
+//       ctx.emit("on-change", "hi~");
+//     };
+//     return { clickBtn}
+//   }
+// })
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
@@ -86,6 +95,9 @@ export default {
   //   this.$store.dispatch('setCartOpenStatus', false)
   // },
   methods: {
+    refreshDishes() {
+      this.$emit('refreshDishes')
+    },
     syncStoreAndLocalCart() {
       this.$store.dispatch('setCart', JSON.parse(localStorage.getItem('cart')))
       this.$store.dispatch('setCartCanteen', localStorage.getItem('cartCanteen'))
@@ -185,12 +197,12 @@ export default {
       get() {
         console.log("get")
         console.log(this.$store.state.isCartOpen)
-        return this.$store.state.isCartOpen
+        return this.$store.getters.isCartOpen
       },
-      async set(value) {
+      set(value) {
         console.log("set")
         console.log(value)
-        await this.$store.commit('setCartOpenStatus', value)
+        this.$store.dispatch('setCartOpenStatus', value)
       },
     },
     canteen: {
@@ -201,13 +213,15 @@ export default {
         return this.$store.dispatch('setCartCanteen', value)
       }
     },
-    cart: {
-      get() {
-        return this.$store.getters.cart
-      },
-      set(value) {
-        return this.$store.dispatch('setCart', value)
-      }
+    cart() {
+      return this.$store.getters.cart
+      // get() {
+      //   return this.$store.getters.cart
+      // },
+      // set(value) {
+      //   localStorage.setItem('setCart', JSON.stringify(value))
+      //   return this.$store.dispatch('setCart', value)
+      // }
     }
   },
 
