@@ -45,14 +45,13 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
 
 const emit = defineEmits(['refreshDishes'])
 const action = () => emit('refreshDishes');
-const dinningTime = ref('')
-defineExpose({
-  dinningTime
-})
+// const dinningTime = ref('')
+// defineExpose({
+//   dinningTime
+// })
 </script>
 
 <script>
@@ -60,21 +59,29 @@ defineExpose({
 // import {mapGetters} from "vuex";
 import OrderService from "@/services/OrderService";
 import Utils from "@/utils/utils";
+import { ref } from 'vue'
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'Cart',
+  // setup() {
+  //   const dinningTime = ref('')
+  //
+  //   return {
+  //     dinningTime
+  //   }
+  // },
   data() {
     return {
       orderService: OrderService.getInstance(),
       totalFee: 0,
+      dinningTime: '',
       isCartEmpty: true,
       loading: false
     }
   },
   created() {
     this.syncStoreAndLocalCart()
-
   },
   // mounted() {
   //   this.$store.dispatch('setCartOpenStatus', false)
@@ -152,7 +159,7 @@ export default {
     },
     formattedOrderDetail() {
       let localCart = this.getLocalCart()
-      console.log(this.dinningTime)
+      console.log(this.dinningTime) //TODO undefined here
       let orderDetail = {
         orderTime: this.dinningTime.slice(0, -3),
         totalFee: this.totalFee,
