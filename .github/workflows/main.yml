@@ -45,10 +45,10 @@ jobs:
           npm install
           npm run build
         
-#       # Runs a single command using the runners shell
-#       - name: Packing platform
-#         run: |
-#           ls
+      # Runs a single command using the runners shell
+      - name: Packing platform
+        run: |
+          npm version
         
       - name: transit vue dist file to server
         uses: easingthemes/ssh-deploy@main
