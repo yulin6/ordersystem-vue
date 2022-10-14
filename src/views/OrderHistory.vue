@@ -116,7 +116,6 @@ export default {
 
     },
     async getOrderRatings(order) {
-      await new Promise(r => setTimeout(r, 100));//TODO DELETE, just for demonstration
       await this.commentService.getRatingByOrderId(order.id).then(res => {
             if (res.code === 401) {
               this.$message.error('Invalid login credential')

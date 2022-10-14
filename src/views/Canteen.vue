@@ -80,7 +80,6 @@ export default {
   },
   methods: {
     async getDishes() {
-      await new Promise(r => setTimeout(r, 300)); //TODO DELETE, just for demonstration
       await this.dishService.getDishes(this.id).then(res => {
         if (res.code === 401) {
           this.$message.error('Invalid login credential')
@@ -115,7 +114,6 @@ export default {
       })
     },
     changeDishNum(row) {
-      //TODO ask to clear cart when selecting a new canteen
       let localCart = this.getLocalCart()
       if(localCart.length !== 0 && this.id != localCart[0].canteen_id){
         this.$confirm('Choosing a different restaurant will clear the current cart, are you sure?', {

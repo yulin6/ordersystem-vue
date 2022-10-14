@@ -95,7 +95,6 @@ export default {
   },
   methods: {
     async getDishes() {
-      await new Promise(r => setTimeout(r, 200)); //TODO DELETE, just for demonstration
       await this.dishService.getDishes(this.id).then(res => {
         if (res.code === 401) {
           this.$message.error('Invalid login credential')
