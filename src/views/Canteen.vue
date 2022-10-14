@@ -80,7 +80,7 @@ export default {
   },
   methods: {
     async getDishes() {
-      await new Promise(r => setTimeout(r, 100)); //TODO DELETE, just for demonstration
+      await new Promise(r => setTimeout(r, 300)); //TODO DELETE, just for demonstration
       await this.dishService.getDishes(this.id).then(res => {
         if (res.code === 401) {
           this.$message.error('Invalid login credential')
@@ -88,10 +88,7 @@ export default {
           Utils.removeLocalData()
         } else if (res.code === 200) {
           this.dishes = res.data
-          //
-          // localStorage.setItem('cart', JSON.stringify(res.data))
-          // console.log(JSON.parse(localStorage.getItem('cart')))
-          // this.$store.dispatch('setCart', JSON.parse(localStorage.getItem('cart')))
+          this.refreshDishes()
         } else {
           this.$message.error(res.msg)
         }
@@ -101,8 +98,11 @@ export default {
     jumpToCategory(id) {
       document.getElementById(id).scrollIntoView();
     },
+    getLocalCart() {
+      return localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : []
+    },
     refreshDishes() {
-      let localCart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : []
+      let localCart = this.getLocalCart()
       let previousSelected = {}
       localCart.forEach(item => {
         if (item.selected !== 0) previousSelected[item.id] = item.selected
@@ -116,18 +116,38 @@ export default {
     },
     changeDishNum(row) {
       //TODO ask to clear cart when selecting a new canteen
-      this.setCartItems(row)
-      this.setCartCanteenName()
+      let localCart = this.getLocalCart()
+      if(localCart.length !== 0 && this.id != localCart[0].canteen_id){
+        this.$confirm('Choosing a different restaurant will clear the current cart, are you sure?', {
+          confirmButtonText: 'Yes, clear',
+          cancelButtonText: 'Maybe Later',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: "Cart Updated"
+          })
+          localStorage.removeItem('cart')
+          this.setCartItems(row)
+          this.setCartCanteenName()
+        }).catch(() => {
+          this.refreshDishes()
+        })
+      } else {
+        this.setCartItems(row)
+        this.setCartCanteenName()
+      }
     },
     setCartCanteenName() {
-      let localCart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : []
+      let localCart = this.getLocalCart()
       let name = this.canteenName
       if (localCart.length === 0) name = ''
       localStorage.setItem('cartCanteen', name)
       this.$store.dispatch('setCartCanteen', name)
     },
     setCartItems(row) {
-      let localCart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : []
+      let localCart = this.getLocalCart()
+      console.log(localCart)
       if (localCart.length === 0) {
         localCart.push(row)
         localStorage.setItem('cart', JSON.stringify(localCart))
@@ -148,12 +168,6 @@ export default {
     }
   },
   computed: {
-    // dishes: {
-    //   get() {
-    //     console.log(this.$store.getters.cart)
-    //     return this.$store.getters.cart
-    //   }
-    // }
   }
 
 }

@@ -59,15 +59,6 @@
 // import {mapGetters} from "vuex";
 import OrderService from "@/services/OrderService";
 import Utils from "@/utils/utils";
-// import { defineComponent } from 'vue'
-// export default defineComponent({
-//   setup (props, ctx) {
-//     const clickBtn = () => {
-//       ctx.emit("on-change", "hi~");
-//     };
-//     return { clickBtn}
-//   }
-// })
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
@@ -91,9 +82,6 @@ export default {
   created() {
     this.syncStoreAndLocalCart()
   },
-  // mounted() {
-  //   this.$store.dispatch('setCartOpenStatus', false)
-  // },
   methods: {
     refreshDishes() {
       this.$emit('refreshDishes')
@@ -170,7 +158,6 @@ export default {
     },
     formattedOrderDetail() {
       let localCart = this.getLocalCart()
-      console.log(this.dinningTime) //TODO undefined here
       let orderDetail = {
         orderTime: this.dinningTime.slice(0, -3),
         totalFee: this.totalFee,
@@ -195,13 +182,9 @@ export default {
     // ...mapGetters(['cart'])
     isCartOpen: {
       get() {
-        console.log("get")
-        console.log(this.$store.state.isCartOpen)
         return this.$store.getters.isCartOpen
       },
       set(value) {
-        console.log("set")
-        console.log(value)
         this.$store.dispatch('setCartOpenStatus', value)
       },
     },
