@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="Cart"  v-model="isCartOpen" @close="action">
+  <el-dialog title="Cart"  v-model="isCartOpen" >
     <h3>{{ canteen }}</h3>
     <el-table :data="cart">
       <el-table-column label="Dish Name" property="name" width="200"/>
@@ -44,15 +44,15 @@
   </el-dialog>
 </template>
 
-<script setup>
+<!--<script setup>-->
 
-const emit = defineEmits(['refreshDishes'])
-const action = () => emit('refreshDishes');
-// const dinningTime = ref('')
-// defineExpose({
-//   dinningTime
-// })
-</script>
+<!--const emit = defineEmits(['refreshDishes'])-->
+<!--const action = () => emit('refreshDishes');-->
+<!--// const dinningTime = ref('')-->
+<!--// defineExpose({-->
+<!--//   dinningTime-->
+<!--// })-->
+<!--</script>-->
 
 <script>
 

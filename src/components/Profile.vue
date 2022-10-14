@@ -22,10 +22,6 @@
   </el-dialog>
 </template>
 
-<script setup>
-
-</script>
-
 <script>
 import Utils from "@/utils/utils";
 
