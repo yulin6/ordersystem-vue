@@ -42,9 +42,6 @@ export default {
       } else {
         router.push({ name: 'canteen', params: { id: this.canteen.id }, state: { canteenName: this.canteen.name } })
       }
-    },
-    editCanteen() {
-      this.$store.dispatch("openCloseEditCanteen");
     }
   },
   computed: {

@@ -15,6 +15,7 @@ const store = new Vuex.Store({
         isOrderOpen: false,
         isEditCanteenOpen: false,
         isAddCanteen: false,
+        isAddDishOpen: false,
         isOwner: false,
         user: null,
         isLogin: false,
