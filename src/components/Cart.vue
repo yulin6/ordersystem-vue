@@ -59,7 +59,6 @@ const action = () => emit('refreshDishes');
 // import {mapGetters} from "vuex";
 import OrderService from "@/services/OrderService";
 import Utils from "@/utils/utils";
-import { ref } from 'vue'
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
