@@ -53,12 +53,12 @@
             <el-table-column label="Availability" width="160">
               <template v-slot:default="scope">
                 <!-- TODO: fix availability display issue -->
-                <!-- {{scope.row.availability}} -->
+                {{scope.row.availability}}
                 <el-checkbox style="margin-left: 26px" v-show="scope.row.isEditor" v-model="scope.row.availability"
-                  :checked="scope.row.isChecked" disabled>
+                  :checked="scope.row.availability" disabled>
                 </el-checkbox>
                 <el-checkbox style="margin-left: 26px" v-show="!scope.row.isEditor" v-model="scope.row.availability"
-                  :checked="scope.row.isChecked" enabled>
+                  :checked="scope.row.availability" enabled>
                 </el-checkbox>
               </template>
             </el-table-column>
@@ -98,7 +98,6 @@ export default {
       dishes: [],
       dishService: DishService.getInstance(),
       isCatEditor: false,
-      isChecked: false,
       type_id: null,
       type: ''
     }
