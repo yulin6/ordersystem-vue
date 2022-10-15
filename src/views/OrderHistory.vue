@@ -8,8 +8,12 @@
     <el-skeleton :rows="15" style="width: 1000px; margin: 80px" :loading="loading" animated>
       <template #default>
         <el-main>
-          <h3 style="margin-left: 38px" v-show="!isOwner">Order History</h3>
-          <h3 style="margin-left: 38px" v-show="isOwner">Customer Order</h3>
+          <div style="margin-left: 38px">
+
+            <h3 v-show="!isOwner">Order History</h3>
+            <h3 v-show="isOwner">Customer Orders</h3>
+            <el-select v-show="isOwner" placeholder="Select"></el-select>
+          </div>
 
           <el-timeline>
             <el-timeline-item

@@ -53,11 +53,14 @@ export default {
     }
   },
   created() {
-    this.getAllCanteens()
+    this.getCanteens()
   },
   methods: {
-    async getAllCanteens() {
-      await this.canteenService.getAllCanteens().then(res => {
+    async getCanteens() {
+      console.log(this.user.id)
+      let id = undefined
+      if (this.isOwner) id = this.user.id
+      await this.canteenService.getCanteensByUserId(id).then(res => {
         if (res.code === 401) {
           this.$message.error('Login credential expired')
           this.$router.push('/signin')
@@ -81,6 +84,9 @@ export default {
   computed: {
     isOwner() {
       return this.$store.state.isOwner
+    },
+    user() {
+      return this.$store.state.user
     }
   },
 

@@ -28,4 +28,22 @@ export default class CanteenService {
             console.log(error)
         }
     }
+
+    getCanteensByUserId = async (userId) => {
+        try{
+            let res = await axios({
+                url: store.state.apiURL + '/canteen',
+                params: {user_id: userId},
+                method: "GET",
+                headers: {
+                    'content-type': 'application/json',
+                    'token': localStorage.getItem('userToken')
+                },
+            })
+            return res.data;
+        }
+        catch(error){
+            console.log(error)
+        }
+    }
 }
