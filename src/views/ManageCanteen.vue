@@ -9,18 +9,18 @@
         <el-menu default-active="1" class="el-menu-vertical-demo">
           <el-menu-item v-for="(dish, index) in dishes" :index="dish.type" :key="index"
             v-on:click="jumpToCategory(dish.type)">
-            <input style="width: 100px" type="text" v-show="isCatEditor" />
+            <input style="width: 100px" type="text" v-model="type" v-show="isCatEditor" />
             <span v-show="!isCatEditor">{{ dish.type }}</span>
             <el-button style="margin-left: 6px" type="danger" @click="deleteRow(index, Object.keys(dishes))"
               v-show="isCatEditor" size="small"> delete
             </el-button>
           </el-menu-item>
         </el-menu>
-        <el-button style="margin-top: 10px" @click="editCategory()" v-show="!isCatEditor">edit category
+        <el-button style="margin-top: 10px" @click="editCategory" v-show="!isCatEditor">edit category
         </el-button>
-        <el-button style="margin-top: 10px" @click="addCategory(category)" v-show="isCatEditor">add category
+        <el-button style="margin-top: 10px" @click="addCategory" v-show="isCatEditor">add category
         </el-button>
-        <el-button style="margin-top: 10px" type="warning" @click="saveCategory(category)" v-show="isCatEditor">save
+        <el-button style="margin-top: 10px" type="warning" @click="saveCategory" v-show="isCatEditor">save
         </el-button>
       </el-aside>
 
@@ -50,6 +50,7 @@
             </el-table-column>
             <el-table-column label="Availability" width="160">
               <template v-slot:default="scope">
+                <!-- TODO: fix availability display issue -->
                 <!-- {{scope.row.availability}} -->
                 <el-checkbox style="margin-left: 26px" v-show="scope.row.isEditor" v-model="scope.row.availability"
                   :checked="scope.row.isChecked" disabled>
@@ -96,6 +97,8 @@ export default {
       dishService: DishService.getInstance(),
       isCatEditor: false,
       isChecked: false,
+      type_id: null,
+      type: ''
     }
   },
   created() {
@@ -171,7 +174,25 @@ export default {
     addDish() {
       this.$store.dispatch("openCloseAddDish", this.id);
     },
+    async updateDishType() {
+      await this.dishService.updateDishType(this.type, this.type_id).then(res => {
+        if (res.code === 401) {
+          this.$message.error('Invalid login credential')
+          this.$router.push('/signin')
+          Utils.removeLocalData()
+        } else if (res.code === 200) {
+          this.$message.success(res.msg)
+          this.getDishes()
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
+    },
     editCategory() {
+      console.log("***", this.type, this.type_id)
+      if (this.type != '' && this.type_id != null) {
+        this.updateDishType()
+      }
       this.isCatEditor = true;
     },
     saveCategory() {
