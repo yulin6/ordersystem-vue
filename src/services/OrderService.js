@@ -39,6 +39,33 @@ export default class OrderService {
         }
     }
 
+    getOrdersByCanteenId = async id => {
+        try{
+            let res = await axios({
+                url: store.state.apiURL + '/order',
+                method: "GET",
+                params: {
+                    canteen_id: id
+                },
+                headers: {
+                    'content-type': 'application/json',
+                    'token': localStorage.getItem('userToken')
+                },
+            })
+            if(res.data.code === 200) {
+                res.data.data.forEach(order => {
+                    order.orderItems.forEach(item => {
+                        item.name = item.dish.name
+                    })
+                })
+            }
+            return res.data;
+        }
+        catch(error){
+            console.log(error)
+        }
+    }
+
     placeOrder = async orderDetail => {
         try{
             let res = await axios({

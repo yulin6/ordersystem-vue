@@ -57,7 +57,6 @@ export default {
   },
   methods: {
     async getCanteens() {
-      console.log(this.user.id)
       let id = undefined
       if (this.isOwner) id = this.user.id
       await this.canteenService.getCanteensByUserId(id).then(res => {

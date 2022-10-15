@@ -8,11 +8,17 @@
     <el-skeleton :rows="15" style="width: 1000px; margin: 80px" :loading="loading" animated>
       <template #default>
         <el-main>
-          <div style="margin-left: 38px">
+          <div style="margin: 38px">
 
             <h3 v-show="!isOwner">Order History</h3>
             <h3 v-show="isOwner">Customer Orders</h3>
-            <el-select v-show="isOwner" placeholder="Select"></el-select>
+            <el-select v-show="isOwner" v-model="selectedCanteenId" v-on:change="getCanteenOrders" placeholder="Select Canteen">
+              <el-option
+                  v-for="canteen in canteens"
+                  :key="canteen.id"
+                  :label="canteen.name"
+                  :value="canteen.id"/>
+            </el-select>
           </div>
 
           <el-timeline>
@@ -31,18 +37,39 @@
                 <div style="margin-left: 12px">
                   <h4>Total Price: ${{ order.total_fee }}</h4>
                   <h4>Dinning Time: {{ order.order_time }}</h4>
+                  <h4>Customer Name: {{ order.user_id }} TODO update to customer name</h4>
                   <h4>Status:
                     <el-tag v-if="order.status === 0" size="large" type="warning">To be seated</el-tag>
                     <el-tag v-if="order.status === 1" size="large" type="success">Completed</el-tag>
                     <el-tag v-if="order.status === -1" size="large" type="info">Canceled</el-tag>
-                    <el-button v-if="order.status === 0"
-                               v-on:click="cancelOrder(order.id)"
+                    <el-button v-if="order.status === 0 && !isOwner"
+                               v-on:click="updateOrderStatus(order.id, -1)"
                                type="danger"
                                style="margin-left: 10px" link>
                       Cancel
                     </el-button>
                   </h4>
-                  <h4 v-if="!order.rated && order.status === 1">
+                  <h4 v-if="order.status !== 1 && isOwner">Actions:
+                    <el-button v-if="order.status === 0"
+                               v-on:click="updateOrderStatus(order.id, -1)"
+                               type="danger"
+                               style="margin-left: 10px">
+                      Cancel
+                    </el-button>
+                    <el-button v-if="order.status === 0"
+                               v-on:click="updateOrderStatus(order.id, 1)"
+                               type="success"
+                               style="margin-left: 10px">
+                      Complete
+                    </el-button>
+                    <el-button v-if="order.status === -1"
+                               v-on:click="updateOrderStatus(order.id, 0)"
+                               type="success"
+                               style="margin-left: 10px">
+                      Reactive
+                    </el-button>
+                  </h4>
+                  <h4 v-if="!order.rated && order.status === 1 && !isOwner">
                     Rate your experience:
                     <div>
                       <el-rate v-model="order.stars" :colors="colors"/>
@@ -58,6 +85,7 @@
                     </div>
                   </h4>
                   <div v-if="order.rated">
+                    <h4>Customer Review: </h4>
                         <el-rate v-model="order.stars" :colors="colors" size="large" style="margin-top: 5px" disabled/>
                         <p style="font-style: italic;">"{{ order.comment }}"</p>
                   </div>
@@ -84,23 +112,61 @@ import HomeMenu from "@/components/HomeMenu";
 import Cart from "@/components/Cart";
 import OrderService from "@/services/OrderService";
 import CommentService from "@/services/CommentService";
+import CanteenService from "@/services/CanteenService";
 import Utils from "@/utils/utils";
 
 export default {
   components: {HomeMenu, Cart},
-  created() {
-    Utils.storeUserFromLocal()
-    this.getOrderHistory()
-  },
   data() {
     return {
       loading: true,
+      canteenService: CanteenService.getInstance(),
       orderService: OrderService.getInstance(),
       commentService: CommentService.getInstance(),
       orderHistory: [],
+      canteens: [],
+      selectedCanteenId: ''
     }
   },
+  created() {
+    Utils.storeUserFromLocal()
+    this.getOrderHistory()
+    if (this.isOwner) this.getCanteens()
+  },
   methods: {
+    async getCanteens() {
+      this.loading = true
+      await this.canteenService.getCanteensByUserId(this.user.id).then(res => {
+        if (res.code === 401) {
+          this.$message.error('Login credential expired')
+          this.$router.push('/signin')
+          Utils.removeLocalData()
+        } else if (res.code === 200) {
+          this.canteens = res.data
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
+      this.loading = false
+    },
+    async getCanteenOrders() {
+      this.loading = true
+      await this.orderService.getOrdersByCanteenId(this.selectedCanteenId).then(res => {
+        if (res.code === 401) {
+          this.$message.error('Invalid login credential')
+          this.$router.push('/signin')
+          Utils.removeLocalData()
+        } else if (res.code === 200) {
+          this.orderHistory = res.data
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
+      if(this.orderHistory.length === 0) this.loading = false
+      this.orderHistory.forEach(order => {
+        this.getOrderRatings(order)
+      })
+    },
     async getOrderHistory() {
       await this.orderService.getOrdersByUserId(this.$store.state.user.id).then(res => {
         if (res.code === 401) {
@@ -117,7 +183,6 @@ export default {
       this.orderHistory.forEach(order => {
         this.getOrderRatings(order)
       })
-
     },
     async getOrderRatings(order) {
       await this.commentService.getRatingByOrderId(order.id).then(res => {
@@ -165,13 +230,13 @@ export default {
       })
 
     },
-    cancelOrder(id) {
-      this.$confirm('Canceling the order, are you sure?', 'Order Cancellation', {
-        confirmButtonText: 'Yes, Cancel',
+    updateOrderStatus(id, orderStatus) {
+      this.$confirm('Updating the order status, are you sure?', 'Order Status Update', {
+        confirmButtonText: 'Yes, Update',
         cancelButtonText: 'Maybe Later',
         type: 'warning'
       }).then(() => {
-        let status = {orderID: id, status: -1}
+        let status = {orderID: id, status: orderStatus}
         this.orderService.updateOrderStatus(status).then(res => {
           if (res.code === 401) {
             this.$message.error('Invalid login credential')
@@ -180,9 +245,10 @@ export default {
           } else if (res.code === 200) {
             this.$message({
               type: 'success',
-              message: "Order Canceled"
+              message: "Order Status Updated"
             })
-            this.getOrderHistory()
+            if(this.isOwner) this.getCanteenOrders()
+            else this.getOrderHistory()
           } else {
             this.$message.error(res.msg)
           }
@@ -193,6 +259,9 @@ export default {
   computed: {
     isOwner() {
       return this.$store.state.isOwner
+    },
+    user() {
+      return this.$store.state.user
     }
   },
 }
