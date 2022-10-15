@@ -9,16 +9,21 @@
       <template #default>
         <el-main>
           <div style="margin: 38px">
-
             <h3 v-show="!isOwner">Order History</h3>
-            <h3 v-show="isOwner">Customer Orders</h3>
-            <el-select v-show="isOwner" v-model="selectedCanteenId" v-on:change="getCanteenOrders" placeholder="Select Canteen">
+            <h3 v-show="isOwner">Customer Order</h3>
+            <el-select
+                name="tes"
+                v-show="isOwner"
+                v-model="selectedCanteenId"
+                       v-on:change="getCanteenOrders"
+                       placeholder="Select Canteen">
               <el-option
                   v-for="canteen in canteens"
                   :key="canteen.id"
                   :label="canteen.name"
                   :value="canteen.id"/>
             </el-select>
+
           </div>
 
           <el-timeline>
@@ -37,7 +42,7 @@
                 <div style="margin-left: 12px">
                   <h4>Total Price: ${{ order.total_fee }}</h4>
                   <h4>Dinning Time: {{ order.order_time }}</h4>
-                  <h4>Customer Name: {{ order.user_id }} TODO update to customer name</h4>
+                  <h4>Customer Name: {{ order.username }}</h4>
                   <h4>Status:
                     <el-tag v-if="order.status === 0" size="large" type="warning">To be seated</el-tag>
                     <el-tag v-if="order.status === 1" size="large" type="success">Completed</el-tag>
@@ -86,8 +91,8 @@
                   </h4>
                   <div v-if="order.rated">
                     <h4>Customer Review: </h4>
-                        <el-rate v-model="order.stars" :colors="colors" size="large" style="margin-top: 5px" disabled/>
-                        <p style="font-style: italic;">"{{ order.comment }}"</p>
+                    <el-rate v-model="order.stars" :colors="colors" size="large" style="margin-top: 5px" disabled/>
+                    <p style="font-style: italic;">"{{ order.comment }}"</p>
                   </div>
                 </div>
               </el-card>
@@ -104,6 +109,7 @@
 <script setup>
 import {ref} from 'vue'
 import Profile from "@/components/Profile";
+
 const colors = ref(['#99A9BF', '#F7BA2A', '#FF9900'])
 </script>
 
@@ -117,21 +123,21 @@ import Utils from "@/utils/utils";
 
 export default {
   components: {HomeMenu, Cart},
-  data: () =>(
+  data: () => (
       {
-      loading: true,
-      canteenService: CanteenService.getInstance(),
-      orderService: OrderService.getInstance(),
-      commentService: CommentService.getInstance(),
-      orderHistory: [],
-      canteens: [],
-      selectedCanteenId: ''
-    }
+        loading: true,
+        canteenService: CanteenService.getInstance(),
+        orderService: OrderService.getInstance(),
+        commentService: CommentService.getInstance(),
+        orderHistory: [],
+        canteens: [],
+        selectedCanteenId: ''
+      }
   ),
   created() {
     Utils.storeUserFromLocal()
-    this.getOrderHistory()
     if (this.isOwner) this.getCanteens()
+    else this.getOrderHistory()
   },
   methods: {
     async getCanteens() {
@@ -147,10 +153,13 @@ export default {
           this.$message.error(res.msg)
         }
       })
-      this.loading = false
+      if (this.canteens.length !== 0) {
+        this.selectedCanteenId = this.canteens[0].id
+        await this.getCanteenOrders()
+      } else this.loading = false
     },
     async getCanteenOrders() {
-      this.loading = true
+      // this.loading = true
       await this.orderService.getOrdersByCanteenId(this.selectedCanteenId).then(res => {
         if (res.code === 401) {
           this.$message.error('Invalid login credential')
@@ -162,7 +171,7 @@ export default {
           this.$message.error(res.msg)
         }
       })
-      if(this.orderHistory.length === 0) this.loading = false
+      if (this.orderHistory.length === 0) this.loading = false
       this.orderHistory.forEach(order => {
         this.getOrderRatings(order)
       })
@@ -179,7 +188,7 @@ export default {
           this.$message.error(res.msg)
         }
       })
-      if(this.orderHistory.length === 0) this.loading = false
+      if (this.orderHistory.length === 0) this.loading = false
       this.orderHistory.forEach(order => {
         this.getOrderRatings(order)
       })
@@ -191,11 +200,11 @@ export default {
               this.$router.push('/signin')
               Utils.removeLocalData()
             } else if (res.code === 200) {
-              if(res.data.length === 1){
+              if (res.data.length === 1) {
                 order.rated = true
                 order.stars = res.data[0].star
                 order.comment = res.data[0].comment
-              } else if(res.data.length === 0) {
+              } else if (res.data.length === 0) {
                 order.rated = false
               } else {
                 this.$message.error('Internal Error: more than one comment found under on order')
@@ -247,7 +256,7 @@ export default {
               type: 'success',
               message: "Order Status Updated"
             })
-            if(this.isOwner) this.getCanteenOrders()
+            if (this.isOwner) this.getCanteenOrders()
             else this.getOrderHistory()
           } else {
             this.$message.error(res.msg)
