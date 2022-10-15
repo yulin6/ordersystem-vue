@@ -17,12 +17,13 @@
         <el-col v-for="(canteen, index) in canteens" :key="index" :span="3" class="card">
           <canteen-card :canteen="canteen"></canteen-card>
           <el-row>
-            <el-button v-show="isOwner" style="margin-top: 8px; margin-left: 16px;" v-on:click="editCanteen"
+            <el-button v-show="isOwner" style="margin-top: 8px; margin-left: 8px;" v-on:click="editCanteen(canteen.id)"
               size="small">
               edit info
             </el-button>
-            <el-button v-show="isOwner" style="margin-top: 8px;" type="danger" v-on:click="deleteCanteen(canteen.id)"
-              size="small">
+            <edit-canteen></edit-canteen>
+            <el-button v-show="isOwner" style="margin-top: 8px; margin-left: 8px;" type="danger"
+              v-on:click="deleteCanteen(canteen.id)" size="small">
               delete
             </el-button>
           </el-row>
@@ -41,10 +42,11 @@ import CanteenCard from "@/components/CanteenCard";
 import AddCanteenCard from "@/components/AddCanteenCard";
 import CanteenService from "@/services/CanteenService";
 import Utils from "@/utils/utils";
+import EditCanteen from "@/components/EditCanteen";
 
 export default {
   name: 'CanteenCards',
-  components: { CanteenCard, AddCanteenCard },
+  components: { CanteenCard, AddCanteenCard, EditCanteen },
   data() {
     return {
       canteenService: CanteenService.getInstance(),
@@ -73,8 +75,9 @@ export default {
       })
       this.loading = false
     },
-    editCanteen() {
-      this.$store.dispatch("openCloseEditCanteen", false);
+    editCanteen(canteenID) {
+      this.$store.dispatch("openCloseEditCanteen", canteenID);
+      console.log("editCanteen", this.$store.state.canteenID)
     },
     async deleteCanteen(canteenId) {
       await this.canteenService.deleteCanteen(canteenId).then(res => {

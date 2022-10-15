@@ -52,6 +52,8 @@ export default {
   name: 'EditCanteen',
   data() {
     return {
+      canteenID: this.$store.state.canteenID,
+      canteens: [],
       canteenService: CanteenService.getInstance(),
       picfileList: [],
       options: [],
@@ -62,9 +64,6 @@ export default {
         canteenTypes: [],
       },
     }
-  },
-  updated() {
-    this.loadFormData()
   },
   computed: {
     isAddCanteen() {
@@ -80,9 +79,33 @@ export default {
     }
   },
   created() {
+    Utils.storeUserFromLocal()
+    // console.log("created", this.$store.state.canteenID)
     this.getAllCanteenTypes()
+    this.getAllCanteens()
   },
   methods: {
+    async getAllCanteens() {
+      await this.canteenService.getAllCanteens().then(res => {
+        if (res.code === 401) {
+          this.$message.error('Login credential expired')
+          this.$router.push('/signin')
+          Utils.removeLocalData()
+        } else if (res.code === 200) {
+          this.canteens = res.data
+          // let canteens = res.data
+          // for (let i = 0; i < canteens.length; i++) {
+          //   if (canteens[i].id == canteenID) {
+          //     this.canteen = canteens[i]
+          //     console.log("***", this.canteen)
+          //   }
+          return null
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
+      this.loading = false
+    },
     async getAllCanteenTypes() {
       await this.canteenService.getAllCanteenTypes().then(res => {
         if (res.code === 401) {
@@ -118,6 +141,7 @@ export default {
       this.picfileList = []
     }
   }
+
 }
 </script>
 

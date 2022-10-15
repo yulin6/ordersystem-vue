@@ -21,7 +21,8 @@ export default {
   components: { EditCanteen },
   methods: {
     addCanteen() {
-      this.$store.dispatch("openCloseEditCanteen", true);
+      // -1: isAddCanteen is true
+      this.$store.dispatch("openCloseEditCanteen", -1);
     }
   }
 
