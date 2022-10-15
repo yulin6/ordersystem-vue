@@ -50,10 +50,10 @@ export default class DishService {
         }
     }
 
-    updateDish = async dishDetail => {
+    updateDish = async (dishDetail, dishID) => {
         try {
             let res = await axios({
-                url: store.state.apiURL + '/dish',
+                url: store.state.apiURL + '/dish/' + JSON.stringify(dishID),
                 method: "PUT",
                 data: JSON.stringify(dishDetail),
                 headers: {

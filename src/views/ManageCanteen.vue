@@ -34,29 +34,37 @@
                 <span v-show="!scope.row.isEditor">{{scope.row.name}}</span>
               </template>
             </el-table-column>
-            <el-table-column label="Dish Price ($)" width="200">
+            <el-table-column label="Dish Price ($)" width="160">
               <template v-slot:default="scope">
                 <el-input-number v-model="scope.row.price" :min="0" :max="100" v-show="scope.row.isEditor">
                 </el-input-number>
                 <span v-show="!scope.row.isEditor">{{scope.row.price}}</span>
               </template>
             </el-table-column>
-            <el-table-column label="Quantity in Stock" width="200">
+            <el-table-column label="Quantity in Stock" width="160">
               <template v-slot:default="scope">
                 <el-input-number v-model="scope.row.stock" :min="0" :max="10" v-show="scope.row.isEditor">
                 </el-input-number>
                 <span v-show="!scope.row.isEditor">{{scope.row.stock}}</span>
               </template>
             </el-table-column>
-            <el-table-column label="Operation" width="300">
+            <el-table-column label="Availability" width="160">
+              <template v-slot:default="scope">
+                <!-- {{scope.row.availability}} -->
+                <el-checkbox style="margin-left: 26px" v-show="scope.row.isEditor" v-model="scope.row.availability"
+                  :checked="scope.row.isChecked" disabled>
+                </el-checkbox>
+                <el-checkbox style="margin-left: 26px" v-show="!scope.row.isEditor" v-model="scope.row.availability"
+                  :checked="scope.row.isChecked" enabled>
+                </el-checkbox>
+              </template>
+            </el-table-column>
+            <el-table-column label="Operation" width="200">
               <template v-slot:default="scope">
                 <el-button @click="edit(scope.row)" size="small">edit</el-button>
-                <el-button type="warning" @click="updateDish(scope.row, index)" size="small">save</el-button>
+                <el-button type="warning" @click="updateDish(scope.row)" size="small">save</el-button>
                 <el-button type="danger" @click="deleteDish(scope.row.id)" size="small"> delete
                 </el-button>
-                <el-checkbox style="margin-left: 10px" v-model="scope.row.availability"
-                  :checked="scope.row.availability">available
-                </el-checkbox>
               </template>
             </el-table-column>
           </el-table>
@@ -87,6 +95,7 @@ export default {
       dishes: [],
       dishService: DishService.getInstance(),
       isCatEditor: false,
+      isChecked: false,
     }
   },
   created() {
@@ -114,30 +123,32 @@ export default {
     edit(row) {
       row.isEditor = true;
     },
-    async updateDish(row, dishIndex) {
-      let dishDetail = this.formattedDishDetail(dishIndex)
-      await this.dishService.updateDish(dishDetail).then(res => {
-        if (res.code === 1) {
-          this.save(row);
+    async updateDish(dish) {
+      let dishDetail = this.formattedDishDetail(dish)
+      await this.dishService.updateDish(dishDetail, dish.id).then(res => {
+        if (res.code === 401) {
+          this.$message.error('Invalid login credential')
+          this.$router.push('/signin')
+          Utils.removeLocalData()
+        } else if (res.code === 200) {
           this.$message.success(res.msg)
+          this.getDishes()
         } else {
           this.$message.error(res.msg)
         }
       })
     },
-    formattedDishDetail(index) {
+    formattedDishDetail(dish) {
       let dishDetail = {
-        name: this.dishes[index].name,
-        price: this.dishes[index].price,
-        description: this.dishes[index].description,
-        dishType: this.dishes[index].dishType,
-        stock: this.dishes[index].stock,
-        availability: this.dishes[index].availability
+        name: dish.name,
+        price: dish.price,
+        description: dish.description,
+        type_id: dish.type_id,
+        stock: dish.stock,
+        availability: dish.availability
       }
+      // console.log("***1", dishDetail.availability)
       return dishDetail
-    },
-    save(row) {
-      row.isEditor = false;
     },
     async deleteDish(dishId) {
       // delete one dish
