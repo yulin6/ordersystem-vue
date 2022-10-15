@@ -5,29 +5,30 @@
       <el-form :model="dishInfo" :rules="rules" ref="form" @submit.prevent="login">
         <el-form-item prop="name">
           <p>Dish Name:</p>
-          <el-input style="margin-left: 10px" v-model="name" placeholder="text" clearable class="input"></el-input>
+          <el-input style="margin-left: 10px" v-model="dishInfo.name" placeholder="text" clearable class="input">
+          </el-input>
         </el-form-item>
         <el-form-item prop="type_id">
           <p>Dish Type:</p>
-          <el-select style="margin-left: 10px" clearable placeholder="select one type" class="input">
+          <el-select style="margin-left: 10px" v-model="dishInfo.type_id" clearable class="input">
             <!-- TODO: The value should be type_id rather than index. -->
-            <el-option v-for="(type, index) in Object.keys(dishes)" :key="index" :label="type" :value="index">
+            <el-option v-for="option in options" :key="option.id" :label="option.type" :value="option.id">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item prop="price">
           <p>Dish Price:</p>
-          <el-input-number style="margin-left: 10px" v-model="price" :min="0" :max="100" default="0">
+          <el-input-number style="margin-left: 10px" v-model="dishInfo.price" :min="0" :max="100" default="0">
           </el-input-number>
         </el-form-item>
         <el-form-item prop="stock">
           <p>Quantity in stock:</p>
-          <el-input-number style="margin-left: 10px" v-model="stock" :min="0" :max="100" default="0">
+          <el-input-number style="margin-left: 10px" v-model="dishInfo.stock" :min="0" :max="100" default="0">
           </el-input-number>
         </el-form-item>
         <el-form-item prop="description">
           <p>Dish Description:</p>
-          <el-input style="margin-left: 10px" v-model="description" placeholder="text" clearable class="input">
+          <el-input style="margin-left: 10px" v-model="dishInfo.description" placeholder="text" clearable class="input">
           </el-input>
         </el-form-item>
       </el-form>
@@ -86,13 +87,13 @@ export default {
       this.$store.dispatch("closeOpenAddDish");
     },
     async getDishTypes() {
-      await this.dishService.getDishes(this.id).then(res => {
+      await this.dishService.getDishTypes().then(res => {
         if (res.code === 401) {
           this.$message.error('Invalid login credential')
           this.$router.push('/signin')
           Utils.removeLocalData()
         } else if (res.code === 200) {
-          this.dishes = res.data
+          this.options = res.data
         } else {
           this.$message.error(res.msg)
         }
@@ -100,23 +101,27 @@ export default {
     },
     async addDish() {
       let dishDetail = this.formattedDishDetail()
+      console.log("&&&", dishDetail)
       await this.dishService.addDish(dishDetail).then(res => {
-        if (res.code === 1) {
-          this.$message.success(res.msg);
-          this.confirmed()
+        if (res.code === 401) {
+          this.$message.error('Invalid login credential')
+          this.$router.push('/signin')
+          Utils.removeLocalData()
+        } else if (res.code === 200) {
+          this.$message.success(res.msg)
+          this.getDishes()
         } else {
-          this.$message.error(res.msg);
-          this.closeDialog()
+          this.$message.error(res.msg)
         }
       })
     },
     formattedDishDetail() {
       let dishDetail = {
-        name: this.name,
-        price: this.price,
-        description: this.description,
-        stock: this.stock,
-        type_id: this.dishType,
+        name: this.dishInfo.name,
+        price: this.dishInfo.price,
+        description: this.dishInfo.description,
+        stock: this.dishInfo.stock,
+        type_id: this.dishInfo.type_id,
         canteenID: this.$route.params.id
       }
       return dishDetail

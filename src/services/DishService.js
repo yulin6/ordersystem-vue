@@ -85,4 +85,24 @@ export default class DishService {
         }
     }
 
+    getDishTypes = async canteenId => {
+        try {
+            let res = await axios({
+                url: store.state.apiURL + '/dish/type',
+                method: "GET",
+                params: {
+                    canteen_id: canteenId
+                },
+                headers: {
+                    'content-type': 'application/json',
+                    'token': localStorage.getItem('userToken')
+                },
+            })
+            return res.data;
+        }
+        catch (error) {
+            console.log(error)
+        }
+    }
+
 }
