@@ -70,7 +70,7 @@
           </el-table>
           <el-button style="margin-top: 6px" type="primary" @click="addDish()" size="small">Add a new dish!
           </el-button>
-          <AddDish></AddDish>
+          <add-dish v-on:refreshData="refreshData"></add-dish>
         </div>
       </el-main>
     </el-container>
@@ -103,6 +103,9 @@ export default {
     this.getDishes()
   },
   methods: {
+    refreshData: function () {
+      this.getDishes()
+    },
     async getDishes() {
       await this.dishService.getDishes(this.id).then(res => {
         if (res.code === 401) {
@@ -167,11 +170,6 @@ export default {
     },
     addDish() {
       this.$store.dispatch("openCloseAddDish", this.id);
-    },
-    addRow(tableData) {
-      tableData.push({
-        name: 'A new dish added. Please edit it!', price: 0, quantity: 0, isEditor: false
-      })
     },
     editCategory() {
       this.isCatEditor = true;

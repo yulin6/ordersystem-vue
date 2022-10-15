@@ -42,7 +42,7 @@
         <div class="el-upload__tip">The format should be jpg/jpeg/png and the size should not exceed 10MB.</div>
       </template>
     </el-upload>
-    <el-button type="primary" class="button" v-on:click="confirmed">Confirm</el-button>
+    <el-button type="primary" class="button" v-on:click="addCanteen">Confirm</el-button>
     <el-button plain class="button" v-on:click="cancel">Cancel</el-button>
   </el-dialog>
 </template>
@@ -136,8 +136,8 @@ export default {
       })
       this.loading = false
     },
-    async addCanteen(canteen) {
-      let canteenDetail = this.formattedDishDetail(canteen)
+    async addCanteen() {
+      let canteenDetail = this.formattedDishDetail()
       await this.canteenService.addCanteen(canteenDetail).then(res => {
         if (res.code === 401) {
           this.$message.error('Invalid login credential')
@@ -145,25 +145,24 @@ export default {
           Utils.removeLocalData()
         } else if (res.code === 200) {
           this.$message.success(res.msg)
+          this.$emit('refreshData')
+          this.closeDialog()
         } else {
           this.$message.error(res.msg)
         }
       })
     },
-    formattedDishDetail(canteen) {
+    formattedDishDetail() {
       let canteenDetail = {
-        name: canteen.name,
-        description: canteen.description,
-        userID: canteen.userID,
-        canteenTypes: canteen.canteenTypes,
+        name: this.canteenInfo.name,
+        description: this.canteenInfo.description,
+        userID: this.canteenInfo.userID,
+        canteenTypes: this.canteenInfo.canteenTypes,
       }
       return canteenDetail
     },
-    confirmed() {
-      this.addCanteen(this.canteenInfo);
-      this.$store.dispatch("closeOpenEditCanteen");
-    },
-    cancel() {
+    closeDialog() {
+      this.canteenInfo = []
       this.$store.dispatch("closeOpenEditCanteen");
     },
     loadFormData() {

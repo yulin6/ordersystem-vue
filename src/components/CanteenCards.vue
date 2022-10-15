@@ -21,7 +21,7 @@
               size="small">
               edit info
             </el-button>
-            <edit-canteen></edit-canteen>
+            <edit-canteen v-on:refreshData="refreshData"></edit-canteen>
             <el-button v-show="isOwner" style="margin-top: 8px; margin-left: 8px;" type="danger"
               v-on:click="deleteCanteen(canteen.id)" size="small">
               delete
@@ -38,7 +38,7 @@
                 <Plus />
               </el-icon>
               <p style="margin-left: 0;color: #3F9EFF;font-weight: bold">Add a new restaurant!</p>
-              <EditCanteen></EditCanteen>
+              <edit-canteen v-on:refreshData="refreshData"></edit-canteen>
             </div>
           </el-card>
 
@@ -72,6 +72,9 @@ export default {
     this.getCanteens()
   },
   methods: {
+    refreshData: function () {
+      this.getCanteens()
+    },
     async getCanteens() {
       let id = undefined
       if (this.isOwner) id = this.user.id
@@ -100,7 +103,7 @@ export default {
           Utils.removeLocalData()
         } else if (res.code === 200) {
           this.$message.success(res.msg)
-          this.getAllCanteens()
+          this.getCanteens()
         } else {
           this.$message.error(res.msg)
         }

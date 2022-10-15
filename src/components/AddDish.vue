@@ -76,14 +76,8 @@ export default {
     this.getDishTypes();
   },
   methods: {
-    confirmed() {
-      this.$message({
-        message: 'A new dish has created successfully!',
-        type: 'success'
-      });
-      this.$store.dispatch("closeOpenAddDish");
-    },
     closeDialog() {
+      this.dishInfo = []
       this.$store.dispatch("closeOpenAddDish");
     },
     async getDishTypes() {
@@ -109,7 +103,8 @@ export default {
           Utils.removeLocalData()
         } else if (res.code === 200) {
           this.$message.success(res.msg)
-          this.getDishes()
+          this.$emit('refreshData')
+          this.closeDialog()
         } else {
           this.$message.error(res.msg)
         }
