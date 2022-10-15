@@ -5,27 +5,31 @@
     <el-form :model="canteenInfo" :rules="rules" ref="form">
       <el-form-item prop="name">
         <p>Restaurant Name:</p>
-        <el-input style="margin-left: 10px" v-model="name" v-show="isAddCanteen" placeholder="text" clearable
-          class="input"></el-input>
-        <el-input style="margin-left: 10px" v-model="name" v-show="!isAddCanteen" placeholder="text" clearable
-          class="input"></el-input>
+        <el-input style="margin-left: 10px" v-model="canteenInfo.name" v-show="isAddCanteen" placeholder="text"
+          clearable class="input"></el-input>
+        <el-input style="margin-left: 10px" v-model="canteenInfo.name" v-show="!isAddCanteen" placeholder="text"
+          clearable class="input"></el-input>
       </el-form-item>
       <el-form-item prop="canteenTypes">
         <p>Restaurant Type:</p>
-        <el-select v-show="isAddCanteen" style="margin-left: 10px" v-model="canteenTypes" multiple clearable
+        <el-select v-show="isAddCanteen" style="margin-left: 10px" v-model="canteenInfo.canteenTypes" multiple clearable
           class="input">
           <el-option v-for="option in options" :key="option.id" :label="option.type" :value="option.id">
           </el-option>
         </el-select>
-        <el-select v-show="!isAddCanteen" style="margin-left: 10px" v-model="canteenTypes" multiple clearable
-          class="input">
+        <el-select v-show="!isAddCanteen" style="margin-left: 10px" v-model="canteenInfo.canteenTypes" multiple
+          clearable class="input">
           <el-option v-for="option in options" :key="option.id" :label="option.type" :value="option.id">
           </el-option>
         </el-select>
       </el-form-item>
       <el-form-item prop="description">
         <p>Restaurant Description:</p>
-        <el-input style="margin-left: 10px" v-model="description" placeholder="text" clearable class="input">
+        <el-input v-show="isAddCanteen" style="margin-left: 10px" v-model="canteenInfo.description" placeholder="text"
+          clearable class="input">
+        </el-input>
+        <el-input v-show="!isAddCanteen" style="margin-left: 10px" v-model="canteenInfo.description" placeholder="text"
+          clearable class="input">
         </el-input>
       </el-form-item>
     </el-form>
@@ -61,7 +65,7 @@ export default {
         name: '',
         description: '',
         userID: this.$store.state.user.id,
-        canteenTypes: ['1'],
+        canteenTypes: [],
       },
       rules: {
         name: [
