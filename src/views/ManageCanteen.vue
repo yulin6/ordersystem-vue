@@ -60,7 +60,7 @@
               </template>
             </el-table-column>
           </el-table>
-          <el-button style="margin-top: 6px" type="primary" @click="addDish()">Add a new dish!
+          <el-button style="margin-top: 6px" type="primary" @click="addDish()" size="small">Add a new dish!
           </el-button>
           <AddDish></AddDish>
         </div>
@@ -155,7 +155,7 @@ export default {
       })
     },
     addDish() {
-      this.$store.dispatch("openCloseAddDish");
+      this.$store.dispatch("openCloseAddDish", this.id);
     },
     addRow(tableData) {
       tableData.push({

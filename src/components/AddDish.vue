@@ -9,8 +9,9 @@
         </el-form-item>
         <el-form-item prop="type_id">
           <p>Dish Type:</p>
-          <el-select style="margin-left: 10px" v-model="type_id" clearable placeholder="select one type" class="input">
-            <el-option v-for="item in options" :key="item.type_id" :label="item.label" :value="item.type_id">
+          <el-select style="margin-left: 10px" clearable placeholder="select one type" class="input">
+            <!-- TODO: The value should be type_id rather than index. -->
+            <el-option v-for="(type, index) in Object.keys(dishes)" :key="index" :label="type" :value="index">
             </el-option>
           </el-select>
         </el-form-item>
@@ -37,10 +38,16 @@
 </template>
 
 <script>
+import DishService from "@/services/DishService";
+import Utils from "@/utils/utils";
+
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   data() {
     return {
+      id: this.$store.state.canteenID,
+      dishService: DishService.getInstance(),
+      dishes: [],
       dishInfo: {
         name: '',
         price: null,
@@ -48,13 +55,7 @@ export default {
         description: '',
         stock: 0
       },
-      options: [{
-        type_id: 0,
-        label: 'Western'
-      }, {
-        type_id: 1,
-        label: 'Chinese'
-      }],
+      options: [],
       rules: {
         name: [
           {
@@ -69,6 +70,10 @@ export default {
       }
     }
   },
+  created() {
+    Utils.storeUserFromLocal()
+    this.getDishTypes();
+  },
   methods: {
     confirmed() {
       this.$message({
@@ -79,6 +84,19 @@ export default {
     },
     closeDialog() {
       this.$store.dispatch("closeOpenAddDish");
+    },
+    async getDishTypes() {
+      await this.dishService.getDishes(this.id).then(res => {
+        if (res.code === 401) {
+          this.$message.error('Invalid login credential')
+          this.$router.push('/signin')
+          Utils.removeLocalData()
+        } else if (res.code === 200) {
+          this.dishes = res.data
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
     },
     async addDish() {
       let dishDetail = this.formattedDishDetail()
