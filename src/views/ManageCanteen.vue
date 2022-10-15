@@ -25,7 +25,7 @@
       </el-aside>
 
       <el-main>
-        <div v-for="(value, name, index) in dishes" :key="index" :id="name" class="dishGroup">
+        <div v-for="(value, name, index) in dishes" :key="index" class="dishGroup">
           {{ name }}
           <el-table :data="value" style="width: 100%; margin-top: 6px;">
             <el-table-column label="Dish Name" width="260">
@@ -52,7 +52,7 @@
               <template v-slot:default="scope">
                 <el-button @click="edit(scope.row)" size="small">edit</el-button>
                 <el-button type="warning" @click="updateDish(scope.row, index)" size="small">save</el-button>
-                <el-button type="danger" @click="deleteDish(scope.$index, value, index)" size="small"> delete
+                <el-button type="danger" @click="deleteDish(scope.row.id)" size="small"> delete
                 </el-button>
                 <el-checkbox style="margin-left: 10px" v-model="scope.row.availability"
                   :checked="scope.row.availability">available
@@ -102,6 +102,7 @@ export default {
           Utils.removeLocalData()
         } else if (res.code === 200) {
           this.dishes = res.data
+          console.log(res.data)
         } else {
           this.$message.error(res.msg)
         }
@@ -138,18 +139,20 @@ export default {
     save(row) {
       row.isEditor = false;
     },
-    async deleteDish(index, rows, dishIndex) {
-      await this.dishService.deleteDish(dishIndex).then(res => {
-        if (res.code === 1) {
-          this.deleteRow(index, rows);
+    async deleteDish(dishId) {
+      // delete one dish
+      await this.dishService.deleteDish(dishId).then(res => {
+        if (res.code === 401) {
+          this.$message.error('Invalid login credential')
+          this.$router.push('/signin')
+          Utils.removeLocalData()
+        } else if (res.code === 200) {
           this.$message.success(res.msg)
+          this.getDishes()
         } else {
           this.$message.error(res.msg)
         }
       })
-    },
-    deleteRow(index, rows) {
-      rows.splice(index, 1);
     },
     addDish() {
       this.$store.dispatch("openCloseAddDish");

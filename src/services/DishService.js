@@ -68,10 +68,10 @@ export default class DishService {
         }
     }
 
-    deleteDish = async dishIndex => {
+    deleteDish = async indexList => {
         try {
             let res = await axios({
-                url: store.state.apiURL + '/dish/' + dishIndex,
+                url: store.state.apiURL + '/dish/' + JSON.stringify(indexList),
                 method: "DELETE",
                 headers: {
                     'content-type': 'application/json',
