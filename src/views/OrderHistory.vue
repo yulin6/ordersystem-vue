@@ -117,8 +117,8 @@ import Utils from "@/utils/utils";
 
 export default {
   components: {HomeMenu, Cart},
-  data() {
-    return {
+  data: () =>(
+      {
       loading: true,
       canteenService: CanteenService.getInstance(),
       orderService: OrderService.getInstance(),
@@ -127,7 +127,7 @@ export default {
       canteens: [],
       selectedCanteenId: ''
     }
-  },
+  ),
   created() {
     Utils.storeUserFromLocal()
     this.getOrderHistory()
