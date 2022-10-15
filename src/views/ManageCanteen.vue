@@ -18,7 +18,9 @@
         </el-menu>
         <el-button style="margin-top: 10px" @click="editCategory" v-show="!isCatEditor">edit category
         </el-button>
-        <el-button style="margin-top: 10px" @click="addCategory" v-show="isCatEditor">add category
+        <input style="width: 100px; margin-left: 6px; margin-top: 10px" type="text" v-model="type"
+          v-show="isCatEditor" />
+        <el-button style="margin-top: 10px; margin-left: 6px" @click="addCategory" v-show="isCatEditor" size="small">add
         </el-button>
         <el-button style="margin-top: 10px" type="warning" @click="saveCategory" v-show="isCatEditor">save
         </el-button>
@@ -189,19 +191,40 @@ export default {
       })
     },
     editCategory() {
-      console.log("***", this.type, this.type_id)
-      if (this.type != '' && this.type_id != null) {
-        this.updateDishType()
-      }
       this.isCatEditor = true;
     },
     saveCategory() {
+      if (this.type != '' && this.type_id != null) {
+        this.updateDishType()
+      }
       this.isCatEditor = false;
     },
-    addCategory(tableData) {
-      tableData.push(
-        'New category'
-      )
+    async addDishType() {
+      let typeDetail = this.formattedTypeDetail()
+      await this.dishService.addDishType(typeDetail).then(res => {
+        if (res.code === 401) {
+          this.$message.error('Invalid login credential')
+          this.$router.push('/signin')
+          Utils.removeLocalData()
+        } else if (res.code === 200) {
+          this.$message.success(res.msg)
+          this.getDishes()
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
+    },
+    formattedTypeDetail() {
+      let typeDetail = {
+        type: this.type,
+        canteenID: this.$route.params.id
+      }
+      return typeDetail
+    },
+    addCategory() {
+      if (this.type != '') {
+        this.addDishType()
+      }
     }
   }
 

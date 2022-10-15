@@ -125,4 +125,22 @@ export default class DishService {
         }
     }
 
+    addDishType = async newTypeDetail => {
+        try {
+            let res = await axios({
+                url: store.state.apiURL + '/dish/type',
+                method: "POST",
+                data: JSON.stringify(newTypeDetail),
+                headers: {
+                    'content-type': 'application/json',
+                    'token': localStorage.getItem('userToken')
+                },
+            })
+            return res.data;
+        }
+        catch (error) {
+            console.log(error)
+        }
+    }
+
 }
