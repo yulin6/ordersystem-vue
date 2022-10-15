@@ -13,7 +13,7 @@ export default class CanteenService {
     }
 
     getAllCanteens = async () => {
-        try{
+        try {
             let res = await axios({
                 url: store.state.apiURL + '/canteen',
                 method: "GET",
@@ -24,7 +24,24 @@ export default class CanteenService {
             })
             return res.data;
         }
-        catch(error){
+        catch (error) {
+            console.log(error)
+        }
+    }
+
+    deleteCanteen = async indexList => {
+        try {
+            let res = await axios({
+                url: store.state.apiURL + '/canteen/' + JSON.stringify(indexList),
+                method: "DELETE",
+                headers: {
+                    'content-type': 'application/json',
+                    'token': localStorage.getItem('userToken')
+                },
+            })
+            return res.data;
+        }
+        catch (error) {
             console.log(error)
         }
     }

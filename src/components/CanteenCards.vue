@@ -2,12 +2,12 @@
   <el-skeleton style="width: 240px" :loading="loading" animated>
     <template #template>
       <div style="margin: 50px">
-        <el-skeleton-item variant="image" style="width: 240px; height: 240px"/>
+        <el-skeleton-item variant="image" style="width: 240px; height: 240px" />
         <div style="padding: 14px">
-          <el-skeleton-item variant="h3" style="width: 50%"/>
+          <el-skeleton-item variant="h3" style="width: 50%" />
           <div style="display: flex; align-items: center; margin-top: 16px; height: 16px;">
-            <el-skeleton-item variant="text" style="margin-right: 16px"/>
-            <el-skeleton-item variant="text" style="width: 30%"/>
+            <el-skeleton-item variant="text" style="margin-right: 16px" />
+            <el-skeleton-item variant="text" style="width: 30%" />
           </div>
         </div>
       </div>
@@ -18,10 +18,11 @@
           <canteen-card :canteen="canteen"></canteen-card>
           <el-row>
             <el-button v-show="isOwner" style="margin-top: 8px; margin-left: 16px;" v-on:click="editCanteen"
-                       size="small">
+              size="small">
               edit info
             </el-button>
-            <el-button v-show="isOwner" style="margin-top: 8px;" type="danger" v-on:click="deleteCanteen" size="small">
+            <el-button v-show="isOwner" style="margin-top: 8px;" type="danger" v-on:click="deleteCanteen(canteen.id)"
+              size="small">
               delete
             </el-button>
           </el-row>
@@ -43,7 +44,7 @@ import Utils from "@/utils/utils";
 
 export default {
   name: 'CanteenCards',
-  components: {CanteenCard, AddCanteenCard},
+  components: { CanteenCard, AddCanteenCard },
   data() {
     return {
       canteenService: CanteenService.getInstance(),
@@ -75,10 +76,20 @@ export default {
     editCanteen() {
       this.$store.dispatch("openCloseEditCanteen", false);
     },
-    deleteCanteen() {
-      // TODO Since there is no actual data, use cardNum to mock the deletion here.
-      this.cardNum -= 1;
-    }
+    async deleteCanteen(canteenId) {
+      await this.canteenService.deleteCanteen(canteenId).then(res => {
+        if (res.code === 401) {
+          this.$message.error('Invalid login credential')
+          this.$router.push('/signin')
+          Utils.removeLocalData()
+        } else if (res.code === 200) {
+          this.$message.success(res.msg)
+          this.getAllCanteens()
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
+    },
   },
   computed: {
     isOwner() {
