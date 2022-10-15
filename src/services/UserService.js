@@ -47,6 +47,24 @@ export default class UserService {
         }
     }
 
+    joinOrQuitMember = async joinOrQuit => {
+        try{
+            let res = await axios({
+                url: store.state.apiURL + '/user/customer',
+                method: "PUT",
+                data: JSON.stringify(joinOrQuit),
+                headers: {
+                    'content-type': 'application/json',
+                    'token': localStorage.getItem('userToken')
+                },
+            })
+            return res.data;
+        }
+        catch(error){
+            console.log(error)
+        }
+    }
+
 
 
 }

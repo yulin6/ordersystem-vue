@@ -145,7 +145,6 @@ export default {
     },
     setCartItems(row) {
       let localCart = this.getLocalCart()
-      console.log(localCart)
       if (localCart.length === 0) {
         localCart.push(row)
         localStorage.setItem('cart', JSON.stringify(localCart))

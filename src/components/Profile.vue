@@ -24,12 +24,15 @@
 
 <script>
 import Utils from "@/utils/utils";
+import UserService from "@/services/UserService";
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'Profile',
   data() {
-    return {}
+    return {
+      userService: UserService.getInstance()
+    }
   },
   created() {
     Utils.storeUserFromLocal()
@@ -37,10 +40,19 @@ export default {
   methods: {
     joinQuitFoodiesClub(joinOrQuit) {
       let member = this.$store.getters.user
-      member.isMember = joinOrQuit
-      this.user = member
-
-      //TODO integrate api
+      let memberStatus = {user_id: member.id, availability: joinOrQuit}
+      this.userService.joinOrQuitMember(memberStatus).then(res => {
+        if (res.code === 401) {
+          this.$message.error('Invalid login credential')
+          this.$router.push('/signin')
+          Utils.removeLocalData()
+        } else if (res.code === 200) {
+          member.isMember = joinOrQuit
+          this.user = member
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
     }
   },
   computed: {

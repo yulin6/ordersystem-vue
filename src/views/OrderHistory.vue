@@ -139,7 +139,6 @@ export default {
       this.loading = false
     },
     rateOrder(order) {
-      console.log(order)
       let rating = {
         orderID: order.id,
         canteenID: order.canteen.id,

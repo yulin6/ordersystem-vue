@@ -133,16 +133,10 @@ export default {
       if(res.content.type === '1'){
         res.content.isMember = res.customerInfo.is_member
         res.content.rewardPoints = res.customerInfo.reward_points
-        console.log(res.content)
       }
       localStorage.setItem('user', JSON.stringify(res.content))
       localStorage.setItem('userToken', res.token)
       localStorage.setItem('userType', this.isOwner)
-      // localStorage.setItem('isCartOpen', JSON.stringify(false))
-      // this.$store.dispatch("openCloseCart")
-      // this.$store.dispatch("openCloseCart")
-      // this.$store.dispatch("setCart", [])
-      // this.$store.dispatch('setCartOpenStatus', false)
       this.$store.dispatch("setUser", res.content)
       this.$store.dispatch("setToken", res.token)
       this.$store.dispatch("setUserType", this.isOwner)
