@@ -143,4 +143,21 @@ export default class DishService {
         }
     }
 
+    deleteDishType = async indexList => {
+        try {
+            let res = await axios({
+                url: store.state.apiURL + '/dish/type/' + JSON.stringify(indexList),
+                method: "DELETE",
+                headers: {
+                    'content-type': 'application/json',
+                    'token': localStorage.getItem('userToken')
+                },
+            })
+            return res.data;
+        }
+        catch (error) {
+            console.log(error)
+        }
+    }
+
 }

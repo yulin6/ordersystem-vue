@@ -11,8 +11,8 @@
             v-on:click="jumpToCategory(dish.type)">
             <input style="width: 100px" type="text" v-model="type" v-show="isCatEditor" />
             <span v-show="!isCatEditor">{{ dish.type }}</span>
-            <el-button style="margin-left: 6px" type="danger" @click="deleteRow(index, Object.keys(dishes))"
-              v-show="isCatEditor" size="small"> delete
+            <el-button style="margin-left: 6px" type="danger" @click="deleteDishType(dish.id)" v-show="isCatEditor"
+              size="small"> delete
             </el-button>
           </el-menu-item>
         </el-menu>
@@ -158,9 +158,8 @@ export default {
       // console.log("***1", dishDetail.availability)
       return dishDetail
     },
-    async deleteDish(dishId) {
-      // delete one dish
-      await this.dishService.deleteDish(dishId).then(res => {
+    async deleteDish(dishID) {
+      await this.dishService.deleteDish(dishID).then(res => {
         if (res.code === 401) {
           this.$message.error('Invalid login credential')
           this.$router.push('/signin')
@@ -225,6 +224,20 @@ export default {
       if (this.type != '') {
         this.addDishType()
       }
+    },
+    async deleteDishType(typeID) {
+      await this.dishService.deleteDishType(typeID).then(res => {
+        if (res.code === 401) {
+          this.$message.error('Invalid login credential')
+          this.$router.push('/signin')
+          Utils.removeLocalData()
+        } else if (res.code === 200) {
+          this.$message.success(res.msg)
+          this.getDishes()
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
     }
   }
 
