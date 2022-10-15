@@ -2,12 +2,12 @@
   <el-dialog v-model="this.$store.state.isEditCanteenOpen">
     <h3 v-show="!isAddCanteen">EditCanteen</h3>
     <h3 v-show="isAddCanteen">AddCanteen</h3>
-    <el-form :model="canteenInfo" :rules="rules" ref="form" @submit.prevent="login">
+    <el-form :model="canteenInfo" :rules="rules" ref="form">
       <el-form-item prop="name">
         <p>Restaurant Name:</p>
-        <el-input style="margin-left: 10px" v-model="input" v-show="isAddCanteen" placeholder="text" clearable
+        <el-input style="margin-left: 10px" v-model="name" v-show="isAddCanteen" placeholder="text" clearable
           class="input"></el-input>
-        <el-input style="margin-left: 10px" v-model="input" v-show="!isAddCanteen" placeholder="text" clearable
+        <el-input style="margin-left: 10px" v-model="name" v-show="!isAddCanteen" placeholder="text" clearable
           class="input"></el-input>
       </el-form-item>
       <el-form-item prop="canteenTypes">
@@ -61,8 +61,20 @@ export default {
         name: '',
         description: '',
         userID: this.$store.state.user.id,
-        canteenTypes: [],
+        canteenTypes: ['1'],
       },
+      rules: {
+        name: [
+          {
+            required: true,
+            message: "Restaurant name is required",
+            trigger: "blur"
+          }
+        ],
+        description: [
+          { required: true, message: "Restaurant description is required", trigger: "blur" },
+        ]
+      }
     }
   },
   computed: {
@@ -120,11 +132,31 @@ export default {
       })
       this.loading = false
     },
+    async addCanteen(canteen) {
+      let canteenDetail = this.formattedDishDetail(canteen)
+      await this.canteenService.addCanteen(canteenDetail).then(res => {
+        if (res.code === 401) {
+          this.$message.error('Invalid login credential')
+          this.$router.push('/signin')
+          Utils.removeLocalData()
+        } else if (res.code === 200) {
+          this.$message.success(res.msg)
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
+    },
+    formattedDishDetail(canteen) {
+      let canteenDetail = {
+        name: canteen.name,
+        description: canteen.description,
+        userID: canteen.userID,
+        canteenTypes: canteen.canteenTypes,
+      }
+      return canteenDetail
+    },
     confirmed() {
-      this.$message({
-        message: 'A new restaurant has created successfully!',
-        type: 'success'
-      });
+      this.addCanteen(this.canteenInfo);
       this.$store.dispatch("closeOpenEditCanteen");
     },
     cancel() {

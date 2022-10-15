@@ -29,7 +29,20 @@
           </el-row>
         </el-col>
         <el-col :span="3" class="add-card" v-show="isOwner">
-          <add-canteen-card></add-canteen-card>
+          <!-- <template> -->
+
+          <el-card style="cursor: pointer" shadow="hover" :body-style="{ padding: '0px' }" align="middle"
+            v-on:click="addCanteen" class="box-card">
+            <div class="mid">
+              <el-icon color="#3F9EFF" size="large" border-radius="20px">
+                <Plus />
+              </el-icon>
+              <p style="margin-left: 0;color: #3F9EFF;font-weight: bold">Add a new restaurant!</p>
+              <EditCanteen></EditCanteen>
+            </div>
+          </el-card>
+
+          <!-- </template> -->
         </el-col>
       </el-row>
     </template>
@@ -39,14 +52,14 @@
 
 <script>
 import CanteenCard from "@/components/CanteenCard";
-import AddCanteenCard from "@/components/AddCanteenCard";
+// import AddCanteenCard from "@/components/AddCanteenCard";
 import CanteenService from "@/services/CanteenService";
 import Utils from "@/utils/utils";
 import EditCanteen from "@/components/EditCanteen";
 
 export default {
   name: 'CanteenCards',
-  components: { CanteenCard, AddCanteenCard, EditCanteen },
+  components: { CanteenCard, EditCanteen },
   data() {
     return {
       canteenService: CanteenService.getInstance(),
@@ -93,6 +106,10 @@ export default {
         }
       })
     },
+    addCanteen() {
+      // -1: isAddCanteen is true
+      this.$store.dispatch("openCloseEditCanteen", -1);
+    },
   },
   computed: {
     isOwner() {
@@ -115,5 +132,16 @@ export default {
 .add-card {
   margin-top: 60px;
   margin-left: 60px
+}
+
+.mid {
+  margin-top: 50%;
+  height: 50%;
+}
+
+.box-card {
+  width: 164px;
+  height: 282px;
+  background-color: #ECF5FF;
 }
 </style>
