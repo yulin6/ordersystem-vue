@@ -47,10 +47,10 @@ export default class CanteenService {
     }
 
     getCanteensByUserId = async (userId) => {
-        try{
+        try {
             let res = await axios({
                 url: store.state.apiURL + '/canteen',
-                params: {user_id: userId},
+                params: { user_id: userId },
                 method: "GET",
                 headers: {
                     'content-type': 'application/json',
@@ -59,7 +59,24 @@ export default class CanteenService {
             })
             return res.data;
         }
-        catch(error){
+        catch (error) {
+            console.log(error)
+        }
+    }
+    
+    getAllCanteenTypes = async () => {
+        try {
+            let res = await axios({
+                url: store.state.apiURL + '/canteen/type',
+                method: "GET",
+                headers: {
+                    'content-type': 'application/json',
+                    'token': localStorage.getItem('userToken')
+                },
+            })
+            return res.data;
+        }
+        catch (error) {
             console.log(error)
         }
     }
