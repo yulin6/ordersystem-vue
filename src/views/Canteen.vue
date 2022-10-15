@@ -14,22 +14,22 @@
                 default-active="1"
                 class="categoryMenu">
               <el-menu-item
-                  v-for="(dishType, index) in Object.keys(dishes)"
-                  :index="dishType"
+                  v-for="(dish, index) in dishes"
+                  :index="dish.type"
                   :key="index"
-                  v-on:click="jumpToCategory(dishType)">
-                <span>{{ dishType }}</span>
+                  v-on:click="jumpToCategory(dish.type)">
+                <span>{{ dish.type }}</span>
               </el-menu-item>
             </el-menu>
           </el-aside>
 
           <el-main>
-            <div v-for="(value, name, index) in dishes"
+            <div v-for="(dish, index) in dishes"
                  :key="index"
-                 :id="name"
+                 :id="dish.type"
                  class="dishGroup">
-              {{ name }}
-              <el-table :data="value" style="width: 100%">
+              {{ dish.type }}
+              <el-table :data="dish.dishes" style="width: 100%">
                 <el-table-column prop="name" width="200"/>
                 <el-table-column prop="price" width="120"/>
                 <el-table-column >
@@ -106,8 +106,8 @@ export default {
       localCart.forEach(item => {
         if (item.selected !== 0) previousSelected[item.id] = item.selected
       })
-      Object.entries(this.dishes).forEach(item => {
-        item[1].forEach(dish => {
+      this.dishes.forEach(item => {
+        item.dishes.forEach(dish => {
           if (dish.id in previousSelected) dish.selected = previousSelected[dish.id]
           else dish.selected = 0
         })
