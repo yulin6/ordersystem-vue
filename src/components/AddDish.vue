@@ -11,7 +11,6 @@
         <el-form-item prop="type_id">
           <p>Dish Type:</p>
           <el-select style="margin-left: 10px" v-model="dishInfo.type_id" clearable class="input">
-            <!-- TODO: The value should be type_id rather than index. -->
             <el-option v-for="option in options" :key="option.id" :label="option.type" :value="option.id">
             </el-option>
           </el-select>
@@ -81,7 +80,7 @@ export default {
       this.$store.dispatch("closeOpenAddDish");
     },
     async getDishTypes() {
-      await this.dishService.getDishTypes().then(res => {
+      await this.dishService.getDishTypes(this.id).then(res => {
         if (res.code === 401) {
           this.$message.error('Invalid login credential')
           this.$router.push('/signin')
