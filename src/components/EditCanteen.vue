@@ -1,43 +1,62 @@
 <template>
   <el-dialog v-model="this.$store.state.isEditCanteenOpen">
-    <h3 v-show="!isAddCanteen">EditCanteen</h3>
-    <h3 v-show="isAddCanteen">AddCanteen</h3>
-    <el-form :model="editingCanteen" :rules="rules" ref="form">
-      <el-form-item prop="name">
-        <p>Restaurant Name:</p>
-        <el-input style="margin-left: 10px" v-model="canteenInfo.name" v-show="isAddCanteen"
-                  placeholder="Restaurant Name"
-                  clearable class="input"></el-input>
-        <el-input style="margin-left: 10px" v-model="editingCanteen.name" v-show="!isAddCanteen"
-                  placeholder="Restaurant Name"
-                  clearable class="input"></el-input>
-      </el-form-item>
-      <el-form-item prop="canteenTypes">
-        <p>Restaurant Type:</p>
-        <el-select v-show="isAddCanteen" style="margin-left: 10px" v-model="canteenInfo.canteenTypes" multiple clearable
-                   class="input">
-          <el-option v-for="option in options" :key="option.id" :label="option.type" :value="option.id">
-          </el-option>
-        </el-select>
-        <el-select v-show="!isAddCanteen" style="margin-left: 10px" v-model="editingCanteen.canteenTypes" multiple
-                   clearable class="input">
-          <el-option v-for="option in options" :key="option.id" :label="option.type" :value="option.id">
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item prop="description">
-        <p>Restaurant Description:</p>
-        <el-input v-show="isAddCanteen" style="margin-left: 10px" v-model="canteenInfo.description" placeholder="text"
-                  clearable class="input">
-        </el-input>
-        <el-input v-show="!isAddCanteen" style="margin-left: 10px" v-model="editingCanteen.description"
-                  placeholder="text"
-                  clearable class="input">
-        </el-input>
-      </el-form-item>
-    </el-form>
-    <el-button v-show="!isAddCanteen" type="primary" class="button" v-on:click="updateCanteen">Update</el-button>
-    <el-button v-show="isAddCanteen" type="primary" class="button" v-on:click="addCanteen">Create</el-button>
+    <div v-show="!isAddCanteen">
+      <h3>Edit Restaurant</h3>
+      <el-form :model="editingCanteen" :rules="rules" ref="form">
+        <el-form-item prop="name">
+          <p>Restaurant Name:</p>
+          <el-input style="margin-left: 10px" v-model="editingCanteen.name"
+                    placeholder="Restaurant Name"
+                    clearable class="input"></el-input>
+        </el-form-item>
+        <el-form-item prop="canteenTypes">
+          <p>Restaurant Type:</p>
+          <el-select style="margin-left: 10px" v-model="editingCanteen.canteenTypes" multiple
+                     clearable class="input">
+            <el-option v-for="option in options" :key="option.id" :label="option.type" :value="option.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item prop="description">
+          <p>Restaurant Description:</p>
+          <el-input v-model="editingCanteen.description"
+                    class="input"
+                    placeholder="text"
+                    style="margin-left: 10px"
+                    clearable>
+          </el-input>
+        </el-form-item>
+      </el-form>
+      <el-button type="primary" class="button" v-on:click="updateCanteen">Update</el-button>
+    </div>
+
+    <div v-show="isAddCanteen">
+      <h3>Add Restaurant</h3>
+      <el-form :model="addingCanteen" :rules="rules" ref="form">
+        <el-form-item prop="name">
+          <p>Restaurant Name:</p>
+          <el-input style="margin-left: 10px" v-model="addingCanteen.name"
+                    placeholder="Restaurant Name"
+                    clearable class="input"></el-input>
+        </el-form-item>
+        <el-form-item prop="canteenTypes">
+          <p>Restaurant Type:</p>
+          <el-select style="margin-left: 10px" v-model="addingCanteen.canteenTypes" multiple
+                     clearable
+                     class="input">
+            <el-option v-for="option in options" :key="option.id" :label="option.type" :value="option.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item prop="description">
+          <p>Restaurant Description:</p>
+          <el-input style="margin-left: 10px" v-model="addingCanteen.description" placeholder="text"
+                    clearable class="input">
+          </el-input>
+        </el-form-item>
+      </el-form>
+      <el-button type="primary" class="button" v-on:click="addCanteen">Create</el-button>
+    </div>
   </el-dialog>
 </template>
 
@@ -53,11 +72,10 @@ export default {
   },
   data: function () {
     return {
-      canteenID: this.$store.state.canteenID,
       canteenService: CanteenService.getInstance(),
       // picfileList: [],
       options: [],
-      canteenInfo: {
+      addingCanteen: {
         name: '',
         description: '',
         userID: this.$store.state.user.id,
@@ -95,7 +113,7 @@ export default {
           this.$router.push('/signin')
           Utils.removeLocalData()
         } else if (res.code === 200) {
-          this.$message.success(res.msg)
+          this.$message.success('Restaurant Info Updated')
           this.$emit('refreshData')
           this.closeDialog()
         } else {
@@ -104,14 +122,13 @@ export default {
       })
     },
     async addCanteen() {
-      let canteenDetail = this.formattedDishDetail()
-      await this.canteenService.addCanteen(canteenDetail).then(res => {
+      await this.canteenService.addCanteen(this.addingCanteen).then(res => {
         if (res.code === 401) {
           this.$message.error('Invalid login credential')
           this.$router.push('/signin')
           Utils.removeLocalData()
         } else if (res.code === 200) {
-          this.$message.success(res.msg)
+          this.$message.success('Restaurant Created')
           this.$emit('refreshData')
           this.closeDialog()
         } else {
@@ -119,16 +136,8 @@ export default {
         }
       })
     },
-    formattedDishDetail() {
-      return {
-        name: this.canteenInfo.name,
-        description: this.canteenInfo.description,
-        userID: this.canteenInfo.userID,
-        canteenTypes: this.canteenInfo.canteenTypes,
-      }
-    },
     closeDialog() {
-      this.canteenInfo = []
+      this.addingCanteen = []
       this.$store.dispatch("closeOpenEditCanteen");
     },
     // loadFormData() {

@@ -8,73 +8,97 @@
       <el-aside style="width: 200px;">
         <el-menu default-active="1" class="el-menu-vertical-demo">
           <el-menu-item v-for="(dish, index) in dishes" :index="dish.type" :key="index"
-            v-on:click="jumpToCategory(dish.type)">
-            <input style="width: 100px" type="text" v-model="type" v-show="isCatEditor" />
-            <span v-show="!isCatEditor">{{ dish.type }}</span>
-            <el-button style="margin-left: 6px" type="danger" @click="deleteDishType(dish.id)" v-show="isCatEditor"
-              size="small"> delete
+                        v-on:click="jumpToCategory(dish.type)">
+            <el-input v-if="isCatEditor" v-model="dish.type" type="text" style="width: 100px"/>
+            <span v-if="!isCatEditor">
+              {{ dish.type }}
+            </span>
+            <el-button v-if="isCatEditor" @click="deleteDishType(dish.id)" type="danger" size="small"
+                       style="margin-left: 6px">
+              delete
             </el-button>
           </el-menu-item>
+          <el-button v-if="!isCatEditor" @click="editCategory" style="margin-top: 10px; ">
+            Edit Category
+          </el-button>
+          <el-menu-item v-if="isCatEditor">
+            <el-input v-model="type" type="text" style="width: 100px;"/>
+            <el-button @click="addDishType" style="margin-left: 6px">
+              add
+            </el-button>
+          </el-menu-item>
+          <el-button v-if="isCatEditor" @click="saveCategory" style="margin-top: 10px; margin-left: 20px"
+                     type="warning">
+            Done Editing
+          </el-button>
         </el-menu>
-        <el-button style="margin-top: 10px" @click="editCategory" v-show="!isCatEditor">edit category
-        </el-button>
-        <input style="width: 100px; margin-left: 6px; margin-top: 10px" type="text" v-model="type"
-          v-show="isCatEditor" />
-        <el-button style="margin-top: 10px; margin-left: 6px" @click="addCategory" v-show="isCatEditor" size="small">add
-        </el-button>
-        <el-button style="margin-top: 10px" type="warning" @click="saveCategory" v-show="isCatEditor">save
-        </el-button>
       </el-aside>
 
       <el-main>
-        <div v-for="(dish, index) in dishes" :key="index" class="dishGroup">
+        <add-dish v-on:refreshData="refreshData"></add-dish>
+        <div v-for="(dish, index) in dishes"
+             :key="index"
+             :id="dish.type"
+             class="dishGroup">
           {{ dish.type }}
           <el-table :data="dish.dishes" style="width: 100%; margin-top: 6px;">
             <el-table-column label="Dish Name" width="260">
               <template v-slot:default="scope">
-                <input type="text" v-model="scope.row.name" v-show="scope.row.isEditor" />
-                <span v-show="!scope.row.isEditor">{{scope.row.name}}</span>
+                <el-input type="text" v-model="scope.row.name" v-if="scope.row.isEditor"/>
+                <span v-if="!scope.row.isEditor">{{ scope.row.name }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="Dish Price ($)" width="160">
+            <el-table-column label="Dish Price ($)" width="200">
               <template v-slot:default="scope">
-                <el-input-number v-model="scope.row.price" :min="0" :max="100" v-show="scope.row.isEditor">
+                <el-input-number v-model="scope.row.price" :min="0" :max="100" v-if="scope.row.isEditor">
                 </el-input-number>
-                <span v-show="!scope.row.isEditor">{{scope.row.price}}</span>
+                <span v-if="!scope.row.isEditor">{{ scope.row.price }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="Quantity in Stock" width="160">
+            <el-table-column label="Quantity in Stock" width="200">
               <template v-slot:default="scope">
-                <el-input-number v-model="scope.row.stock" :min="0" :max="10" v-show="scope.row.isEditor">
+                <el-input-number v-model="scope.row.stock" :min="0" :max="10" v-if="scope.row.isEditor">
                 </el-input-number>
-                <span v-show="!scope.row.isEditor">{{scope.row.stock}}</span>
+                <span v-if="!scope.row.isEditor">{{ scope.row.stock }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="Availability" width="160">
+            <el-table-column label="Availability" width="200">
               <template v-slot:default="scope">
-                <!-- TODO: fix availability display issue -->
-                {{scope.row.availability}}
-                <el-checkbox style="margin-left: 26px" v-show="scope.row.isEditor" v-model="scope.row.availability"
-                  :checked="scope.row.availability" disabled>
+                <el-checkbox v-if="scope.row.isEditor"
+                             v-model="scope.row.availability"
+                             :label="scope.row.availability ? 'available' : 'unavailable'"
+                             size="large"
+                             enabled>
                 </el-checkbox>
-                <el-checkbox style="margin-left: 26px" v-show="!scope.row.isEditor" v-model="scope.row.availability"
-                  :checked="scope.row.availability" enabled>
+                <el-checkbox v-if="!scope.row.isEditor"
+                             v-model="scope.row.availability"
+                             :label="scope.row.availability ? 'available' : 'unavailable'"
+                             size="large"
+                             disabled>
                 </el-checkbox>
               </template>
             </el-table-column>
-            <el-table-column label="Operation" width="200">
+            <el-table-column label="Operations">
               <template v-slot:default="scope">
-                <el-button @click="edit(scope.row)" size="small">edit</el-button>
-                <el-button type="warning" @click="updateDish(scope.row)" size="small">save</el-button>
-                <el-button type="danger" @click="deleteDish(scope.row.id)" size="small"> delete
+                <el-button v-if="scope.row.isEditor" @click="edit(scope.row)" size="small">Cancel</el-button>
+                <el-button v-if="!scope.row.isEditor" @click="edit(scope.row)" size="small">Edit</el-button>
+                <el-button v-if="scope.row.isEditor"
+                           @click="updateDish(scope.row)"
+                           type="warning"
+                           size="small">save
+                </el-button>
+                <el-button type="danger" @click="deleteDish(scope.row.id)" size="small"> Delete
                 </el-button>
               </template>
             </el-table-column>
           </el-table>
-          <el-button style="margin-top: 6px" type="primary" @click="addDish()" size="small">Add a new dish!
+          <el-button @click="addDish()"
+                     type="primary"
+                     style="margin-top: 6px">
+            Add Dish
           </el-button>
-          <add-dish v-on:refreshData="refreshData"></add-dish>
         </div>
+
       </el-main>
     </el-container>
   </el-container>
@@ -88,9 +112,8 @@ import Utils from "@/utils/utils";
 import AddDish from "@/components/AddDish";
 
 export default {
-  // eslint-disable-next-line vue/multi-word-component-names
   name: 'ManageCanteen',
-  components: { HomeMenu, AddDish },
+  components: {HomeMenu, AddDish},
   data() {
     return {
       id: this.$route.params.id,
@@ -98,7 +121,7 @@ export default {
       dishes: [],
       dishService: DishService.getInstance(),
       isCatEditor: false,
-      type_id: null,
+      // type_id: null,
       type: ''
     }
   },
@@ -107,7 +130,7 @@ export default {
     this.getDishes()
   },
   methods: {
-    refreshData: function () {
+    refreshData() {
       this.getDishes()
     },
     async getDishes() {
@@ -118,27 +141,36 @@ export default {
           Utils.removeLocalData()
         } else if (res.code === 200) {
           this.dishes = res.data
-          console.log(res.data)
+          this.convertAvailabilityToBoolean()
         } else {
           this.$message.error(res.msg)
         }
+      })
+    },
+    convertAvailabilityToBoolean() {
+      this.dishes.forEach(dishGroup => {
+        dishGroup.dishes.forEach(dish => {
+          if (dish.availability === 1) dish.availability = true
+          else if (dish.availability === 0) dish.availability = false
+        })
       })
     },
     jumpToCategory(id) {
       document.getElementById(id).scrollIntoView();
     },
     edit(row) {
-      row.isEditor = true;
+      row.isEditor = !row.isEditor;
     },
     async updateDish(dish) {
       let dishDetail = this.formattedDishDetail(dish)
+      console.log(dishDetail)
       await this.dishService.updateDish(dishDetail, dish.id).then(res => {
         if (res.code === 401) {
           this.$message.error('Invalid login credential')
           this.$router.push('/signin')
           Utils.removeLocalData()
         } else if (res.code === 200) {
-          this.$message.success(res.msg)
+          this.$message.success('Dish Updated')
           this.getDishes()
         } else {
           this.$message.error(res.msg)
@@ -164,7 +196,7 @@ export default {
           this.$router.push('/signin')
           Utils.removeLocalData()
         } else if (res.code === 200) {
-          this.$message.success(res.msg)
+          this.$message.success('Dish Deleted')
           this.getDishes()
         } else {
           this.$message.error(res.msg)
@@ -192,25 +224,25 @@ export default {
       this.isCatEditor = true;
     },
     saveCategory() {
-      if (this.type != '' && this.type_id != null) {
-        this.updateDishType()
-      }
       this.isCatEditor = false;
     },
     async addDishType() {
-      let typeDetail = this.formattedTypeDetail()
-      await this.dishService.addDishType(typeDetail).then(res => {
-        if (res.code === 401) {
-          this.$message.error('Invalid login credential')
-          this.$router.push('/signin')
-          Utils.removeLocalData()
-        } else if (res.code === 200) {
-          this.$message.success(res.msg)
-          this.getDishes()
-        } else {
-          this.$message.error(res.msg)
-        }
-      })
+      if (this.type !== '') {
+        let typeDetail = this.formattedTypeDetail()
+        await this.dishService.addDishType(typeDetail).then(res => {
+          if (res.code === 401) {
+            this.$message.error('Invalid login credential')
+            this.$router.push('/signin')
+            Utils.removeLocalData()
+          } else if (res.code === 200) {
+            this.$message.success('Dish Type Added')
+            this.getDishes()
+            this.type = ''
+          } else {
+            this.$message.error(res.msg)
+          }
+        })
+      }
     },
     formattedTypeDetail() {
       let typeDetail = {
@@ -219,11 +251,6 @@ export default {
       }
       return typeDetail
     },
-    addCategory() {
-      if (this.type != '') {
-        this.addDishType()
-      }
-    },
     async deleteDishType(typeID) {
       await this.dishService.deleteDishType(typeID).then(res => {
         if (res.code === 401) {
@@ -231,7 +258,7 @@ export default {
           this.$router.push('/signin')
           Utils.removeLocalData()
         } else if (res.code === 200) {
-          this.$message.success(res.msg)
+          this.$message.success('Dish Type Deleted')
           this.getDishes()
         } else {
           this.$message.error(res.msg)

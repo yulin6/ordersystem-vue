@@ -17,13 +17,16 @@
       <el-row>
         <el-col v-for="(canteen, index) in canteens" :key="index" :span="3" class="card">
           <canteen-card :canteen="canteen"></canteen-card>
-          <el-row>
-            <el-button v-show="isOwner" style="margin-top: 8px; margin-left: 8px;" v-on:click="editCanteen(canteen)"
-                       size="small">
+          <el-row v-show="isOwner">
+            <el-button v-on:click="editCanteen(canteen)"
+                       size="small"
+                       style="margin-top: 8px;" >
               edit info
             </el-button>
-            <el-button v-show="isOwner" style="margin-top: 8px; margin-left: 8px;" type="danger"
-                       v-on:click="deleteCanteen(canteen.id)" size="small">
+            <el-button v-on:click="deleteCanteen(canteen.id)"
+                       size="small"
+                       type="danger"
+                       style="margin-top: 8px; margin-left: 8px;">
               delete
             </el-button>
           </el-row>
@@ -88,8 +91,6 @@ export default {
     },
     editCanteen(canteen) {
       this.$store.dispatch("openCloseEditCanteen", canteen.id);
-      // console.log(canteen)
-      // this.editingCanteen = canteen
       let types = []
       canteen.canteenTypes.forEach(type => {types.push(type.id)})
       let canteenTmp = {
@@ -99,7 +100,6 @@ export default {
         description: canteen.description
       }
       this.$store.dispatch('setEditingCanteen', canteenTmp)
-      console.log("editCanteen", canteenTmp)
     },
     async deleteCanteen(canteenId) {
       await this.canteenService.deleteCanteen(canteenId).then(res => {

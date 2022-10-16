@@ -2,16 +2,19 @@
   <el-dialog v-model="this.$store.state.isAddDishOpen">
     <h3>AddDish</h3>
     <el-col>
-      <el-form :model="dishInfo" :rules="rules" ref="form" @submit.prevent="login">
+      <el-form :model="dishInfo"
+               :rules="rules"
+               ref="form"
+               @submit.prevent="addDish">
         <el-form-item prop="name">
           <p>Dish Name:</p>
-          <el-input style="margin-left: 10px" v-model="dishInfo.name" placeholder="text" clearable class="input">
+          <el-input style="margin-left: 10px" v-model="dishInfo.name" placeholder="Dish Name" clearable class="input">
           </el-input>
         </el-form-item>
         <el-form-item prop="type_id">
           <p>Dish Type:</p>
           <el-select style="margin-left: 10px" v-model="dishInfo.type_id" clearable class="input">
-            <el-option v-for="option in options" :key="option.id" :label="option.type" :value="option.id">
+            <el-option v-for="type in dishTypes" :key="type.id" :label="type.type" :value="type.id">
             </el-option>
           </el-select>
         </el-form-item>
@@ -21,18 +24,13 @@
           </el-input-number>
         </el-form-item>
         <el-form-item prop="stock">
-          <p>Quantity in stock:</p>
+          <p>Quantity in Stock:</p>
           <el-input-number style="margin-left: 10px" v-model="dishInfo.stock" :min="0" :max="100" default="0">
           </el-input-number>
         </el-form-item>
-        <el-form-item prop="description">
-          <p>Dish Description:</p>
-          <el-input style="margin-left: 10px" v-model="dishInfo.description" placeholder="text" clearable class="input">
-          </el-input>
-        </el-form-item>
       </el-form>
     </el-col>
-    <el-button type="primary" class="button" v-on:click="addDish">Confirm</el-button>
+    <el-button type="primary" class="button" native-type="submit" v-on:click="addDish">Confirm</el-button>
     <el-button plain class="button" v-on:click="closeDialog">Cancel</el-button>
   </el-dialog>
 </template>
@@ -42,20 +40,19 @@ import DishService from "@/services/DishService";
 import Utils from "@/utils/utils";
 
 export default {
-  // eslint-disable-next-line vue/multi-word-component-names
   data() {
     return {
-      id: this.$store.state.canteenID,
+      id: this.$route.params.id,
       dishService: DishService.getInstance(),
       dishes: [],
       dishInfo: {
         name: '',
-        price: null,
+        price: 0,
         type_id: 0,
-        description: '',
-        stock: 0
+        stock: 0,
+        canteenID: this.$route.params.id
       },
-      options: [],
+      dishTypes: [],
       rules: {
         name: [
           {
@@ -63,9 +60,6 @@ export default {
             message: "Dish name is required",
             trigger: "blur"
           }
-        ],
-        description: [
-          { required: true, message: "Dish description is required", trigger: "blur" },
         ]
       }
     }
@@ -86,22 +80,23 @@ export default {
           this.$router.push('/signin')
           Utils.removeLocalData()
         } else if (res.code === 200) {
-          this.options = res.data
+          this.dishTypes = res.data
         } else {
           this.$message.error(res.msg)
         }
       })
     },
     async addDish() {
-      let dishDetail = this.formattedDishDetail()
-      console.log("&&&", dishDetail)
-      await this.dishService.addDish(dishDetail).then(res => {
+      let valid = await this.$refs.form.validate()
+      if (!valid) return
+
+      await this.dishService.addDish(this.dishInfo).then(res => {
         if (res.code === 401) {
           this.$message.error('Invalid login credential')
           this.$router.push('/signin')
           Utils.removeLocalData()
         } else if (res.code === 200) {
-          this.$message.success(res.msg)
+          this.$message.success('New Dish Added')
           this.$emit('refreshData')
           this.closeDialog()
         } else {
@@ -109,17 +104,6 @@ export default {
         }
       })
     },
-    formattedDishDetail() {
-      let dishDetail = {
-        name: this.dishInfo.name,
-        price: this.dishInfo.price,
-        description: this.dishInfo.description,
-        stock: this.dishInfo.stock,
-        type_id: this.dishInfo.type_id,
-        canteenID: this.$route.params.id
-      }
-      return dishDetail
-    }
   }
 }
 </script>

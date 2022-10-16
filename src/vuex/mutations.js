@@ -40,7 +40,6 @@ export const openCloseEditCanteen = (state, canteenID) => {
         state.isAddCanteen = false
     }
     state.canteenID = canteenID
-    console.log("openCloseEditCanteen", state.canteenID)
 }
 
 export const closeOpenEditCanteen = (state) => {

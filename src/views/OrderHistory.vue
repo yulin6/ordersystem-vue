@@ -54,7 +54,7 @@
                       Cancel
                     </el-button>
                   </h4>
-                  <h4 v-if="order.status !== 1 && isOwner">Actions:
+                  <h4 v-if="order.status !== 1 && isOwner"> Operations:
                     <el-button v-if="order.status === 0"
                                v-on:click="updateOrderStatus(order.id, -1)"
                                type="danger"
