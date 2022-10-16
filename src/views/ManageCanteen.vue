@@ -9,10 +9,10 @@
         <el-menu default-active="1" class="el-menu-vertical-demo">
           <el-menu-item v-for="(dish, index) in dishes" :index="dish.type" :key="index"
                         v-on:click="jumpToCategory(dish.type)">
-            <el-input v-if="isCatEditor" v-model="dish.type" type="text" style="width: 100px"/>
             <span v-if="!isCatEditor">
               {{ dish.type }}
             </span>
+            <el-input v-if="isCatEditor" v-model="dish.type" type="text" style="width: 100px"/>
             <el-button v-if="isCatEditor" @click="deleteDishType(dish.id)" type="danger" size="small"
                        style="margin-left: 6px">
               delete
@@ -29,18 +29,26 @@
           </el-menu-item>
           <el-button v-if="isCatEditor" @click="saveCategory" style="margin-top: 10px; margin-left: 20px"
                      type="warning">
-            Done Editing
+            Save
           </el-button>
         </el-menu>
       </el-aside>
 
       <el-main>
-        <add-dish v-on:refreshData="refreshData"></add-dish>
+        <add-dish v-on:refreshData="getDishes"></add-dish>
         <div v-for="(dish, index) in dishes"
              :key="index"
              :id="dish.type"
              class="dishGroup">
-          {{ dish.type }}
+          <h4>
+            {{ dish.type }}
+            <el-button @click="addDish(dish.id)"
+                       type="primary"
+                       style="margin-left: 10px">
+              Add Dish
+            </el-button>
+          </h4>
+
           <el-table :data="dish.dishes" style="width: 100%; margin-top: 6px;">
             <el-table-column label="Dish Name" width="260">
               <template v-slot:default="scope">
@@ -80,8 +88,8 @@
             </el-table-column>
             <el-table-column label="Operations">
               <template v-slot:default="scope">
-                <el-button v-if="scope.row.isEditor" @click="edit(scope.row)" size="small">Cancel</el-button>
-                <el-button v-if="!scope.row.isEditor" @click="edit(scope.row)" size="small">Edit</el-button>
+                <el-button v-if="scope.row.isEditor" @click="editDish(scope.row)" size="small">Cancel</el-button>
+                <el-button v-if="!scope.row.isEditor" @click="editDish(scope.row)" size="small">Edit</el-button>
                 <el-button v-if="scope.row.isEditor"
                            @click="updateDish(scope.row)"
                            type="warning"
@@ -92,11 +100,6 @@
               </template>
             </el-table-column>
           </el-table>
-          <el-button @click="addDish(dish.id)"
-                     type="primary"
-                     style="margin-top: 6px">
-            Add Dish
-          </el-button>
         </div>
 
       </el-main>
@@ -130,9 +133,6 @@ export default {
     this.getDishes()
   },
   methods: {
-    refreshData() {
-      this.getDishes()
-    },
     async getDishes() {
       await this.dishService.getDishes(this.id).then(res => {
         if (res.code === 401) {
@@ -158,12 +158,11 @@ export default {
     jumpToCategory(id) {
       document.getElementById(id).scrollIntoView();
     },
-    edit(row) {
+    editDish(row) {
       row.isEditor = !row.isEditor;
     },
     async updateDish(dish) {
       let dishDetail = this.formattedDishDetail(dish)
-      console.log(dishDetail)
       await this.dishService.updateDish(dishDetail, dish.id).then(res => {
         if (res.code === 401) {
           this.$message.error('Invalid login credential')
@@ -186,7 +185,6 @@ export default {
         stock: dish.stock,
         availability: dish.availability
       }
-      // console.log("***1", dishDetail.availability)
       return dishDetail
     },
     async deleteDish(dishID) {
@@ -207,14 +205,13 @@ export default {
       this.$store.dispatch("openCloseAddDish", this.id);
       this.$store.dispatch("setAddingDishTypeId", typeId);
     },
-    async updateDishType() {
-      await this.dishService.updateDishType(this.type, this.type_id).then(res => {
+    async updateDishType(typeName, typeId) {
+      await this.dishService.updateDishType(typeName, typeId).then(res => {
         if (res.code === 401) {
           this.$message.error('Invalid login credential')
           this.$router.push('/signin')
           Utils.removeLocalData()
         } else if (res.code === 200) {
-          this.$message.success(res.msg)
           this.getDishes()
         } else {
           this.$message.error(res.msg)
@@ -226,6 +223,10 @@ export default {
     },
     saveCategory() {
       this.isCatEditor = false;
+      this.dishes.forEach(dishGroup => { //TODO update if future back-end supports group update
+        this.updateDishType(dishGroup.type, dishGroup.id)
+      })
+      this.$message.success('Dish Category Updated')
     },
     async addDishType() {
       if (this.type !== '') {
@@ -236,7 +237,7 @@ export default {
             this.$router.push('/signin')
             Utils.removeLocalData()
           } else if (res.code === 200) {
-            this.$message.success('Dish Type Added')
+            this.$message.success('Dish Category Added')
             this.getDishes()
             this.type = ''
           } else {

@@ -13,7 +13,7 @@
       </div>
     </template>
     <template #default>
-      <edit-canteen v-on:refreshData="refreshData"></edit-canteen>
+      <edit-canteen v-on:refreshData="getCanteens"></edit-canteen>
       <el-row>
         <el-col v-for="(canteen, index) in canteens" :key="index" :span="3" class="card">
           <canteen-card :canteen="canteen"></canteen-card>
@@ -70,9 +70,6 @@ export default {
     this.getCanteens()
   },
   methods: {
-    refreshData() {
-      this.getCanteens()
-    },
     async getCanteens() {
       let id = undefined
       if (this.isOwner) id = this.user.id

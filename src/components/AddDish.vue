@@ -1,6 +1,5 @@
 <template>
-  <el-dialog v-model="this.$store.state.isAddDishOpen" @open="getDishTypes">
-    <h3>Add Dish</h3>
+  <el-dialog title="Add Dish" v-model="this.$store.state.isAddDishOpen" @open="getDishTypes">
     <el-col>
       <el-form :model="dishInfo"
                :rules="rules"
@@ -31,7 +30,7 @@
       </el-form>
     </el-col>
     <el-button type="primary" class="button" native-type="submit" v-on:click="addDish">Confirm</el-button>
-    <el-button plain class="button" v-on:click="closeDialog">Cancel</el-button>
+<!--    <el-button plain class="button" v-on:click="closeDialog">Cancel</el-button>-->
   </el-dialog>
 </template>
 
