@@ -9,6 +9,7 @@ export const isEditCanteenOpen = state => state.isEditCanteenOpen
 export const cart = state => state.cart
 export const cartCanteen = state => state.cartCanteen
 export const editingCanteen = state => state.editingCanteen
+export const addingDishTypeId = state => state.addingDishTypeId
 export const isAddCanteen = state => state.isAddCanteen
 export const isAddDishOpen = state => state.isAddDishOpen
 export const canteenID = state => state.canteenID

@@ -22,6 +22,7 @@ const store = new Vuex.Store({
         cartCanteen: '',
         cart: [],
         editingCanteen: {},
+        addingDishTypeId: null,
         token: '',
         canteenID: null
     },

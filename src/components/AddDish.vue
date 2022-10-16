@@ -1,6 +1,6 @@
 <template>
-  <el-dialog v-model="this.$store.state.isAddDishOpen">
-    <h3>AddDish</h3>
+  <el-dialog v-model="this.$store.state.isAddDishOpen" @open="getDishTypes">
+    <h3>Add Dish</h3>
     <el-col>
       <el-form :model="dishInfo"
                :rules="rules"
@@ -13,7 +13,7 @@
         </el-form-item>
         <el-form-item prop="type_id">
           <p>Dish Type:</p>
-          <el-select style="margin-left: 10px" v-model="dishInfo.type_id" clearable class="input">
+          <el-select style="margin-left: 10px" v-model="typeId" clearable class="input">
             <el-option v-for="type in dishTypes" :key="type.id" :label="type.type" :value="type.id">
             </el-option>
           </el-select>
@@ -70,7 +70,13 @@ export default {
   },
   methods: {
     closeDialog() {
-      this.dishInfo = []
+      this.dishInfo = {
+        name: '',
+        price: 0,
+        type_id: 0,
+        stock: 0,
+        canteenID: this.$route.params.id
+      }
       this.$store.dispatch("closeOpenAddDish");
     },
     async getDishTypes() {
@@ -90,6 +96,7 @@ export default {
       let valid = await this.$refs.form.validate()
       if (!valid) return
 
+      this.dishInfo.type_id = this.typeId
       await this.dishService.addDish(this.dishInfo).then(res => {
         if (res.code === 401) {
           this.$message.error('Invalid login credential')
@@ -103,6 +110,16 @@ export default {
           this.$message.error(res.msg)
         }
       })
+    },
+  },
+  computed: {
+    typeId: {
+      get() {
+        return this.$store.getters.addingDishTypeId
+      },
+      set(value) {
+        return this.$store.dispatch('setAddingDishTypeId', value)
+      }
     },
   }
 }

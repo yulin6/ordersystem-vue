@@ -58,6 +58,10 @@ export const setEditingCanteen = (state, editingCanteen) => {
     state.editingCanteen = editingCanteen
 }
 
+export const setAddingDishTypeId = (state, dishTypeId) => {
+    state.addingDishTypeId = dishTypeId
+}
+
 export const openCloseAddDish = (state, canteenID) => {
     state.isAddDishOpen = !state.isAddDishOpen
     state.canteenID = canteenID

@@ -22,6 +22,10 @@ export const setEditingCanteen = ({commit}, editingCanteen) => {
     commit("setEditingCanteen", editingCanteen)
 }
 
+export const setAddingDishTypeId = ({commit}, dishTypeId) => {
+    commit("setAddingDishTypeId", dishTypeId)
+}
+
 export const openCloseProfile = ({commit}) => {
     commit("openCloseProfile")
 }

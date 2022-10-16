@@ -92,7 +92,7 @@
               </template>
             </el-table-column>
           </el-table>
-          <el-button @click="addDish()"
+          <el-button @click="addDish(dish.id)"
                      type="primary"
                      style="margin-top: 6px">
             Add Dish
@@ -121,7 +121,7 @@ export default {
       dishes: [],
       dishService: DishService.getInstance(),
       isCatEditor: false,
-      // type_id: null,
+      type_id: null,
       type: ''
     }
   },
@@ -203,8 +203,9 @@ export default {
         }
       })
     },
-    addDish() {
+    addDish(typeId) {
       this.$store.dispatch("openCloseAddDish", this.id);
+      this.$store.dispatch("setAddingDishTypeId", typeId);
     },
     async updateDishType() {
       await this.dishService.updateDishType(this.type, this.type_id).then(res => {
