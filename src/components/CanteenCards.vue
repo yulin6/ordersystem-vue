@@ -13,24 +13,22 @@
       </div>
     </template>
     <template #default>
+      <edit-canteen v-on:refreshData="refreshData"></edit-canteen>
       <el-row>
         <el-col v-for="(canteen, index) in canteens" :key="index" :span="3" class="card">
           <canteen-card :canteen="canteen"></canteen-card>
           <el-row>
-            <el-button v-show="isOwner" style="margin-top: 8px; margin-left: 8px;" v-on:click="editCanteen(canteen.id)"
-              size="small">
+            <el-button v-show="isOwner" style="margin-top: 8px; margin-left: 8px;" v-on:click="editCanteen(canteen)"
+                       size="small">
               edit info
             </el-button>
-            <edit-canteen v-on:refreshData="refreshData"></edit-canteen>
             <el-button v-show="isOwner" style="margin-top: 8px; margin-left: 8px;" type="danger"
-              v-on:click="deleteCanteen(canteen.id)" size="small">
+                       v-on:click="deleteCanteen(canteen.id)" size="small">
               delete
             </el-button>
           </el-row>
         </el-col>
         <el-col :span="3" class="add-card" v-show="isOwner">
-          <!-- <template> -->
-
           <el-card style="cursor: pointer" shadow="hover" :body-style="{ padding: '0px' }" align="middle"
             v-on:click="addCanteen" class="box-card">
             <div class="mid">
@@ -38,11 +36,8 @@
                 <Plus />
               </el-icon>
               <p style="margin-left: 0;color: #3F9EFF;font-weight: bold">Add a new restaurant!</p>
-              <edit-canteen v-on:refreshData="refreshData"></edit-canteen>
             </div>
           </el-card>
-
-          <!-- </template> -->
         </el-col>
       </el-row>
     </template>
@@ -53,9 +48,9 @@
 <script>
 import CanteenCard from "@/components/CanteenCard";
 // import AddCanteenCard from "@/components/AddCanteenCard";
+import EditCanteen from "@/components/EditCanteen";
 import CanteenService from "@/services/CanteenService";
 import Utils from "@/utils/utils";
-import EditCanteen from "@/components/EditCanteen";
 
 export default {
   name: 'CanteenCards',
@@ -72,7 +67,7 @@ export default {
     this.getCanteens()
   },
   methods: {
-    refreshData: function () {
+    refreshData() {
       this.getCanteens()
     },
     async getCanteens() {
@@ -91,9 +86,20 @@ export default {
       })
       this.loading = false
     },
-    editCanteen(canteenID) {
-      this.$store.dispatch("openCloseEditCanteen", canteenID);
-      console.log("editCanteen", this.$store.state.canteenID)
+    editCanteen(canteen) {
+      this.$store.dispatch("openCloseEditCanteen", canteen.id);
+      // console.log(canteen)
+      // this.editingCanteen = canteen
+      let types = []
+      canteen.canteenTypes.forEach(type => {types.push(type.id)})
+      let canteenTmp = {
+        id: canteen.id,
+        name: canteen.name,
+        canteenTypes: types,
+        description: canteen.description
+      }
+      this.$store.dispatch('setEditingCanteen', canteenTmp)
+      console.log("editCanteen", canteenTmp)
     },
     async deleteCanteen(canteenId) {
       await this.canteenService.deleteCanteen(canteenId).then(res => {

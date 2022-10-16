@@ -1,15 +1,17 @@
 <template>
   <el-card style="cursor: pointer" shadow="hover" :body-style="{ padding: '0px' }" v-on:click="enterCanteen">
     <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
-      class="image" />
+         class="image"/>
     <div style="padding: 14px">
       <span style="font-weight: bold;">{{ canteen.name }}</span>
       <div class="bottom">
-        <span v-for="(canteenType, index) in canteen.canteenTypes" :key="index" class="category">{{ canteenType.type }}</span>
+        <span v-for="(canteenType, index) in canteen.canteenTypes" :key="index" class="category">
+          {{canteenType.type}}
+        </span>
         <el-row class="ratingDisplay">
           <el-col :span="3">
             <el-icon size="large">
-              <StarFilled />
+              <StarFilled/>
             </el-icon>
           </el-col>
           <el-col :span="15" style="margin-top: 4px">
@@ -31,18 +33,18 @@ export default {
   components: {},
   data() {
     return {
-      id: "testID"
+      id: "testID",
     }
   },
   methods: {
     enterCanteen() {
       // console.log(this.name)
       if (this.isOwner) {
-        router.push({ name: 'manage-canteen', params: { id: this.canteen.id } })
+        router.push({name: 'manage-canteen', params: {id: this.canteen.id}})
       } else {
-        router.push({ name: 'canteen', params: { id: this.canteen.id }, state: { canteenName: this.canteen.name } })
+        router.push({name: 'canteen', params: {id: this.canteen.id}, state: {canteenName: this.canteen.name}})
       }
-    }
+    },
   },
   computed: {
     isOwner() {

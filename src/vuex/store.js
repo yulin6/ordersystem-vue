@@ -21,6 +21,7 @@ const store = new Vuex.Store({
         isLogin: false,
         cartCanteen: '',
         cart: [],
+        editingCanteen: {},
         token: '',
         canteenID: null
     },

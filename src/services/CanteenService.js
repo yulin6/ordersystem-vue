@@ -99,4 +99,22 @@ export default class CanteenService {
         }
     }
 
+    updateCanteen = async (newCanteenDetail, canteenId) => {
+        try {
+            let res = await axios({
+                url: store.state.apiURL + '/canteen/' + JSON.stringify(canteenId),
+                method: "PUT",
+                data: JSON.stringify(newCanteenDetail),
+                headers: {
+                    'content-type': 'application/json',
+                    'token': localStorage.getItem('userToken')
+                },
+            })
+            return res.data;
+        }
+        catch (error) {
+            console.log(error)
+        }
+    }
+
 }

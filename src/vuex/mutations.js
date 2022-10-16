@@ -55,6 +55,10 @@ export const setCartCanteen = (state, cartCanteen) => {
     state.cartCanteen = cartCanteen
 }
 
+export const setEditingCanteen = (state, editingCanteen) => {
+    state.editingCanteen = editingCanteen
+}
+
 export const openCloseAddDish = (state, canteenID) => {
     state.isAddDishOpen = !state.isAddDishOpen
     state.canteenID = canteenID
