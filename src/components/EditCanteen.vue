@@ -2,15 +2,37 @@
   <el-dialog v-model="this.$store.state.isEditCanteenOpen">
     <h3 v-show="!isAddCanteen">EditCanteen</h3>
     <h3 v-show="isAddCanteen">AddCanteen</h3>
-    <el-col>
-      <p>Restaurant Name:</p>
-      <el-input v-model="input" placeholder="text" clearable class="input"></el-input>
-      <p>Restaurant Type:</p>
-      <el-select v-model="value" clearable placeholder="select one type" class="input">
-        <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
-        </el-option>
-      </el-select>
-    </el-col>
+    <el-form :model="canteenInfo" :rules="rules" ref="form">
+      <el-form-item prop="name">
+        <p>Restaurant Name:</p>
+        <el-input style="margin-left: 10px" v-model="canteenInfo.name" v-show="isAddCanteen" placeholder="text"
+          clearable class="input"></el-input>
+        <el-input style="margin-left: 10px" v-model="canteenInfo.name" v-show="!isAddCanteen" placeholder="text"
+          clearable class="input"></el-input>
+      </el-form-item>
+      <el-form-item prop="canteenTypes">
+        <p>Restaurant Type:</p>
+        <el-select v-show="isAddCanteen" style="margin-left: 10px" v-model="canteenInfo.canteenTypes" multiple clearable
+          class="input">
+          <el-option v-for="option in options" :key="option.id" :label="option.type" :value="option.id">
+          </el-option>
+        </el-select>
+        <el-select v-show="!isAddCanteen" style="margin-left: 10px" v-model="canteenInfo.canteenTypes" multiple
+          clearable class="input">
+          <el-option v-for="option in options" :key="option.id" :label="option.type" :value="option.id">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item prop="description">
+        <p>Restaurant Description:</p>
+        <el-input v-show="isAddCanteen" style="margin-left: 10px" v-model="canteenInfo.description" placeholder="text"
+          clearable class="input">
+        </el-input>
+        <el-input v-show="!isAddCanteen" style="margin-left: 10px" v-model="canteenInfo.description" placeholder="text"
+          clearable class="input">
+        </el-input>
+      </el-form-item>
+    </el-form>
     <el-upload class="upload-demo" action="https://upload.qiniup.com" :data="postPicData" :before-remove="beforeRemove"
       :before-upload="beforeUpload" :on-success="handleSuccess" :on-exceed="handleExceed" :on-error="handleError"
       :file-list="picfileList" :limit="1" list-type="picture" accept=".png, .jpg, .jpeg">
@@ -20,30 +42,44 @@
         <div class="el-upload__tip">The format should be jpg/jpeg/png and the size should not exceed 10MB.</div>
       </template>
     </el-upload>
-    <el-button type="primary" class="button" v-on:click="confirmed">Confirm</el-button>
+    <el-button type="primary" class="button" v-on:click="addCanteen">Confirm</el-button>
     <el-button plain class="button" v-on:click="cancel">Cancel</el-button>
   </el-dialog>
 </template>
 
 <script>
+import CanteenService from "@/services/CanteenService";
+import Utils from "@/utils/utils";
+
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'EditCanteen',
   data() {
     return {
+      canteenID: this.$store.state.canteenID,
+      canteens: [],
+      canteenService: CanteenService.getInstance(),
       picfileList: [],
-      options: [{
-        value: 'option1',
-        label: 'Western'
-      }, {
-        value: 'option2',
-        label: 'Chinese'
-      }],
-      value: ''
+      options: [],
+      canteenInfo: {
+        name: '',
+        description: '',
+        userID: this.$store.state.user.id,
+        canteenTypes: [],
+      },
+      rules: {
+        name: [
+          {
+            required: true,
+            message: "Restaurant name is required",
+            trigger: "blur"
+          }
+        ],
+        description: [
+          { required: true, message: "Restaurant description is required", trigger: "blur" },
+        ]
+      }
     }
-  },
-  updated() {
-    this.loadFormData()
   },
   computed: {
     isAddCanteen() {
@@ -58,15 +94,75 @@ export default {
       })
     }
   },
+  created() {
+    Utils.storeUserFromLocal()
+    // console.log("created", this.$store.state.canteenID)
+    this.getAllCanteenTypes()
+    this.getAllCanteens()
+  },
   methods: {
-    confirmed() {
-      this.$message({
-        message: 'A new restaurant has created successfully!',
-        type: 'success'
-      });
-      this.$store.dispatch("closeOpenEditCanteen");
+    async getAllCanteens() {
+      await this.canteenService.getAllCanteens().then(res => {
+        if (res.code === 401) {
+          this.$message.error('Login credential expired')
+          this.$router.push('/signin')
+          Utils.removeLocalData()
+        } else if (res.code === 200) {
+          this.canteens = res.data
+          // let canteens = res.data
+          // for (let i = 0; i < canteens.length; i++) {
+          //   if (canteens[i].id == canteenID) {
+          //     this.canteen = canteens[i]
+          //     console.log("***", this.canteen)
+          //   }
+          return null
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
+      this.loading = false
     },
-    cancel() {
+    async getAllCanteenTypes() {
+      await this.canteenService.getAllCanteenTypes().then(res => {
+        if (res.code === 401) {
+          this.$message.error('Login credential expired')
+          this.$router.push('/signin')
+          Utils.removeLocalData()
+        } else if (res.code === 200) {
+          this.options = res.data
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
+      this.loading = false
+    },
+    async addCanteen() {
+      let canteenDetail = this.formattedDishDetail()
+      await this.canteenService.addCanteen(canteenDetail).then(res => {
+        if (res.code === 401) {
+          this.$message.error('Invalid login credential')
+          this.$router.push('/signin')
+          Utils.removeLocalData()
+        } else if (res.code === 200) {
+          this.$message.success(res.msg)
+          this.$emit('refreshData')
+          this.closeDialog()
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
+    },
+    formattedDishDetail() {
+      let canteenDetail = {
+        name: this.canteenInfo.name,
+        description: this.canteenInfo.description,
+        userID: this.canteenInfo.userID,
+        canteenTypes: this.canteenInfo.canteenTypes,
+      }
+      return canteenDetail
+    },
+    closeDialog() {
+      this.canteenInfo = []
       this.$store.dispatch("closeOpenEditCanteen");
     },
     loadFormData() {
@@ -80,6 +176,7 @@ export default {
       this.picfileList = []
     }
   }
+
 }
 </script>
 

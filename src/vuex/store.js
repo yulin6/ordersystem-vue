@@ -21,7 +21,8 @@ const store = new Vuex.Store({
         isLogin: false,
         cartCanteen: '',
         cart: [],
-        token: ''
+        token: '',
+        canteenID: null
     },
     getters,
     mutations,
