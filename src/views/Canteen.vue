@@ -38,9 +38,9 @@
                                      :min="0"
                                      :max="scope.row.stock"
                                      @change="changeDishNum(scope.row)"
-                                     :disabled="scope.row.availability === 0">
+                                     :disabled="scope.row.availability === 0 || scope.row.stock === 0">
                     </el-input-number>
-                    <span v-if="scope.row.availability === 0" style="margin-left: 20px">Out of Stock</span>
+                    <span v-if="scope.row.availability === 0 || scope.row.stock === 0" style="margin-left: 20px">Out of Stock</span>
                   </template>
                 </el-table-column>
               </el-table>

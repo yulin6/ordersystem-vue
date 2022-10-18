@@ -105,7 +105,7 @@ export default {
           this.$router.push('/signin')
           Utils.removeLocalData()
         } else if (res.code === 200) {
-          this.$message.success(res.msg)
+          this.$message.success('Restaurant Deleted')
           this.getCanteens()
         } else {
           this.$message.error(res.msg)
