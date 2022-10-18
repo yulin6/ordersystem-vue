@@ -28,10 +28,12 @@
                  :key="index"
                  :id="dish.type"
                  class="dishGroup">
+              <h4>
               {{ dish.type }}
+              </h4>
               <el-table :data="dish.dishes" style="width: 100%">
-                <el-table-column prop="name" width="200"/>
-                <el-table-column prop="price" width="120"/>
+                <el-table-column label="Dish Name" prop="name" width="200"/>
+                <el-table-column label="Dish Price ($)" prop="price" width="150"/>
                 <el-table-column >
                   <template v-slot:default="scope">
                     <el-input-number v-model="scope.row.selected"

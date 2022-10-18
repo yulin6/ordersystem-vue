@@ -18,7 +18,12 @@
       </el-table-column>
     </el-table>
     <div style="margin-left: 12px">
-      <h4>{{ totalPrice() }}</h4>
+      <h4>
+        {{ totalPrice() }}
+        <el-tag v-if="user.isMember && !isCartEmpty" type="" class="mx-1" size="large" effect="dark" style="margin-left: 10px" round>
+          Pro Discount Applied
+        </el-tag>
+      </h4>
       <h4 v-if="!isCartEmpty">
         Dinning Time:
         <el-date-picker
@@ -63,13 +68,6 @@ import Utils from "@/utils/utils";
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'Cart',
-  // setup() {
-  //   const dinningTime = ref('')
-  //
-  //   return {
-  //     dinningTime
-  //   }
-  // },
   data: () =>(
      {
       orderService: OrderService.getInstance(),
@@ -122,17 +120,20 @@ export default {
       this.setCartCanteenName()
     },
     totalPrice() {
+      console.log('ismenber', this.user)
       let localCart = this.getLocalCart()
       let sum = 0
+      let memberDiscount = 0.9
+      if (this.user.isMember !== 1) memberDiscount = 1
       localCart.forEach(item => sum += item.price * item.selected)
       if (sum === 0) {
         this.totalFee = 0
         this.isCartEmpty = true
         return ''
       } else {
-        this.totalFee = sum
+        this.totalFee = sum * memberDiscount
         this.isCartEmpty = false
-        return `Total Price: $${sum}`
+        return `Total Price: $${this.totalFee}`
       }
     },
     async placeOrder() {
@@ -198,13 +199,9 @@ export default {
     },
     cart() {
       return this.$store.getters.cart
-      // get() {
-      //   return this.$store.getters.cart
-      // },
-      // set(value) {
-      //   localStorage.setItem('setCart', JSON.stringify(value))
-      //   return this.$store.dispatch('setCart', value)
-      // }
+    },
+    user() {
+      return this.$store.getters.user
     }
   },
 
