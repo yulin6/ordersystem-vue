@@ -24,6 +24,7 @@
           </el-aside>
 
           <el-main>
+            <p v-if="guildDisplay" class="word-v-middle">Oops! There are not available dishes.</p>
             <div v-for="(dish, index) in dishes"
                  :key="index"
                  :id="dish.type"
@@ -53,7 +54,6 @@
       </template>
     </el-skeleton>
   </el-container>
-
 </template>
 
 <script>
@@ -74,6 +74,7 @@ export default {
       canteenName: history.state.canteenName,
       dishes: [],
       dishService: DishService.getInstance(),
+      guildDisplay: false,
     }
   },
   created() {
@@ -90,11 +91,19 @@ export default {
         } else if (res.code === 200) {
           this.dishes = res.data
           this.refreshDishes()
+          this.displayGuild()
         } else {
           this.$message.error(res.msg)
         }
       })
       this.loading = false
+    },
+    displayGuild(){
+      if (this.dishes == null || this.dishes.length <= 0) {
+        this.guildDisplay = true
+      } else {
+        this.guildDisplay = false
+      }
     },
     jumpToCategory(id) {
       document.getElementById(id).scrollIntoView();
@@ -199,4 +208,18 @@ export default {
 .dishGroup {
   margin-bottom: 20px;
 }
+
+.word-v-middle{
+  margin-bottom: 0;
+  min-height: 31px;
+  display: flex;
+  align-items: center;
+  margin-left: 180px;
+  /* justify-content: center; */
+  height: 31px;
+  margin-top: 5px;
+  color: #87878a;
+  white-space: normal;
+}
+
 </style>
