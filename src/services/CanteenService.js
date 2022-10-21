@@ -117,4 +117,46 @@ export default class CanteenService {
         }
     }
 
+    uploadImage = async (canteenId, formData) => {
+        try {
+            let res = await axios({
+                url: store.state.apiURL + '/canteen/image',
+                method: "POST",
+                params: {canteen_id: canteenId},
+                data: formData,
+                headers: {
+                    'content-type': 'multipart/form-data',
+                    'token': localStorage.getItem('userToken')
+                },
+            })
+            console.log(res.data)
+            return res.data;
+        }
+        catch (error) {
+            console.log(error)
+        }
+    }
+
+    getImage = async (canteenId) => {
+        try {
+            let res = await axios({
+                url: store.state.apiURL + '/canteen/image',
+                method: "GET",
+                params: {canteen_id: canteenId},
+                headers: {
+                    'content-type': 'application/json',
+                    'token': localStorage.getItem('userToken')
+                },
+                responseType: "blob"
+            })
+            return URL.createObjectURL(new Blob([res.data], { type: "image/png" }));
+        }
+        catch (error) {
+            // console.log(error.response.status)
+            if(error.response.status === 404) {
+                return require('../assets/foodiesRestaurant.png')
+            }
+        }
+    }
+
 }

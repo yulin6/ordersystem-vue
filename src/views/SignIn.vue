@@ -1,8 +1,12 @@
-<template>
+<template >
   <!--  <img alt="Vue logo" src="./assets/logo.png">-->
   <!--  <HelloWorld msg="Welcome to Your Vue.js App"/>-->
-
-  <div class="signIn">
+<!--<div :style="{-->
+<!--        'background-image': `url(https://media-cldnry.s-nbcnews.com/image/upload/rockcms/2022-03/plant-based-food-mc-220323-02-273c7b.jpg)`,-->
+<!--        'width': '100%',-->
+<!--        'height': '1000px'-->
+<!--      }">-->
+  <div class="signIn" >
     <div class="logo">
       <h1>Foodies</h1>
       <p v-show="isOwner" style="margin-left: 3px">Owner</p>
@@ -58,6 +62,7 @@
       </el-col>
     </el-card>
   </div>
+<!--</div>-->
 </template>
 
 <script>

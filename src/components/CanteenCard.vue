@@ -1,6 +1,7 @@
 <template>
   <el-card style="cursor: pointer" shadow="hover" :body-style="{ padding: '0px' }" v-on:click="enterCanteen">
-    <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
+    <img v-if="imageUrl"
+        :src="imageUrl"
          class="image"/>
     <div style="padding: 14px">
       <span style="font-weight: bold;">{{ canteen.name }}</span>
@@ -26,6 +27,7 @@
 
 <script>
 import router from "@/router";
+import CanteenService from "@/services/CanteenService";
 
 export default {
   name: 'CanteenCard',
@@ -33,8 +35,12 @@ export default {
   components: {},
   data() {
     return {
-      id: "testID",
+      canteenService: CanteenService.getInstance(),
+      imageUrl: ''
     }
+  },
+  created() {
+    this.getImage()
   },
   methods: {
     enterCanteen() {
@@ -44,6 +50,11 @@ export default {
       } else {
         router.push({name: 'canteen', params: {id: this.canteen.id}, state: {canteenName: this.canteen.name}})
       }
+    },
+    getImage() {
+      this.canteenService.getImage(this.canteen.id).then(res => {
+        this.imageUrl = res
+      })
     },
   },
   computed: {
@@ -57,8 +68,16 @@ export default {
     orderNums() {
       if (this.canteen.orderNums === 0) return ''
       else return '(' + this.canteen.orderNums + ')'
-    }
+    },
+    isEditCanteenOpen() {
+      return this.$store.getters.isEditCanteenOpen
+    },
   },
+  watch: {
+    isEditCanteenOpen: function () {
+      this.getImage()
+    }
+  }
 }
 </script>
 
@@ -97,8 +116,14 @@ export default {
   min-height: auto;
 }
 
+/*.image {*/
+/*  width: 100%;*/
+/*  display: block;*/
+/*}*/
+
 .image {
   width: 100%;
+  height: 200px;
   display: block;
 }
 </style>

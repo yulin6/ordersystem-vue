@@ -1,8 +1,8 @@
 <template>
-  <el-dialog v-model="this.$store.state.isEditCanteenOpen">
-    <div v-show="!isAddCanteen">
+  <el-dialog title='' v-model="this.$store.state.isEditCanteenOpen" @open="getImage">
+    <div v-if="!isAddCanteen">
       <h3>Edit Restaurant</h3>
-      <el-form :model="editingCanteen" :rules="rules" ref="form">
+      <el-form :model="editingCanteen" :rules="rules" ref="editForm">
         <el-form-item prop="name">
           <p>Restaurant Name:</p>
           <el-input style="margin-left: 10px" v-model="editingCanteen.name"
@@ -26,11 +26,36 @@
                     clearable>
           </el-input>
         </el-form-item>
+        <el-form-item class="upload-container">
+          <p>Restaurant Image: </p>
+          <el-upload
+              ref="uploadForm"
+              :before-upload="beforeUpload"
+              :show-file-list="false"
+              :http-request="uploadFile"
+              :limit=1
+              :auto-upload="false"
+              accept="image/png,image/jpg,image/jpeg"
+              style="margin-left: 10px"
+              class="upload-demo">
+            <img v-if="imageUrl" :src="imageUrl" class="avatar"/>
+            <el-icon v-else class="avatar-uploader-icon">
+              <Plus/>
+            </el-icon>
+          </el-upload>
+        </el-form-item>
+
       </el-form>
-      <el-button type="primary" class="button" v-on:click="updateCanteen">Update</el-button>
+      <el-button
+          type="primary"
+          class="button"
+          native-type="submit"
+          v-on:click="updateCanteen">
+        Update
+      </el-button>
     </div>
 
-    <div v-show="isAddCanteen">
+    <div v-if="isAddCanteen">
       <h3>Add Restaurant</h3>
       <el-form :model="addingCanteen" :rules="rules" ref="form">
         <el-form-item prop="name">
@@ -55,7 +80,12 @@
           </el-input>
         </el-form-item>
       </el-form>
-      <el-button type="primary" class="button" v-on:click="addCanteen">Create</el-button>
+      <el-button
+          type="primary"
+          class="button"
+          native-type="submit"
+          v-on:click="addCanteen">Create
+      </el-button>
     </div>
   </el-dialog>
 </template>
@@ -63,9 +93,11 @@
 <script>
 import CanteenService from "@/services/CanteenService";
 import Utils from "@/utils/utils";
+// import ImageUpload from "@/components/ImageUpload";
 
 export default {
   name: 'EditCanteen',
+  // components: {ImageUpload},
   created() {
     Utils.storeUserFromLocal()
     this.getAllCanteenTypes()
@@ -73,7 +105,7 @@ export default {
   data: function () {
     return {
       canteenService: CanteenService.getInstance(),
-      // picfileList: [],
+      imageUrl: require('../assets/foodiesRestaurant.png'),
       options: [],
       addingCanteen: {
         name: '',
@@ -107,6 +139,8 @@ export default {
       })
     },
     async updateCanteen() {
+      let valid = await this.$refs.editForm.validate()
+      if (!valid) return
       await this.canteenService.updateCanteen(this.editingCanteen, this.editingCanteen.id).then(res => {
         if (res.code === 401) {
           this.$message.error('Invalid login credential')
@@ -122,6 +156,8 @@ export default {
       })
     },
     async addCanteen() {
+      let valid = await this.$refs.form.validate()
+      if (!valid) return
       await this.canteenService.addCanteen(this.addingCanteen).then(res => {
         if (res.code === 401) {
           this.$message.error('Invalid login credential')
@@ -137,19 +173,63 @@ export default {
       })
     },
     closeDialog() {
-      this.addingCanteen = []
+      this.addingCanteen = {
+        name: '',
+        description: '',
+        userID: this.$store.state.user.id,
+        canteenTypes: [],
+      }
       this.$store.dispatch("closeOpenEditCanteen");
     },
-    // loadFormData() {
-    //   let imgurl = {}
-    //   imgurl.url = this.diaFormData.gcover
-    //   if (this.diaFormData.gcover != null) {
-    //     this.picfileList.push(imgurl)
-    //   }
-    // },
-    // dialogclose() {
-    //   this.picfileList = []
-    // }
+    getImage() {
+      this.canteenService.getImage(this.editingCanteen.id).then(res => {
+        this.imageUrl = res
+      })
+
+    },
+    uploadFile(item) {
+      console.log("uploading")
+      console.log(item.file)
+      console.log(this.editingCanteen.id)
+      // 开始上传文件 新建一个formData
+      const formData = new FormData();
+      // 通过append向form对象添加数据
+      formData.append("image", item.file);
+      // console.log(formData)
+      this.canteenService.uploadImage(this.editingCanteen.id, formData).then(res => {
+        if (res.code === 401) {
+          this.$message.error('Invalid login credential')
+          this.$router.push('/signin')
+          Utils.removeLocalData()
+        } else if (res.code === 200) {
+          this.getImage()
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
+    },
+    // 移除上传图片列表
+    clearFlies() {
+      this.$refs.uploadForm.clearFiles();
+    },
+    // 上传文件之前
+    beforeUpload(file) {
+      const fileSuffix = file.name.substring(file.name.lastIndexOf(".") + 1);
+      const extension1 = fileSuffix === "png";
+      const extension2 = fileSuffix === "jpg";
+      const extension3 = fileSuffix === "jpeg";
+      const isLt2M = file.size / 1024 / 1024 < 0.5;
+
+      if (!extension1 && !extension2 && !extension3) {
+        this.$message.error("上传文件只能是 png、jpg、jpeg格式", "error");
+        return false;
+      }
+
+      if (!isLt2M) {
+        this.$message.error("上传文件大小不能超过 2MB", "error");
+        return false;
+      }
+    },
   },
   computed: {
     isAddCanteen() {
@@ -157,12 +237,27 @@ export default {
     },
     editingCanteen() {
       return this.$store.getters.editingCanteen
-    }
+    },
+    // isEditCanteenOpen() {
+    //   return this.$store.getters.isEditCanteenOpen
+    // },
   },
 
 }
 </script>
+<style scoped>
+.avatar-uploader {
+  width: 178px;
+  height: 178px;
+  display: block;
+}
 
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+}
+</style>
 <style>
 .button {
   margin-top: 16px;
@@ -172,4 +267,45 @@ export default {
 .input {
   width: 400px;
 }
+
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+}
+
+.avatar-uploader {
+  border: 1px dashed var(--el-border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: var(--el-transition-duration-fast);
+}
+
+.el-upload {
+  border: 1px dashed var(--el-border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: var(--el-transition-duration-fast);
+}
+
+.avatar-uploader {
+  border-color: var(--el-color-primary);
+}
+
+.el-upload:hover {
+  border-color: var(--el-color-primary);
+}
+
+.el-icon.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  text-align: center;
+}
+
 </style>
