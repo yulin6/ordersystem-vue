@@ -1,6 +1,6 @@
 <template>
-  <el-dialog title='' v-model="this.$store.state.isEditCanteenOpen" @open="getImage">
-    <div v-if="!isAddCanteen">
+  <el-dialog v-model="this.$store.state.isEditCanteenOpen" @open="getImage">
+    <div v-show="!isAddCanteen">
       <h3>Edit Restaurant</h3>
       <el-form :model="editingCanteen" :rules="rules" ref="editForm">
         <el-form-item prop="name">
@@ -54,7 +54,7 @@
       </el-button>
     </div>
 
-    <div v-if="isAddCanteen">
+    <div v-show="isAddCanteen">
       <h3>Add Restaurant</h3>
       <el-form :model="addingCanteen" :rules="rules" ref="form">
         <el-form-item prop="name">
@@ -177,11 +177,12 @@ export default {
         description: '',
         userID: this.$store.state.user.id,
         canteenTypes: [],
-      }
+      },
       this.$store.dispatch("closeOpenEditCanteen");
     },
     getImage() {
       this.canteenService.getImage(this.editingCanteen.id).then(res => {
+        // console.log(res)
         this.imageUrl = res
       })
 
