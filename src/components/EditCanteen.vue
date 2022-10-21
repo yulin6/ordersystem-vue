@@ -30,6 +30,7 @@
           <p>Restaurant Image: </p>
           <el-upload
               ref="uploadForm"
+              :before-upload="beforeUpload"
               :show-file-list="false"
               :http-request="uploadFile"
               :limit=1
@@ -212,24 +213,22 @@ export default {
       this.$refs.uploadForm.clearFiles();
     },
     // 上传文件之前
-    // beforeUpload(file) {
-    //   console.log('test')
-    //   const fileSuffix = file.name.substring(file.name.lastIndexOf(".") + 1);
-    //   const extension1 = fileSuffix === "png";
-    //   const extension2 = fileSuffix === "jpg";
-    //   const extension3 = fileSuffix === "jpeg";
-    //   const isLt2M = file.size / 1024 / 1024 < 0.5;
-    //
-    //   if (!extension1 && !extension2 && !extension3) {
-    //     this.$message.error("上传文件只能是 png、jpg、jpeg格式", "error");
-    //     return false;
-    //   }
-    //
-    //   if (!isLt2M) {
-    //     this.$message.error("上传文件大小不能超过 2MB", "error");
-    //     return false;
-    //   }
-    // },
+    beforeUpload(file) {
+      const fileSuffix = file.name.substring(file.name.lastIndexOf(".") + 1);
+      const extension1 = fileSuffix === "png";
+      const extension2 = fileSuffix === "jpg";
+      const extension3 = fileSuffix === "jpeg";
+      const isLt2M = file.size / 1024 / 1024 < 1;
+      if (!extension1 && !extension2 && !extension3) {
+        this.$message.error("上传文件只能是 png、jpg、jpeg格式", );
+        return false;
+      }
+
+      if (!isLt2M) {
+        this.$message.error("上传文件大小不能超过 1MB");
+        return false;
+      }
+    },
   },
   computed: {
     isAddCanteen() {
