@@ -34,7 +34,6 @@
               :show-file-list="false"
               :http-request="uploadFile"
               :limit=1
-              :auto-upload="false"
               accept="image/png,image/jpg,image/jpeg"
               style="margin-left: 10px"
               class="upload-demo">
