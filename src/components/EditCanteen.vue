@@ -220,12 +220,12 @@ export default {
       const extension3 = fileSuffix === "jpeg";
       const isLt2M = file.size / 1024 / 1024 < 1;
       if (!extension1 && !extension2 && !extension3) {
-        this.$message.error("上传文件只能是 png、jpg、jpeg格式", );
+        this.$message.error("Only allow png, jpg, jpeg images", );
         return false;
       }
 
       if (!isLt2M) {
-        this.$message.error("上传文件大小不能超过 1MB");
+        this.$message.error("Image size can not exceed 1MB");
         return false;
       }
     },

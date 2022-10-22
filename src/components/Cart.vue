@@ -120,7 +120,10 @@ export default {
       this.setCartCanteenName()
     },
     totalPrice() {
-      console.log('ismenber', this.user)
+      const formatter = new Intl.NumberFormat('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
       let localCart = this.getLocalCart()
       let sum = 0
       let memberDiscount = 0.9
@@ -133,7 +136,7 @@ export default {
       } else {
         this.totalFee = sum * memberDiscount
         this.isCartEmpty = false
-        return `Total Price: $${this.totalFee}`
+        return `Total Price: $${formatter.format(this.totalFee)}`
       }
     },
     async placeOrder() {
