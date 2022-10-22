@@ -65,7 +65,7 @@
             </el-table-column>
             <el-table-column label="Quantity in Stock" width="200">
               <template v-slot:default="scope">
-                <el-input-number v-model="scope.row.stock" :min="0" :max="scope.row.stock" v-if="scope.row.isEditor">
+                <el-input-number v-model="scope.row.stock" :min="0" :max="9999" v-if="scope.row.isEditor">
                 </el-input-number>
                 <span v-if="!scope.row.isEditor">{{ scope.row.stock }}</span>
               </template>
