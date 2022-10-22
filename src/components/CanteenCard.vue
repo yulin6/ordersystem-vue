@@ -36,7 +36,7 @@ export default {
   data() {
     return {
       canteenService: CanteenService.getInstance(),
-      imageUrl: ''
+      imageUrl: require('../assets/foodiesRestaurant.png')
     }
   },
   created() {
