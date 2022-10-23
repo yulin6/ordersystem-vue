@@ -188,17 +188,23 @@ export default {
       return dishDetail
     },
     async deleteDish(dishID) {
-      await this.dishService.deleteDish(dishID).then(res => {
-        if (res.code === 401) {
-          this.$message.error('Invalid login credential')
-          this.$router.push('/signin')
-          Utils.removeLocalData()
-        } else if (res.code === 200) {
-          this.$message.success('Dish Deleted')
-          this.getDishes()
-        } else {
-          this.$message.error(res.msg)
-        }
+      this.$confirm('Deleting the Dish, are you sure?', 'Delete Dish', {
+        confirmButtonText: 'Delete',
+        cancelButtonText: 'Maybe Later',
+        type: 'error'
+      }).then(async () => {
+        await this.dishService.deleteDish(dishID).then(res => {
+          if (res.code === 401) {
+            this.$message.error('Invalid login credential')
+            this.$router.push('/signin')
+            Utils.removeLocalData()
+          } else if (res.code === 200) {
+            this.$message.success('Dish Deleted')
+            this.getDishes()
+          } else {
+            this.$message.error(res.msg)
+          }
+        })
       })
     },
     addDish(typeId) {
@@ -254,17 +260,23 @@ export default {
       return typeDetail
     },
     async deleteDishType(typeID) {
-      await this.dishService.deleteDishType(typeID).then(res => {
-        if (res.code === 401) {
-          this.$message.error('Invalid login credential')
-          this.$router.push('/signin')
-          Utils.removeLocalData()
-        } else if (res.code === 200) {
-          this.$message.success('Dish Type Deleted')
-          this.getDishes()
-        } else {
-          this.$message.error(res.msg)
-        }
+      this.$confirm('Deleting the Dish Type, are you sure?', 'Delete Dish Type', {
+        confirmButtonText: 'Delete',
+        cancelButtonText: 'Maybe Later',
+        type: 'error'
+      }).then(async () => {
+        await this.dishService.deleteDishType(typeID).then(res => {
+          if (res.code === 401) {
+            this.$message.error('Invalid login credential')
+            this.$router.push('/signin')
+            Utils.removeLocalData()
+          } else if (res.code === 200) {
+            this.$message.success('Dish Type Deleted')
+            this.getDishes()
+          } else {
+            this.$message.error(res.msg)
+          }
+        })
       })
     }
   }
