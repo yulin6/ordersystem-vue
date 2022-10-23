@@ -33,7 +33,7 @@
         </el-col>
         <el-col :span="3" class="add-card" v-show="isOwner">
           <el-card style="cursor: pointer" shadow="hover" :body-style="{ padding: '0px' }" align="middle"
-            v-on:click="addCanteen" class="box-card">
+                   v-on:click="addCanteen" class="box-card">
             <div class="mid">
               <el-icon color="#3F9EFF" size="large" border-radius="20px">
                 <Plus />
@@ -99,17 +99,23 @@ export default {
       this.$store.dispatch('setEditingCanteen', canteenTmp)
     },
     async deleteCanteen(canteenId) {
-      await this.canteenService.deleteCanteen(canteenId).then(res => {
-        if (res.code === 401) {
-          this.$message.error('Invalid login credential')
-          this.$router.push('/signin')
-          Utils.removeLocalData()
-        } else if (res.code === 200) {
-          this.$message.success('Restaurant Deleted')
-          this.getCanteens()
-        } else {
-          this.$message.error(res.msg)
-        }
+      this.$confirm('Deleting the Restaurant, are you sure?', 'Delete Restaurant', {
+        confirmButtonText: 'Delete',
+        cancelButtonText: 'Maybe Later',
+        type: 'error'
+      }).then(async () => {
+        await this.canteenService.deleteCanteen(canteenId).then(res => {
+          if (res.code === 401) {
+            this.$message.error('Invalid login credential')
+            this.$router.push('/signin')
+            Utils.removeLocalData()
+          } else if (res.code === 200) {
+            this.$message.success('Restaurant Deleted')
+            this.getCanteens()
+          } else {
+            this.$message.error(res.msg)
+          }
+        })
       })
     },
     addCanteen() {
