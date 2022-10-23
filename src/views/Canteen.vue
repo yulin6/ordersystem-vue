@@ -8,7 +8,8 @@
     </el-header>
     <el-skeleton :rows="15" style="width: 1000px; margin: 80px" :loading="loading" animated>
       <template #default>
-        <el-container>
+        <el-empty v-if="dishes.length === 0" description="No Dishes Available" style="margin-top: 150px"/>
+        <el-container v-if="dishes.length !== 0">
           <el-aside style="width: 200px;">
             <el-button
                 @click="openRatings"

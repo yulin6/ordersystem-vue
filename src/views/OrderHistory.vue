@@ -25,7 +25,7 @@
             </el-select>
 
           </div>
-
+          <el-empty v-if="orderHistory.length === 0" description="No Orders" style="margin-top: 20px"/>
           <el-timeline>
             <el-timeline-item
                 v-for="(order, index) in orderHistory"

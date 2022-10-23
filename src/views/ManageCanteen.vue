@@ -35,6 +35,7 @@
       </el-aside>
 
       <el-main>
+        <el-empty v-if="dishes.length === 0" description="No dishes yet. Create a dish type on left panel" style="margin-top: 100px"/>
         <add-dish v-on:refreshData="getDishes"></add-dish>
         <div v-for="(dish, index) in dishes"
              :key="index"
