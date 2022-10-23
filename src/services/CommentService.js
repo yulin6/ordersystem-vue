@@ -12,6 +12,26 @@ export default class CommentService {
         return this.myInstance;
     }
 
+    getRatingByCanteenId = async id => {
+        try{
+            let res = await axios({
+                url: store.state.apiURL + '/comment',
+                method: "GET",
+                params: {
+                    canteen_id: id
+                },
+                headers: {
+                    'content-type': 'application/json',
+                    'token': localStorage.getItem('userToken')
+                },
+            })
+            return res.data;
+        }
+        catch(error){
+            console.log(error)
+        }
+    }
+
     getRatingByOrderId = async id => {
         try{
             let res = await axios({

@@ -10,6 +10,12 @@
       <template #default>
         <el-container>
           <el-aside style="width: 200px;">
+            <el-button
+                @click="openRatings"
+                style="margin: 5px">
+              <el-icon class="el-icon--left"><ChatLineRound /></el-icon>
+              Restaurant Ratings
+            </el-button>
             <el-menu
                 default-active="1"
                 class="categoryMenu">
@@ -21,15 +27,26 @@
                 <span>{{ dish.type }}</span>
               </el-menu-item>
             </el-menu>
+
           </el-aside>
 
           <el-main>
+            <el-dialog title="Ratings"  v-model="isRatingsOpen" >
+              <el-empty v-if="ratings.length === 0" description="No Ratings" />
+              <el-card  v-for="(rating, index) in ratings"
+                        :key="index"
+                        shadow="always"
+                        style="margin-bottom: 20px">
+                <el-rate v-model="rating.star" :colors="colors" size="large" style="margin-top: 5px" disabled/>
+                <h4 style="font-style: italic;">"{{ rating.comment }}"</h4>
+              </el-card>
+            </el-dialog>
             <div v-for="(dish, index) in dishes"
                  :key="index"
                  :id="dish.type"
                  class="dishGroup">
               <h4>
-              {{ dish.type }}
+                {{ dish.type }}
               </h4>
               <el-table :data="dish.dishes" style="width: 100%">
                 <el-table-column label="Dish Name" prop="name" width="200"/>
@@ -56,11 +73,18 @@
 
 </template>
 
+<script setup>
+import {ref} from 'vue'
+
+const colors = ref(['#99A9BF', '#F7BA2A', '#FF9900'])
+</script>
+
 <script>
 import HomeMenu from "@/components/HomeMenu";
 import Cart from "@/components/Cart";
 import Profile from "@/components/Profile";
 import DishService from "@/services/DishService";
+import CommentService from "@/services/CommentService";
 import Utils from "@/utils/utils";
 
 export default {
@@ -73,12 +97,16 @@ export default {
       id: this.$route.params.id,
       canteenName: history.state.canteenName,
       dishes: [],
+      ratings: [],
       dishService: DishService.getInstance(),
+      commentService: CommentService.getInstance(),
+      isRatingsOpen: false,
     }
   },
   created() {
     Utils.storeUserFromLocal()
     this.getDishes()
+    this.getRatings()
   },
   methods: {
     async getDishes() {
@@ -95,6 +123,23 @@ export default {
         }
       })
       this.loading = false
+    },
+    async getRatings() {
+      await this.commentService.getRatingByCanteenId(this.id).then(res => {
+        if (res.code === 401) {
+          this.$message.error('Invalid login credential')
+          this.$router.push('/signin')
+          Utils.removeLocalData()
+        } else if (res.code === 200) {
+          this.ratings = res.data
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
+      this.loading = false
+    },
+    openRatings() {
+      this.isRatingsOpen = true
     },
     jumpToCategory(id) {
       document.getElementById(id).scrollIntoView();
