@@ -77,6 +77,7 @@ export default {
     }
   },
   created() {
+    //console.log('?')
     Utils.storeUserFromLocal()
     this.getDishes()
   },
