@@ -4,107 +4,110 @@
     <el-header>
       <home-menu></home-menu>
     </el-header>
-    <el-container>
-      <el-aside style="width: 200px;">
-        <el-menu default-active="1" class="el-menu-vertical-demo">
-          <el-menu-item v-for="(dish, index) in dishes" :index="dish.type" :key="index"
-                        v-on:click="jumpToCategory(dish.type)">
+    <el-skeleton :rows="15" style="width: 1000px; margin: 80px" :loading="loading" animated>
+      <template #default>
+        <el-container>
+          <el-aside style="width: 200px;">
+            <el-menu default-active="1" class="el-menu-vertical-demo">
+              <el-menu-item v-for="(dish, index) in dishes" :index="dish.type" :key="index"
+                            v-on:click="jumpToCategory(dish.type)">
             <span v-if="!isCatEditor">
               {{ dish.type }}
             </span>
-            <el-input v-if="isCatEditor" v-model="dish.type" type="text" style="width: 100px"/>
-            <el-button v-if="isCatEditor" @click="deleteDishType(dish.id)" type="danger" size="small"
-                       style="margin-left: 6px">
-              delete
-            </el-button>
-          </el-menu-item>
-          <el-button v-if="!isCatEditor" @click="editCategory" style="margin-top: 10px; ">
-            Edit Category
-          </el-button>
-          <el-menu-item v-if="isCatEditor">
-            <el-input v-model="type" type="text" style="width: 100px;"/>
-            <el-button @click="addDishType" style="margin-left: 6px">
-              add
-            </el-button>
-          </el-menu-item>
-          <el-button v-if="isCatEditor" @click="saveCategory" style="margin-top: 10px; margin-left: 20px"
-                     type="warning">
-            Save
-          </el-button>
-        </el-menu>
-      </el-aside>
-
-      <el-main>
-        <el-empty v-if="dishes.length === 0" description="No dishes yet. Create a dish type on left panel" style="margin-top: 100px"/>
-        <add-dish v-on:refreshData="getDishes"></add-dish>
-        <div v-for="(dish, index) in dishes"
-             :key="index"
-             :id="dish.type"
-             class="dishGroup">
-          <h4>
-            {{ dish.type }}
-            <el-button @click="addDish(dish.id)"
-                       type="primary"
-                       style="margin-left: 10px">
-              Add Dish
-            </el-button>
-          </h4>
-
-          <el-table :data="dish.dishes" style="width: 100%; margin-top: 6px;">
-            <el-table-column label="Dish Name" width="260">
-              <template v-slot:default="scope">
-                <el-input type="text" v-model="scope.row.name" v-if="scope.row.isEditor"/>
-                <span v-if="!scope.row.isEditor">{{ scope.row.name }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column label="Dish Price ($)" width="200">
-              <template v-slot:default="scope">
-                <el-input-number v-model="scope.row.price" :min="0" :max="9999" v-if="scope.row.isEditor">
-                </el-input-number>
-                <span v-if="!scope.row.isEditor">{{ scope.row.price }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column label="Quantity in Stock" width="200">
-              <template v-slot:default="scope">
-                <el-input-number v-model="scope.row.stock" :min="0" :max="9999" v-if="scope.row.isEditor">
-                </el-input-number>
-                <span v-if="!scope.row.isEditor">{{ scope.row.stock }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column label="Availability" width="200">
-              <template v-slot:default="scope">
-                <el-checkbox v-if="scope.row.isEditor"
-                             v-model="scope.row.availability"
-                             :label="scope.row.availability ? 'available' : 'unavailable'"
-                             size="large"
-                             enabled>
-                </el-checkbox>
-                <el-checkbox v-if="!scope.row.isEditor"
-                             v-model="scope.row.availability"
-                             :label="scope.row.availability ? 'available' : 'unavailable'"
-                             size="large"
-                             disabled>
-                </el-checkbox>
-              </template>
-            </el-table-column>
-            <el-table-column label="Operations">
-              <template v-slot:default="scope">
-                <el-button v-if="scope.row.isEditor" @click="editDish(scope.row)" size="small">Cancel</el-button>
-                <el-button v-if="!scope.row.isEditor" @click="editDish(scope.row)" size="small">Edit</el-button>
-                <el-button v-if="scope.row.isEditor"
-                           @click="updateDish(scope.row)"
-                           type="warning"
-                           size="small">save
+                <el-input v-if="isCatEditor" v-model="dish.type" type="text" style="width: 100px"/>
+                <el-button v-if="isCatEditor" @click="deleteDishType(dish.id)" type="danger" size="small"
+                           style="margin-left: 6px">
+                  delete
                 </el-button>
-                <el-button type="danger" @click="deleteDish(scope.row.id)" size="small"> Delete
+              </el-menu-item>
+              <el-button v-if="!isCatEditor" @click="editCategory" style="margin-top: 10px; ">
+                Edit Category
+              </el-button>
+              <el-menu-item v-if="isCatEditor">
+                <el-input v-model="type" type="text" style="width: 100px;"/>
+                <el-button @click="addDishType" style="margin-left: 6px">
+                  add
                 </el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-        </div>
+              </el-menu-item>
+              <el-button v-if="isCatEditor" @click="saveCategory" style="margin-top: 10px; margin-left: 20px"
+                         type="warning">
+                Save
+              </el-button>
+            </el-menu>
+          </el-aside>
 
-      </el-main>
-    </el-container>
+          <el-main>
+            <el-empty v-if="dishes.length === 0" description="No dishes yet. Create a dish type on left panel" style="margin-top: 100px"/>
+            <add-dish v-on:refreshData="getDishes"></add-dish>
+            <div v-for="(dish, index) in dishes"
+                 :key="index"
+                 :id="dish.type"
+                 class="dishGroup">
+              <h4>
+                {{ dish.type }}
+                <el-button @click="addDish(dish.id)"
+                           type="primary"
+                           style="margin-left: 10px">
+                  Add Dish
+                </el-button>
+              </h4>
+
+              <el-table :data="dish.dishes" style="width: 100%; margin-top: 6px;">
+                <el-table-column label="Dish Name" width="260">
+                  <template v-slot:default="scope">
+                    <el-input type="text" v-model="scope.row.name" v-if="scope.row.isEditor"/>
+                    <span v-if="!scope.row.isEditor">{{ scope.row.name }}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column label="Dish Price ($)" width="200">
+                  <template v-slot:default="scope">
+                    <el-input-number v-model="scope.row.price" :min="0" :max="9999" v-if="scope.row.isEditor">
+                    </el-input-number>
+                    <span v-if="!scope.row.isEditor">{{ scope.row.price }}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column label="Quantity in Stock" width="200">
+                  <template v-slot:default="scope">
+                    <el-input-number v-model="scope.row.stock" :min="0" :max="9999" v-if="scope.row.isEditor">
+                    </el-input-number>
+                    <span v-if="!scope.row.isEditor">{{ scope.row.stock }}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column label="Availability" width="200">
+                  <template v-slot:default="scope">
+                    <el-checkbox v-if="scope.row.isEditor"
+                                 v-model="scope.row.availability"
+                                 :label="scope.row.availability ? 'available' : 'unavailable'"
+                                 size="large"
+                                 enabled>
+                    </el-checkbox>
+                    <el-checkbox v-if="!scope.row.isEditor"
+                                 v-model="scope.row.availability"
+                                 :label="scope.row.availability ? 'available' : 'unavailable'"
+                                 size="large"
+                                 disabled>
+                    </el-checkbox>
+                  </template>
+                </el-table-column>
+                <el-table-column label="Operations">
+                  <template v-slot:default="scope">
+                    <el-button v-if="scope.row.isEditor" @click="editDish(scope.row)" size="small">Cancel</el-button>
+                    <el-button v-if="!scope.row.isEditor" @click="editDish(scope.row)" size="small">Edit</el-button>
+                    <el-button v-if="scope.row.isEditor"
+                               @click="updateDish(scope.row)"
+                               type="warning"
+                               size="small">save
+                    </el-button>
+                    <el-button type="danger" @click="deleteDish(scope.row.id)" size="small"> Delete
+                    </el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+          </el-main>
+        </el-container>
+      </template>
+    </el-skeleton>
   </el-container>
 
 </template>
@@ -120,6 +123,7 @@ export default {
   components: {HomeMenu, AddDish},
   data() {
     return {
+      loading: true,
       id: this.$route.params.id,
       canteenName: history.state.canteenName,
       dishes: [],
@@ -147,6 +151,7 @@ export default {
           this.$message.error(res.msg)
         }
       })
+      this.loading = false
     },
     convertAvailabilityToBoolean() {
       this.dishes.forEach(dishGroup => {

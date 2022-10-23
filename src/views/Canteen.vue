@@ -71,7 +71,6 @@
       </template>
     </el-skeleton>
   </el-container>
-
 </template>
 
 <script setup>
@@ -123,7 +122,6 @@ export default {
           this.$message.error(res.msg)
         }
       })
-      this.loading = false
     },
     async getRatings() {
       await this.commentService.getRatingByCanteenId(this.id).then(res => {
