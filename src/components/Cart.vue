@@ -32,6 +32,7 @@
             placeholder="Select"
             format="YYYY/MM/DD hh:mm:ss"
             value-format="YYYY-MM-DD h:m:s a"
+            :disabled-date="disabledDate"
             style="margin-left: 15px"
         />
       </h4>
@@ -69,13 +70,13 @@ export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'Cart',
   data: () =>(
-     {
-      orderService: OrderService.getInstance(),
-      totalFee: 0,
-      dinningTime: '',
-      isCartEmpty: true,
-      loading: false
-    }
+      {
+        orderService: OrderService.getInstance(),
+        totalFee: 0,
+        dinningTime: '',
+        isCartEmpty: true,
+        loading: false,
+      }
   ),
   created() {
     this.syncStoreAndLocalCart()
@@ -138,6 +139,9 @@ export default {
         this.isCartEmpty = false
         return `Total Price: $${formatter.format(this.totalFee)}`
       }
+    },
+    disabledDate(time) {
+      return time.getTime() < Date.now() - 8.64e7;
     },
     async placeOrder() {
       let orderDetail = this.formattedOrderDetail()
