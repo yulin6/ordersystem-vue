@@ -5,8 +5,14 @@ import Canteen from "@/views/Canteen.vue";
 import ManageCanteen from "@/views/ManageCanteen.vue";
 import SignUp from "@/views/SignUp";
 import OrderHistory from "@/views/OrderHistory";
+import WelcomePage from "@/views/WelcomePage";
 
 const routes = [
+    {
+        path: "/",
+        name: "welcomePage",
+        component: WelcomePage,
+    },
     {
         path: "/signIn",
         name: "signIn",
