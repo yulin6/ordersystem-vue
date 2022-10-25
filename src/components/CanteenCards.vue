@@ -195,7 +195,7 @@ export default {
 }
 
 .add-card {
-  margin-top: 60px;
+  margin-top: 20px;
   margin-left: 60px
 }
 
