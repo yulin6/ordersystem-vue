@@ -60,7 +60,7 @@ router.beforeEach((to, from, next) => {
 
         if (token === null || token === '') {
             // this.$message.error("Username or password is invalid");
-            next('/signin');
+            next('/');
         } else {
             next();
         }
