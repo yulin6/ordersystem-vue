@@ -76,6 +76,9 @@ export default {
   watch: {
     isEditCanteenOpen: function () {
       this.getImage()
+    },
+    canteen: function () {
+      this.getImage()
     }
   }
 }

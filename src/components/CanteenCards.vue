@@ -13,9 +13,29 @@
       </div>
     </template>
     <template #default>
+
       <edit-canteen v-on:refreshData="getCanteens"></edit-canteen>
+      <h4 v-if="!isOwner"
+          style="margin-left: 60px">Restaurant Type:
+        <el-select
+            name="tes"
+            v-model="selectedCanteenTypeId"
+            v-on:change="filterCanteen"
+            v-on:clear="clearType"
+            placeholder="All"
+            clearable
+            style="margin-left: 5px"
+            >
+          <el-option
+              v-for="type in canteenTypes"
+              :key="type.id"
+              :label="type.type"
+              :value="type.id"/>
+        </el-select>
+      </h4>
+      <el-empty v-if="filteredCanteens.length === 0" description="No restaurant under this category" style="margin-top: 100px"/>
       <el-row>
-        <el-col v-for="(canteen, index) in canteens" :key="index" :span="3" class="card">
+        <el-col v-for="(canteen, index) in filteredCanteens" :key="index" :span="3" class="card">
           <canteen-card :canteen="canteen"></canteen-card>
           <el-row v-show="isOwner">
             <el-button v-on:click="editCanteen(canteen)"
@@ -64,12 +84,29 @@ export default {
       cardNum: 13,
       loading: true,
       canteens: [],
+      filteredCanteens: [],
+      selectedCanteenTypeId: '',
+      canteenTypes: [],
     }
   },
   created() {
     this.getCanteens()
+    this.getAllCanteenTypes()
   },
   methods: {
+    async getAllCanteenTypes() {
+      await this.canteenService.getAllCanteenTypes().then(res => {
+        if (res.code === 401) {
+          this.$message.error('Login credential expired')
+          this.$router.push('/signin')
+          Utils.removeLocalData()
+        } else if (res.code === 200) {
+          this.canteenTypes = res.data
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
+    },
     async getCanteens() {
       let id = undefined
       if (this.isOwner) id = this.user.id
@@ -80,11 +117,27 @@ export default {
           Utils.removeLocalData()
         } else if (res.code === 200) {
           this.canteens = res.data
+          this.filteredCanteens = res.data
         } else {
           this.$message.error(res.msg)
         }
       })
       this.loading = false
+    },
+    filterCanteen() {
+      this.filteredCanteens = []
+      this.canteens.forEach(canteen => {
+        canteen.canteenTypes.forEach(type => {
+          if (type.id === this.selectedCanteenTypeId) {
+            this.filteredCanteens.push(canteen)
+          }
+        })
+      })
+      console.log(this.filteredCanteens)
+    },
+    clearType() {
+      console.log('test')
+      this.filteredCanteens = this.canteens
     },
     editCanteen(canteen) {
       this.$store.dispatch("openCloseEditCanteen", canteen.id);
@@ -137,7 +190,7 @@ export default {
 
 <style>
 .card {
-  margin-top: 60px;
+  margin-top: 20px;
   margin-left: 60px
 }
 
