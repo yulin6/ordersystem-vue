@@ -32,7 +32,7 @@
           </el-aside>
 
           <el-main>
-            <el-dialog title="Ratings"  v-model="isRatingsOpen" >
+            <el-dialog title="Ratings"  v-model="isRatingsOpen" @close="closeRatings">
               <el-empty v-if="ratings.length === 0" description="No Ratings" />
               <el-card  v-for="(rating, index) in ratings"
                         :key="index"
@@ -139,6 +139,9 @@ export default {
     },
     openRatings() {
       this.isRatingsOpen = true
+    },
+    closeRatings() {
+      this.isRatingsOpen = false
     },
     jumpToCategory(id) {
       document.getElementById(id).scrollIntoView();
