@@ -53,14 +53,14 @@ const router = createRouter({
 // 使用 router.beforeEach 注册一个全局前置守卫，判断用户是否登陆
 router.beforeEach((to, from, next) => {
     let toPath = to.path.toLowerCase()
-    if (toPath === '/signin' || toPath === '/signup') {
+    if (toPath === '/signin' || toPath === '/signup' || toPath === '/') {
         next(); //TODO navigate logged-in users to home instead of login page
     } else {
         let token = localStorage.getItem('userToken');
 
         if (token === null || token === '') {
             // this.$message.error("Username or password is invalid");
-            next('/');
+            next('/signin');
         } else {
             next();
         }
